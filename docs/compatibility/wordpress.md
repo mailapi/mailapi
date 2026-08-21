@@ -1,15 +1,16 @@
-# WordPress integration
+# WordPress compatibility
 
-This document maps Mail API to WordPress's public `wp_mail()` sending contract.
-WordPress exposes a pluggable `wp_mail()` function and the `pre_wp_mail` filter
-can preempt sending; either is a suitable adapter boundary. A plugin should use
-one clear boundary and prevent WordPress's default mail transport from sending a
-duplicate message after Mail API accepts the request.
+This assessment compares Mail API with WordPress's public `wp_mail()` sending
+contract. WordPress exposes a pluggable `wp_mail()` function and the
+`pre_wp_mail` filter can preempt sending; either could be an adapter boundary.
+An implementation would need one clear boundary and must prevent WordPress's
+default mail transport from sending a duplicate message after Mail API accepts
+the request.
 
 See the [wp_mail() reference](https://developer.wordpress.org/reference/functions/wp_mail/)
 and [`pre_wp_mail` filter reference](https://developer.wordpress.org/reference/hooks/pre_wp_mail/).
 
-## Adapter boundary
+## Potential adapter boundary
 
 The adapter converts `wp_mail()` arguments to an `OutboundMessageRequest` and
 submits it to `POST /v1/messages`. It then returns success only when Mail API

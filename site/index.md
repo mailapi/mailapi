@@ -19,12 +19,12 @@ POST /v1/messages
 - [OpenAPI specification](openapi.yaml)
 - [Versioning policy](versioning.html)
 
-## Integration guides
+## Compatibility assessments
 
-- [MediaWiki (`IEmailer`)](integrations/mediawiki.html)
-- [WordPress (`wp_mail()`)](integrations/wordpress.html)
-- [Drupal (`MailInterface`)](integrations/drupal.html)
-- [Symfony/Laravel (custom transport)](integrations/symfony-laravel.html)
+- [MediaWiki (`IEmailer`)](compatibility/mediawiki.html)
+- [WordPress (`wp_mail()`)](compatibility/wordpress.html)
+- [Drupal (`MailInterface`)](compatibility/drupal.html)
+- [Symfony/Laravel (custom transport)](compatibility/symfony-laravel.html)
 
 ## Transport compatibility
 

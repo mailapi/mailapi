@@ -1,14 +1,15 @@
-# MediaWiki integration
+# MediaWiki compatibility
 
-This document maps Mail API to MediaWiki's `MediaWiki\\Mail\\IEmailer`
-interface. `IEmailer::send()` is the relevant outgoing-mail abstraction; it
-accepts recipients, a sender, subject, text and optional HTML bodies, and an
-options array. It is marked internal by MediaWiki, so an extension should keep
-its dependency isolated and test it against each supported MediaWiki version.
+This assessment compares Mail API with MediaWiki's
+`MediaWiki\\Mail\\IEmailer` interface. `IEmailer::send()` is the relevant
+outgoing-mail abstraction; it accepts recipients, a sender, subject, text and
+optional HTML bodies, and an options array. It is marked internal by MediaWiki,
+so an implementation would need to isolate and test this dependency for every
+supported MediaWiki version.
 
 See the [IEmailer interface reference](https://doc.wikimedia.org/mediawiki-core/1.39.17/php/interfaceMediaWiki_1_1Mail_1_1IEmailer.html).
 
-## Adapter boundary
+## Potential adapter boundary
 
 An adapter receives the arguments to `IEmailer::send()`, constructs an
 `OutboundMessageRequest`, and submits it to `POST /v1/messages`. Mail API is

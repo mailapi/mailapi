@@ -1,13 +1,13 @@
-# Drupal integration
+# Drupal compatibility
 
-This document maps Mail API to Drupal's pluggable
-`Drupal\Core\Mail\MailInterface` mail back-end. A Mail API module implements
-the interface, receives the composed Drupal message in `mail(array $message)`,
-and submits an `OutboundMessageRequest` to `POST /v1/messages`.
+This assessment compares Mail API with Drupal's pluggable
+`Drupal\Core\Mail\MailInterface` mail back-end. A potential Mail API module
+would receive the composed Drupal message in `mail(array $message)` and submit
+an `OutboundMessageRequest` to `POST /v1/messages`.
 
 See the [MailInterface reference](https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Mail%21MailInterface.php/function/MailInterface%3A%3Amail/11.x).
 
-## Adapter boundary
+## Potential adapter boundary
 
 `MailManagerInterface` composes messages and selects a mail plug-in. The Mail
 API adapter belongs at the selected `MailInterface` implementation, after

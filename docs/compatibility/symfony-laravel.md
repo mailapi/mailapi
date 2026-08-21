@@ -1,12 +1,13 @@
-# Symfony/Laravel integration
+# Symfony/Laravel compatibility
 
-This guide uses Symfony Mailer's custom transport as the common Mail API
-integration boundary. A transport converts the fully composed Symfony message
-into an `OutboundMessageRequest` and submits it to `POST /v1/messages`.
+This assessment uses Symfony Mailer's custom transport as the common Mail API
+compatibility boundary. A potential transport would convert the fully composed
+Symfony message into an `OutboundMessageRequest` and submit it to
+`POST /v1/messages`.
 
 See Symfony's [custom transport documentation](https://symfony.com/doc/current/mailer.html#custom-transport-factories).
 
-## Symfony Mailer transport
+## Potential Symfony Mailer transport
 
 Implement a Mail API transport and transport factory, then register the factory
 with the `mailer.transport_factory` service tag. This is preferable to

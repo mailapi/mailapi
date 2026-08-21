@@ -39,18 +39,17 @@ The core message model follows established RFC 5322/MIME concepts where practica
 
 Structured fields (`from`, `to`, `subject`, and similar) are authoritative for those concepts, while `headers` provides supplemental values including repeatable fields such as `Received`.
 
-## Application integration compatibility
+## Compatibility assessments
 
 Mail API is designed as a provider-neutral HTTP boundary, not as a drop-in
-WordPress plugin or MediaWiki extension. Integrations need an adapter between
-the host application's mail abstraction and `POST /v1/messages`. See the
-platform-specific guides for field mappings, adapter responsibilities, and the
-current compatibility limits:
+WordPress plugin or MediaWiki extension. These assessments examine how an
+adapter could map a host application's mail abstraction to `POST /v1/messages`,
+including the remaining compatibility limits:
 
-- [MediaWiki (`IEmailer`)](docs/integrations/mediawiki.md)
-- [WordPress (`wp_mail()`)](docs/integrations/wordpress.md)
-- [Drupal (`MailInterface`)](docs/integrations/drupal.md)
-- [Symfony/Laravel (custom transport)](docs/integrations/symfony-laravel.md)
+- [MediaWiki (`IEmailer`)](docs/compatibility/mediawiki.md)
+- [WordPress (`wp_mail()`)](docs/compatibility/wordpress.md)
+- [Drupal (`MailInterface`)](docs/compatibility/drupal.md)
+- [Symfony/Laravel (custom transport)](docs/compatibility/symfony-laravel.md)
 
 ## Versioning
 
