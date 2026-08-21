@@ -30,7 +30,7 @@ in `headers`.
 ## Envelope and delivery differences
 
 SMTP's `MAIL FROM` and `RCPT TO` commands describe the delivery envelope; they
-are not necessarily the same as the visible message headers. Mail API 0.1 has
+are not necessarily the same as the visible message headers. Mail API `v1` has
 no separate envelope-sender field.
 
 - Use the MIME `From` header for `from`, not `MAIL FROM`.
@@ -43,7 +43,7 @@ no separate envelope-sender field.
 
 ## Unsupported or policy-dependent content
 
-- Inline MIME attachments using content IDs have no Mail API 0.1 equivalent.
+- Inline MIME attachments using content IDs have no Mail API `v1` equivalent.
   The adapter should reject them or define a documented transformation rather
   than send HTML with broken `cid:` references.
 - SMTP authentication, TLS, client identity, retry behavior, size limits, and

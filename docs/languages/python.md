@@ -25,7 +25,7 @@ the Mail API message model, while HTTP submission remains a separate concern.
   envelope semantics to account for. In particular, the envelope sender and
   recipients may differ from visible headers. See the
   [SMTP transport compatibility assessment](../transports/smtp.md).
-- Inline MIME parts referenced by content IDs have no Mail API 0.1 equivalent.
+- Inline MIME parts referenced by content IDs have no Mail API `v1` equivalent.
   They require a documented transformation or rejection policy.
 - A `202` response confirms API submission acceptance only; it does not
   confirm recipient delivery.

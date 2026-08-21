@@ -8,6 +8,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: publish-documentation
+  cancel-in-progress: true
+
 jobs:
   publish:
     name: Publish release documentation

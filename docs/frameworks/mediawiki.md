@@ -38,4 +38,4 @@ the responsibility of an extension or deployment integration.
 - Inbound Mail API examples are data representations only. They do not add a
   MediaWiki inbound-mail feature or a callback endpoint.
 - Authentication, retries, delivery events, and attachment-size limits are not
-  specified by Mail API 0.1 and remain deployment-specific.
+  specified by Mail API `v1` and remain deployment-specific.

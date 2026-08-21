@@ -18,7 +18,7 @@ Drupal has constructed the message. This keeps module-specific templates and
 | --- | --- | --- |
 | `to` | `to` | Parse the address string into `EmailAddress` values. |
 | `subject` | `subject` | Copy the composed subject. |
-| `body` | `text` or `html` | Join the formatted body lines and select the representation from the effective content type. |
+| `body`, plus `plain` when present | `text`, `html` | Map `body` according to the effective content type; when it is HTML, preserve `plain` as the alternate `text` body. |
 | `headers['From']` | `from` | Parse the sender into an `EmailAddress`; reject the submission if it is absent. |
 | `headers['Cc']`, `headers['Bcc']`, `headers['Reply-To']` | `cc`, `bcc`, `replyTo` | Parse these structured headers into their corresponding fields. |
 | Other `headers` entries | `headers` | Preserve supplemental headers. |

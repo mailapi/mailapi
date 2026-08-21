@@ -33,7 +33,7 @@ accepts the message; this is submission success, not recipient delivery.
 - WordPress's default body type is plain text. The adapter must use the
   effective `Content-Type` rather than silently treating every body as HTML.
 - `$attachments` and `$embeds` are filesystem paths. The adapter must enforce
-  local access controls and size limits before reading files. Mail API 0.1 has
+  local access controls and size limits before reading files. Mail API `v1` has
   no content-ID/inline-embed field, so `$embeds` require an explicit adapter
   policy (for example, reject them) rather than automatic mapping.
 - A `true` return from `wp_mail()` and a `202` response from Mail API both mean
