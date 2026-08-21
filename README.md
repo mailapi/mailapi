@@ -1,4 +1,4 @@
-# Mail API spec
+# Mail API
 
 **Mail API is a vendor-neutral API specification for sending and receiving email.**
 
