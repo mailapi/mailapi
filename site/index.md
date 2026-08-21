@@ -21,15 +21,17 @@ POST /v1/messages
 
 ## Compatibility assessments
 
-- [MediaWiki (`IEmailer`)](compatibility/mediawiki.html)
-- [WordPress (`wp_mail()`)](compatibility/wordpress.html)
-- [Drupal (`MailInterface`)](compatibility/drupal.html)
-- [Symfony/Laravel (custom transport)](compatibility/symfony-laravel.html)
+### Frameworks
+
+- [MediaWiki (`IEmailer`)](frameworks/mediawiki.html)
+- [WordPress (`wp_mail()`)](frameworks/wordpress.html)
+- [Drupal (`MailInterface`)](frameworks/drupal.html)
+- [Symfony/Laravel (custom transport)](frameworks/symfony-laravel.html)
 
 ### Languages
 
-- [PHP](compatibility/php.html)
-- [Go](compatibility/go.html)
+- [PHP](languages/php.html)
+- [Go](languages/go.html)
 
 ## Transport compatibility
 

@@ -46,15 +46,17 @@ WordPress plugin or MediaWiki extension. These assessments examine how an
 adapter could map a host application's mail abstraction to `POST /v1/messages`,
 including the remaining compatibility limits:
 
-- [MediaWiki (`IEmailer`)](docs/compatibility/mediawiki.md)
-- [WordPress (`wp_mail()`)](docs/compatibility/wordpress.md)
-- [Drupal (`MailInterface`)](docs/compatibility/drupal.md)
-- [Symfony/Laravel (custom transport)](docs/compatibility/symfony-laravel.md)
+### Frameworks
+
+- [MediaWiki (`IEmailer`)](docs/frameworks/mediawiki.md)
+- [WordPress (`wp_mail()`)](docs/frameworks/wordpress.md)
+- [Drupal (`MailInterface`)](docs/frameworks/drupal.md)
+- [Symfony/Laravel (custom transport)](docs/frameworks/symfony-laravel.md)
 
 ### Languages
 
-- [PHP](docs/compatibility/php.md)
-- [Go](docs/compatibility/go.md)
+- [PHP](docs/languages/php.md)
+- [Go](docs/languages/go.md)
 
 ## Versioning
 
