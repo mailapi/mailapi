@@ -1,3 +1,15 @@
+# Received message
+
+An inbound message is represented by an `InboundMessage` wrapper. It adds the
+Mail API record ID and receipt timestamp around the same core message model
+used for outbound submission. Mail API `v1` does not yet define an inbound
+retrieval endpoint; the following `200 OK` response illustrates how a
+host-defined or future endpoint can return this representation.
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
 {
   "id": "msg_01HZXKJ42P6X0Q7J9ZMY1P4R8B",
   "receivedAt": "2026-08-21T10:55:00Z",
@@ -44,3 +56,5 @@
     ]
   }
 }
+```
+

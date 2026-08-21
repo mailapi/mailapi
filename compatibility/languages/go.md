@@ -7,7 +7,7 @@ and the request and response schemas map naturally to Go structs.
 
 | Mail API concept | Go compatibility observation |
 | --- | --- |
-| HTTP submission | `net/http.Client` can submit JSON requests and inspect the `202` response. |
+| HTTP submission | `net/http.Client` can submit JSON requests and inspect the `200` response. |
 | Addresses, headers, and attachments | These can be represented directly with typed structs, slices, and Base64 strings. |
 | Request cancellation and timeouts | The HTTP client and request context provide the required controls. |
 | Concurrent use | A reused `http.Client` is safe for concurrent use. |
@@ -23,7 +23,8 @@ policies for headers, body alternatives, and attachments.
 
 - Map a structured application message directly to Mail API when possible.
 - For raw SMTP/MIME input, apply the rules in the
-  [SMTP transport compatibility assessment](../transports/smtp.md).
-- Do not treat a `202` response as recipient delivery confirmation.
+  [SMTP compatibility assessment](../protocols/smtp.md).
+- Do not treat a `200` response as recipient delivery confirmation.
 - Inline attachments with content IDs require an explicit policy because Mail
   API 0.1 has no equivalent field.
+

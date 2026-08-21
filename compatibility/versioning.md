@@ -20,5 +20,8 @@ The current contract is `v1` and is served under `/v1/`.
 A documentation-only release uses the next repository tag but leaves
 `openapi.yaml` `info.version` unchanged. A specification change receives the
 appropriate repository release. Compatible additions and clarifications remain
-under `v1` and `/v1/`. A breaking HTTP API change requires `info.version: v2`
-and `/v2/`. Release notes should describe any migration between path versions.
+under `v1` and `/v1/` while the repository is pre-1.0. Breaking changes are
+permitted during that phase and must be described in the appropriate repository
+release notes. A future stable API release defines the compatibility and path
+versioning rules for subsequent breaking changes.
+

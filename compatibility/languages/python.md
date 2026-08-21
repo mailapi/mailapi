@@ -24,8 +24,9 @@ the Mail API message model, while HTTP submission remains a separate concern.
   [`smtplib`](https://docs.python.org/3/library/smtplib.html) still has SMTP
   envelope semantics to account for. In particular, the envelope sender and
   recipients may differ from visible headers. See the
-  [SMTP transport compatibility assessment](../transports/smtp.md).
+  [SMTP compatibility assessment](../protocols/smtp.md).
 - Inline MIME parts referenced by content IDs have no Mail API `v1` equivalent.
   They require a documented transformation or rejection policy.
-- A `202` response confirms API submission acceptance only; it does not
+- A `200` response confirms API submission acceptance only; it does not
   confirm recipient delivery.
+

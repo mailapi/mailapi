@@ -32,8 +32,9 @@ Drupal has constructed the message. This keeps module-specific templates and
   should preserve both when they are available instead of silently discarding
   one representation.
 - `MailInterface::mail()` returns whether Drupal accepted the message for
-  delivery. A Mail API `202` likewise means provider acceptance, not recipient
+  delivery. A Mail API `200` likewise means provider acceptance, not recipient
   delivery.
 - Inbound Mail API examples do not provide a Drupal inbound-mail feature or
   callback endpoint. Authentication, retries, delivery events, and attachment
   limits remain deployment-specific.
+

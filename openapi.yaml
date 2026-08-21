@@ -10,6 +10,18 @@ paths:
     post:
       summary: Send a message
       operationId: createMessage
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: false
+          description: >-
+            Client-generated key that makes a message submission idempotent for
+            24 hours. Reusing a key requires an identical request payload.
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 256
+          example: welcome-user/123456
       requestBody:
         required: true
         content:
@@ -17,10 +29,10 @@ paths:
             schema:
               $ref: '#/components/schemas/OutboundMessageRequest'
       responses:
-        '202':
+        '200':
           description: >-
-            Message durably accepted for asynchronous processing. This does not
-            confirm final recipient delivery.
+            Message accepted for asynchronous processing. This does not confirm
+            final recipient delivery.
           content:
             application/json:
               schema:
@@ -43,6 +55,14 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+        '409':
+          description: >-
+            Idempotency key conflicts with a different request payload, or an
+            identical submission using that key is still in progress.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
         '422':
           description: Message fields are syntactically valid but semantically invalid.
           content:
@@ -61,7 +81,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Problem'
         '500':
-          description: Unexpected provider error. The request may be retried.
+          description: >-
+            Unexpected provider error. The submission outcome may be unknown;
+            a retry can create a duplicate and requires a caller retry policy.
           content:
             application/problem+json:
               schema:
@@ -224,4 +246,8 @@ components:
         detail:
           type: string
           description: Human-readable explanation specific to this occurrence.
+        instance:
+          type: string
+          format: uri-reference
+          description: URI reference identifying this specific problem occurrence.
       additionalProperties: true

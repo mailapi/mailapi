@@ -36,8 +36,9 @@ accepts the message; this is submission success, not recipient delivery.
   local access controls and size limits before reading files. Mail API `v1` has
   no content-ID/inline-embed field, so `$embeds` require an explicit adapter
   policy (for example, reject them) rather than automatic mapping.
-- A `true` return from `wp_mail()` and a `202` response from Mail API both mean
+- A `true` return from `wp_mail()` and a `200` response from Mail API both mean
   the mail was accepted for processing, not that it reached a recipient.
 - Inbound Mail API examples do not provide a WordPress inbound-mail feature or
   callback endpoint. Authentication, retries, and delivery events remain
   deployment-specific.
+

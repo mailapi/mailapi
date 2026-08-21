@@ -27,32 +27,51 @@ POST /v1/messages
 
 | Status | Meaning | Retry guidance |
 | --- | --- | --- |
-| `202` | Provider durably accepted responsibility for asynchronous processing; this does not confirm final recipient delivery. | Do not retry. |
+| `200` | Provider accepted responsibility for asynchronous processing; this does not confirm final recipient delivery. | Do not retry. |
 | `400` | Malformed JSON or invalid request syntax. | Correct the request first. |
 | `413` | Request body or attachment content exceeds a provider limit. | Reduce the request first. |
 | `415` | Unsupported request media type. | Correct the request first. |
+| `409` | `Idempotency-Key` conflicts with a different payload or matching request still in progress. | Use a new key for a different message; retry a matching in-progress request later. |
 | `422` | Message fields are semantically invalid. | Correct the message first. |
 | `429` | Submission rate limit exceeded. | Retry after `Retry-After` when provided. |
-| `500` | Unexpected provider error. | Retry only under the caller's failure policy. |
+| `500` | Unexpected provider error; the submission outcome may be unknown. | Retry only under a caller policy that accepts duplicate-submission risk. |
 | `503` | Provider is temporarily unable to accept the message. | Retry after `Retry-After` when provided. |
 
 Error responses use `application/problem+json`.
 
+To make a submission safe to retry, clients can supply an `Idempotency-Key`
+header containing a unique 1–256 character key. For 24 hours, a retry with the
+same key and identical payload returns the original successful result instead
+of submitting a duplicate message.
+
+## Examples
+
+- [Send a message](examples/send.html)
+- [Received message](examples/received.html)
+
 ## Compatibility assessments
+
+### Cloud mail APIs
+
+- [Amazon SES](compatibility/clouds/amazon-ses.html)
+- [Azure Communication Services Email](compatibility/clouds/azure-email.html)
+- [Gmail API](compatibility/clouds/gmail-api.html)
+- [Resend](compatibility/clouds/resend.html)
+
+### Protocols
+
+- [JMAP](compatibility/protocols/jmap.html)
+- [SMTP](compatibility/protocols/smtp.html)
 
 ### Frameworks
 
-- [MediaWiki (`IEmailer`)](frameworks/mediawiki.html)
-- [WordPress (`wp_mail()`)](frameworks/wordpress.html)
-- [Drupal (`MailInterface`)](frameworks/drupal.html)
-- [Symfony/Laravel (custom transport)](frameworks/symfony-laravel.html)
+- [Drupal (`MailInterface`)](compatibility/frameworks/drupal.html)
+- [MediaWiki (`IEmailer`)](compatibility/frameworks/mediawiki.html)
+- [Symfony/Laravel (custom transport)](compatibility/frameworks/symfony-laravel.html)
+- [WordPress (`wp_mail()`)](compatibility/frameworks/wordpress.html)
 
 ### Languages
 
-- [PHP](languages/php.html)
-- [Go](languages/go.html)
-- [Python (`email`)](languages/python.html)
-
-## Transport compatibility
-
-- [SMTP](transports/smtp.html)
+- [Go](compatibility/languages/go.html)
+- [PHP](compatibility/languages/php.html)
+- [Python (`email`)](compatibility/languages/python.html)

@@ -30,20 +30,24 @@ the responsibility of an extension or deployment integration.
 ## Submission semantics
 
 `IEmailer::send()` is a synchronous, single-submission call that returns a
-`StatusValue`. A Mail API `202` maps to successful provider acceptance, not
+`StatusValue`. A Mail API `200` maps to successful provider acceptance, not
 final recipient delivery.
 
 If the HTTP request times out, the adapter cannot determine whether Mail API
-accepted the message before the response was lost. Mail API `v1` does not
-define an idempotency key or submission-status lookup, so retrying a timed-out
-call can create a duplicate message. This is comparable to an SMTP submission
-whose final acceptance response is lost; timeout and retry handling remain an
-adapter or deployment policy.
+accepted the message before the response was lost. A client-supplied
+`Idempotency-Key` protects a retry with the same payload for 24 hours; without
+one, retrying a timed-out call can create a duplicate message. This is
+comparable to an SMTP submission whose final acceptance response is lost;
+timeout and retry handling remain an adapter or deployment policy.
 
-The defined HTTP responses let an adapter distinguish invalid requests (`4xx`)
-from retryable rate-limit or temporary provider responses (`429`, `503`, and
-some `5xx` responses). A failed request is translated to a failed
-`StatusValue`.
+The defined HTTP responses let an adapter distinguish non-retryable request
+errors (`400`, `413`, `415`, and `422`), idempotency conflicts (`409`), and
+retryable rate-limit or temporary provider responses (`429` and `503`). A
+matching submission that is still in progress may be retried later; a key used
+with a different payload requires a new key or payload. Other `5xx` responses
+can leave the submission outcome unknown, so retries require an adapter policy
+that accepts duplicate-submission risk. A failed request is translated to a
+failed `StatusValue`.
 
 ## Differences and limits
 
@@ -52,6 +56,7 @@ some `5xx` responses). A failed request is translated to a failed
   they are supported.
 - Inbound Mail API examples are data representations only. They do not add a
   MediaWiki inbound-mail feature or a callback endpoint.
-- Authentication, delivery events, idempotency, submission-status lookup, and
-  attachment-size limits are not specified by Mail API `v1` and remain
+- Authentication, delivery events, submission-status lookup, and attachment-size
+  limits are not specified by Mail API `v1` and remain
   deployment-specific.
+
