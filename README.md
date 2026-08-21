@@ -14,6 +14,9 @@ The API defines a single outbound endpoint:
 
 `POST /v1/messages`
 
+The latest released specification is also available as an [interactive API
+reference](https://mailapi.github.io/api/).
+
 Example request body:
 
 ```json

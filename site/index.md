@@ -17,6 +17,7 @@ POST /v1/messages
 ```
 
 - [OpenAPI specification](openapi.yaml)
+- [Interactive API reference](api/)
 - [Versioning policy](versioning.html)
 
 ## Compatibility assessments
