@@ -35,9 +35,26 @@ A successful response returns a Mail API message identifier:
 
 ## Message model
 
-The core message model follows established RFC 5322/MIME concepts where practical, including addresses, body content, attachments, and ordered header fields. The same core model is used for outbound and inbound messages, with inbound metadata (`id`, `receivedAt`) provided by an `InboundMessage` wrapper (see `examples/send.json` and `examples/inbound.json`).
+The core message model follows established RFC 5322/MIME concepts where practical, including addresses, body content, attachments, and ordered header fields. The same core model is used for outbound and inbound messages, with inbound metadata (`id`, `receivedAt`) provided by an `InboundMessage` wrapper (see `examples/send.json` and `examples/received.json`).
 
 Structured fields (`from`, `to`, `subject`, and similar) are authoritative for those concepts, while `headers` provides supplemental values including repeatable fields such as `Received`.
+
+## CMS integration compatibility
+
+Mail API is designed as a provider-neutral HTTP boundary, not as a drop-in
+WordPress plugin or MediaWiki extension. Integrations need an adapter between
+the host application's mail abstraction and `POST /v1/messages`. See the
+platform-specific guides for field mappings, adapter responsibilities, and the
+current compatibility limits:
+
+- [MediaWiki (`IEmailer`)](docs/integrations/mediawiki.md)
+- [WordPress (`wp_mail()`)](docs/integrations/wordpress.md)
+
+## Versioning
+
+Repository releases from `v0.0.0` through `v1.x.x` use the `/v1/` API path;
+`v2.x.x` releases use `/v2/`. The OpenAPI `info.version` and GitHub tags identify
+the repository release. See the [versioning policy](docs/versioning.md).
 
 ## Future transports
 
