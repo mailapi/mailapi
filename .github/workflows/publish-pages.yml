@@ -1,0 +1,56 @@
+name: Publish documentation site
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-documentation
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    name: Publish release documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out released source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Build documentation site
+        run: hack/build-pages.sh public
+
+      - name: Publish documentation site
+        env:
+          PAGES_REPO_TOKEN: ${{ secrets.PAGES_REPO_TOKEN }}
+          TAG: ${{ github.event.release.tag_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -z "$PAGES_REPO_TOKEN" ]]; then
+            echo "PAGES_REPO_TOKEN is required to publish mailapi.github.io." >&2
+            exit 1
+          fi
+
+          git -c http.extraheader="AUTHORIZATION: bearer $PAGES_REPO_TOKEN" \
+            clone --depth 1 https://github.com/mailapi/mailapi.github.io.git pages-repository
+          rsync --archive --delete --exclude .git public/ pages-repository/
+
+          cd pages-repository
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+
+          if git diff --cached --quiet; then
+            echo "Documentation site is already current."
+            exit 0
+          fi
+
+          git commit --message "Deploy documentation for $TAG"
+          git -c http.extraheader="AUTHORIZATION: bearer $PAGES_REPO_TOKEN" \
+            push origin HEAD:main

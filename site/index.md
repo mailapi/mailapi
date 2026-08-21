@@ -1,0 +1,45 @@
+---
+title: Mail API
+---
+
+# Mail API
+
+Mail API is a vendor-neutral API specification for sending and receiving email.
+It defines an HTTP boundary so applications are not tied directly to a mail
+provider.
+
+## API
+
+The current outbound endpoint is:
+
+```text
+POST /v1/messages
+```
+
+- [OpenAPI specification](openapi.yaml)
+- [Interactive API reference](api/)
+- [Versioning policy](versioning.html)
+
+## Compatibility assessments
+
+### Frameworks
+
+- [MediaWiki (`IEmailer`)](frameworks/mediawiki.html)
+- [WordPress (`wp_mail()`)](frameworks/wordpress.html)
+- [Drupal (`MailInterface`)](frameworks/drupal.html)
+- [Symfony/Laravel (custom transport)](frameworks/symfony-laravel.html)
+
+### Languages
+
+- [PHP](languages/php.html)
+- [Go](languages/go.html)
+- [Python (`email`)](languages/python.html)
+
+## Transport compatibility
+
+- [SMTP](transports/smtp.html)
+
+## Source
+
+The specification and documentation are maintained in the
+[mailapi/mailapi](https://github.com/mailapi/mailapi) repository.
