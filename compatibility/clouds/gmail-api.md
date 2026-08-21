@@ -41,7 +41,7 @@ code: for example, `403` can mean either a permission problem or a rate limit.
 | Gmail result | Mail API response | Adapter handling |
 | --- | --- | --- |
 | `200` with a Gmail message resource | `200` | Return the Gmail message `id` as the accepted-message `id`; do not treat it as delivery confirmation. |
-| `400` `badRequest` | `400` or `422` | Use `400` for malformed generated MIME/API input and `422` for a valid Mail API message Gmail rejects semantically. |
+| `400` `badRequest` | `500` or `422` | Use `500` for malformed generated MIME/API input and `422` for a valid Mail API message Gmail rejects semantically. |
 | `401` authentication failure | `500` | Refresh or repair the adapter's OAuth credentials; do not expose them to the Mail API caller. |
 | `403` send-as identity permission failure | `422` | The selected mailbox cannot send as the requested `from` identity. |
 | `403` domain-policy or OAuth-scope failure | `500` | Repair adapter authorization or Workspace administration; this is not caller input. |
@@ -70,4 +70,3 @@ contract.
   can protect a retry with Mail API's `Idempotency-Key`; without one, retry
   behavior must account for duplicate-message risk. Mail API `v1` has no
   submission-status lookup.
-

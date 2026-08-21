@@ -39,7 +39,7 @@ configuration as a client error.
 | SES result | Mail API response | Adapter handling |
 | --- | --- | --- |
 | `200` with `MessageId` | `200` | Return the `MessageId` as the accepted-message `id`. |
-| `400` malformed request | `400` | Report syntax or serialization errors in the generated SES request. |
+| `400` malformed request | `500` | Treat syntax or serialization errors in the generated SES request as adapter defects. |
 | `400` `MessageRejected`, unverified sender, or invalid message content | `422` | The Mail API message is unacceptable under the selected SES provider policy. |
 | `429` `TooManyRequestsException` | `429` | Apply backoff; include `Retry-After` only when the adapter can determine a wait period. |
 | SES credentials, region, configuration-set, or account configuration failure | `500` | Treat this as adapter or deployment configuration, not caller input. |
@@ -63,4 +63,3 @@ the unknown-outcome `500` contract instead.
 - SES delivery events, bounces, complaints, and suppression lists are provider
   event mechanisms. They do not define Mail API inbound-message or delivery
   status endpoints.
-

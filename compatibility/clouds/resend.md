@@ -37,7 +37,7 @@ configuration to the caller.
 | Resend result | Mail API response | Adapter handling |
 | --- | --- | --- |
 | `200` with an email `id` | `200` | Return the Resend ID as the accepted-message `id`. |
-| `400` malformed request | `400` | Report invalid generated Resend request syntax or serialization. |
+| `400` malformed request | `500` | Treat invalid generated Resend request syntax or serialization as an adapter defect. |
 | `400` provider validation failure | `422` | The Mail API message is unacceptable under the selected Resend provider policy. |
 | `409` idempotency-key conflict | `409` | Preserve the distinction between a different payload and an in-progress matching request. |
 | `401`, `403`, or provider domain/account configuration failure | `500` | Repair adapter credentials, authorization, or Resend account configuration. |
@@ -60,4 +60,3 @@ Resend can retrieve sent-email records and their latest provider event. Those
 records, delivery events, templates, tags, scheduling, and API-key management
 are provider features; they do not define Mail API `v1` submission-status,
 delivery-event, or inbound-message contracts.
-

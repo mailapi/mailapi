@@ -34,15 +34,19 @@ POST /v1/messages
 | `409` | `Idempotency-Key` conflicts with a different payload or matching request still in progress. | Use a new key for a different message; retry a matching in-progress request later. |
 | `422` | Message fields are semantically invalid. | Correct the message first. |
 | `429` | Submission rate limit exceeded. | Retry after `Retry-After` when provided. |
-| `500` | Unexpected provider error; the submission outcome may be unknown. | Retry only under a caller policy that accepts duplicate-submission risk. |
+| `500` | Unexpected provider error; the submission outcome may be unknown. | Without an `Idempotency-Key`, retry only under a caller policy that accepts duplicate-submission risk. |
 | `503` | Provider is temporarily unable to accept the message. | Retry after `Retry-After` when provided. |
 
 Error responses use `application/problem+json`.
 
 To make a submission safe to retry, clients can supply an `Idempotency-Key`
 header containing a unique 1–256 character key. For 24 hours, a retry with the
-same key and identical payload returns the original successful result instead
-of submitting a duplicate message.
+same key and byte-for-byte identical UTF-8 request body returns the original
+successful result instead of submitting a duplicate message. JSON whitespace
+and object-member ordering are significant. Reusing a key with a different body
+returns problem type `https://api.example.com/problems/idempotency-key-reused`;
+retrying while the matching submission is in progress returns
+`https://api.example.com/problems/idempotency-key-in-progress`.
 
 ## Examples
 

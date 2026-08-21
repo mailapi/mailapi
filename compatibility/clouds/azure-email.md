@@ -42,7 +42,7 @@ configuration to the caller.
 | Azure result | Mail API response | Adapter handling |
 | --- | --- | --- |
 | `202 Accepted` with `Operation-Location` and an operation ID | `200` | Return the operation ID as the accepted-message `id`. |
-| `400` malformed request | `400` | Report invalid generated Azure request syntax or serialization. |
+| `400` malformed request | `500` | Treat invalid generated Azure request syntax or serialization as an adapter defect. |
 | `400` invalid sender, recipient, content, or attachment | `422` | The Mail API message is unacceptable under the selected Azure provider policy. |
 | `401`, `403`, or missing Azure resource caused by adapter configuration | `500` | Repair credentials, permissions, or Azure resource configuration. |
 | `429` | `429` | Apply backoff; preserve a provider retry delay when available. |
@@ -66,4 +66,3 @@ the unknown-outcome `500` contract instead.
 - A timeout after Azure receives a request can leave the outcome unknown. A
   client can protect a retry with Mail API's `Idempotency-Key`; without one,
   retry behavior requires a caller policy that accepts duplicate-message risk.
-
