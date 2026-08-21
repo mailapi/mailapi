@@ -24,7 +24,7 @@ attachments.
 | Supplemental headers | `headers` | Preserve headers not mapped to structured fields. |
 | Attachments | `attachments` | Read the attachment body, Base64-encode it, and retain filename and MIME type. |
 
-The transport should treat a Mail API `202` as send success, consistent with
+The transport should treat a Mail API `200` as send success, consistent with
 Symfony's definition of success as acceptance by a transport. It must not
 present this as recipient delivery confirmation.
 
@@ -47,3 +47,4 @@ See Laravel's [custom transports documentation](https://laravel.com/docs/12.x/ma
   feature or callback endpoint.
 - Authentication, retries, delivery events, and attachment-size limits remain
   deployment-specific.
+

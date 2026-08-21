@@ -10,6 +10,20 @@ paths:
     post:
       summary: Send a message
       operationId: createMessage
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: false
+          description: >-
+            Client-generated key that makes a message submission idempotent for
+            24 hours. Reusing a key requires byte-for-byte identical UTF-8
+            request-body content; JSON whitespace and object-member ordering
+            are significant.
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 256
+          example: welcome-user/123456
       requestBody:
         required: true
         content:
@@ -17,12 +31,96 @@ paths:
             schema:
               $ref: '#/components/schemas/OutboundMessageRequest'
       responses:
-        '202':
-          description: Message accepted
+        '200':
+          description: >-
+            Message accepted for asynchronous processing. This does not confirm
+            final recipient delivery.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/MessageAcceptedResponse'
+        '400':
+          description: Malformed JSON or invalid request syntax.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '413':
+          description: Request body or attachment content exceeds a provider limit.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '415':
+          description: Unsupported request media type.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '409':
+          description: >-
+            Idempotency key conflicts with a different request payload, or an
+            identical submission using that key is still in progress. The
+            problem type is `https://api.example.com/problems/idempotency-key-reused`
+            for a different payload and
+            `https://api.example.com/problems/idempotency-key-in-progress` for
+            an identical submission still in progress.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+              examples:
+                keyReused:
+                  summary: The key was reused with a different payload.
+                  value:
+                    type: https://api.example.com/problems/idempotency-key-reused
+                    title: Idempotency key reused
+                    status: 409
+                    detail: This key was already used with a different request body.
+                submissionInProgress:
+                  summary: The matching submission is still in progress.
+                  value:
+                    type: https://api.example.com/problems/idempotency-key-in-progress
+                    title: Idempotent submission in progress
+                    status: 409
+                    detail: Retry the request with the same key later.
+        '422':
+          description: Message fields are syntactically valid but semantically invalid.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '429':
+          description: Submission rate limit exceeded. The request may be retried.
+          headers:
+            Retry-After:
+              description: Time to wait before retrying the request.
+              schema:
+                type: string
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '500':
+          description: >-
+            Unexpected provider error. The submission outcome may be unknown;
+            without an Idempotency-Key, a retry can create a duplicate and
+            requires a caller retry policy.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '503':
+          description: Provider is temporarily unable to accept the message. The request may be retried.
+          headers:
+            Retry-After:
+              description: Time to wait before retrying the request.
+              schema:
+                type: string
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
 components:
   schemas:
     EmailAddress:
@@ -148,3 +246,30 @@ components:
           type: string
           description: Mail API identifier assigned to the accepted message.
       additionalProperties: false
+
+    Problem:
+      type: object
+      description: RFC 9457 problem details for an unsuccessful request.
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          format: uri-reference
+          description: URI reference identifying the problem type.
+        title:
+          type: string
+          description: Short, human-readable summary of the problem type.
+        status:
+          type: integer
+          description: HTTP status code generated by the origin server.
+        detail:
+          type: string
+          description: Human-readable explanation specific to this occurrence.
+        instance:
+          type: string
+          format: uri-reference
+          description: URI reference identifying this specific problem occurrence.
+      additionalProperties: true

@@ -14,8 +14,9 @@ The API defines a single outbound endpoint:
 
 `POST /v1/messages`
 
-The latest released specification is also available as an [interactive API
-reference](https://mailapi.github.io/api/).
+The latest released [API reference (Swagger UI)](https://mailapi.github.io/api/)
+renders the OpenAPI specification. The source specification is
+[`openapi.yaml`](openapi.yaml).
 
 Example request body:
 
@@ -36,9 +37,35 @@ A successful response returns a Mail API message identifier:
 }
 ```
 
+## Submission responses
+
+| Status | Meaning | Retry guidance |
+| --- | --- | --- |
+| `200` | Provider accepted responsibility for asynchronous processing; this does not confirm final recipient delivery. | Do not retry. |
+| `400` | Malformed JSON or invalid request syntax. | Correct the request first. |
+| `413` | Request body or attachment content exceeds a provider limit. | Reduce the request first. |
+| `415` | Unsupported request media type. | Correct the request first. |
+| `409` | `Idempotency-Key` conflicts with a different payload or matching request still in progress. | Use a new key for a different message; retry a matching in-progress request later. |
+| `422` | Message fields are semantically invalid. | Correct the message first. |
+| `429` | Submission rate limit exceeded. | Retry after `Retry-After` when provided. |
+| `500` | Unexpected provider error; the submission outcome may be unknown. | Without an `Idempotency-Key`, retry only under a caller policy that accepts duplicate-submission risk. |
+| `503` | Provider is temporarily unable to accept the message. | Retry after `Retry-After` when provided. |
+
+Error responses use `application/problem+json`.
+
+To make a submission safe to retry, clients can supply an `Idempotency-Key`
+header containing a unique 1–256 character key. For 24 hours, a retry with the
+same key and byte-for-byte identical UTF-8 request body returns the original
+successful result instead of submitting a duplicate message. JSON whitespace
+and object-member ordering are significant. Reusing a key with a different body
+returns problem type `https://api.example.com/problems/idempotency-key-reused`;
+retrying while the matching submission is in progress returns
+`https://api.example.com/problems/idempotency-key-in-progress`. See [the
+complete HTTP request example](examples/send.md).
+
 ## Message model
 
-The core message model follows established RFC 5322/MIME concepts where practical, including addresses, body content, attachments, and ordered header fields. The same core model is used for outbound and inbound messages, with inbound metadata (`id`, `receivedAt`) provided by an `InboundMessage` wrapper (see `examples/send.json` and `examples/received.json`).
+The core message model follows established RFC 5322/MIME concepts where practical, including addresses, body content, attachments, and ordered header fields. The same core model is used for outbound and inbound messages, with inbound metadata (`id`, `receivedAt`) provided by an `InboundMessage` wrapper. See the [outbound](examples/send.md) and [inbound](examples/received.md) examples.
 
 Structured fields (`from`, `to`, `subject`, and similar) are authoritative for those concepts, while `headers` provides supplemental values including repeatable fields such as `Received`.
 
@@ -51,27 +78,38 @@ including the remaining compatibility limits:
 
 ### Frameworks
 
-- [MediaWiki (`IEmailer`)](docs/frameworks/mediawiki.md)
-- [WordPress (`wp_mail()`)](docs/frameworks/wordpress.md)
-- [Drupal (`MailInterface`)](docs/frameworks/drupal.md)
-- [Symfony/Laravel (custom transport)](docs/frameworks/symfony-laravel.md)
+- [MediaWiki (`IEmailer`)](compatibility/frameworks/mediawiki.md)
+- [WordPress (`wp_mail()`)](compatibility/frameworks/wordpress.md)
+- [Drupal (`MailInterface`)](compatibility/frameworks/drupal.md)
+- [Symfony/Laravel (custom transport)](compatibility/frameworks/symfony-laravel.md)
 
 ### Languages
 
-- [PHP](docs/languages/php.md)
-- [Go](docs/languages/go.md)
-- [Python (`email`)](docs/languages/python.md)
+- [PHP](compatibility/languages/php.md)
+- [Go](compatibility/languages/go.md)
+- [Python (`email`)](compatibility/languages/python.md)
+
+### Cloud mail APIs
+
+- [Amazon SES](compatibility/clouds/amazon-ses.md)
+- [Gmail API](compatibility/clouds/gmail-api.md)
+- [Azure Communication Services Email](compatibility/clouds/azure-email.md)
+- [Resend](compatibility/clouds/resend.md)
+
+### Protocols
+
+- [JMAP](compatibility/protocols/jmap.md)
 
 ## Versioning
 
 Repository releases use manually created Git tags and GitHub Releases, including
 documentation-only releases. `openapi.yaml` `info.version` changes only when
 the API contract changes. The current `v1` contract uses the `/v1/` API path. See the
-[versioning policy](docs/versioning.md).
+[versioning policy](compatibility/versioning.md).
 
-## Transports
+## Protocols
 
-Mail API defines HTTP submission. See [SMTP transport compatibility](docs/transports/smtp.md)
+Mail API defines HTTP submission. See [SMTP compatibility](compatibility/protocols/smtp.md)
 for the adapter boundary and MIME-to-API mapping when interoperating with SMTP
 systems.
 
