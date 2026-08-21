@@ -1,0 +1,150 @@
+openapi: 3.0.3
+info:
+  title: Mail API Specification
+  version: 0.1.0
+  description: Vendor-neutral API specification for sending and receiving email.
+servers:
+  - url: https://api.example.com
+paths:
+  /v1/messages:
+    post:
+      summary: Send a message
+      operationId: createMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutboundMessageRequest'
+      responses:
+        '202':
+          description: Message accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageAcceptedResponse'
+components:
+  schemas:
+    EmailAddress:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          description: Optional display name for the address.
+      additionalProperties: false
+
+    Header:
+      type: object
+      required:
+        - name
+        - value
+      properties:
+        name:
+          type: string
+          description: Header field name (for example, Received or X-Custom-Header).
+        value:
+          type: string
+          description: Header field value.
+      additionalProperties: false
+
+    Attachment:
+      type: object
+      required:
+        - filename
+        - contentType
+        - content
+      properties:
+        filename:
+          type: string
+        contentType:
+          type: string
+          description: MIME media type for the attachment.
+        content:
+          type: string
+          format: byte
+          description: Base64-encoded attachment content.
+      additionalProperties: false
+
+    Message:
+      type: object
+      properties:
+        from:
+          $ref: '#/components/schemas/EmailAddress'
+        to:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        cc:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        bcc:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        replyTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        subject:
+          type: string
+        text:
+          type: string
+        html:
+          type: string
+        headers:
+          type: array
+          description: >-
+            Ordered RFC 5322-style header fields. Structured fields such as
+            from, to, and subject are authoritative for those concepts; headers
+            provide supplemental values, including repeated fields.
+          items:
+            $ref: '#/components/schemas/Header'
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+      required:
+        - from
+      additionalProperties: false
+
+    OutboundMessageRequest:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+        - type: object
+          required:
+            - to
+
+    InboundMessage:
+      type: object
+      required:
+        - id
+        - receivedAt
+        - message
+      properties:
+        id:
+          type: string
+          description: Mail API identifier for the received message record.
+        receivedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the inbound message was received.
+        message:
+          $ref: '#/components/schemas/Message'
+      additionalProperties: false
+
+    MessageAcceptedResponse:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: Mail API identifier assigned to the accepted message.
+      additionalProperties: false
