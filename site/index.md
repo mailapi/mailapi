@@ -16,8 +16,8 @@ The current outbound endpoint is:
 POST /v1/messages
 ```
 
-- [OpenAPI specification](openapi.yaml)
-- [Interactive API reference](api/)
+- [API reference (Swagger UI)](api/)
+- [OpenAPI source (`openapi.yaml`)](openapi.yaml)
 - [Versioning policy](versioning.html)
 
 ## Compatibility assessments
