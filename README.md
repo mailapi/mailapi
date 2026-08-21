@@ -54,9 +54,9 @@ current compatibility limits:
 
 ## Versioning
 
-Repository releases use `VERSION` and Git tags, including documentation-only
-releases. `openapi.yaml` `info.version` changes only when the API specification
-changes. Spec v1.* uses the `/v1/` API path. See the
+Repository releases use manually created Git tags and GitHub Releases, including
+documentation-only releases. `openapi.yaml` `info.version` changes only when
+the API specification changes. Spec v1.* uses the `/v1/` API path. See the
 [versioning policy](docs/versioning.md).
 
 ## Transports
