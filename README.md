@@ -98,7 +98,9 @@ including the remaining compatibility limits:
 
 ### Protocols
 
+- [IMAP](compatibility/protocols/imap.md)
 - [JMAP](compatibility/protocols/jmap.md)
+- [POP3](compatibility/protocols/pop.md)
 
 ## Versioning
 
@@ -111,7 +113,10 @@ the API contract changes. The current `v1` contract uses the `/v1/` API path. Se
 
 Mail API defines HTTP submission. See [SMTP compatibility](compatibility/protocols/smtp.md)
 for the adapter boundary and MIME-to-API mapping when interoperating with SMTP
-systems.
+systems. [IMAP compatibility](compatibility/protocols/imap.md) explains the
+separate mailbox-access and inbound-retrieval boundary; [POP3
+compatibility](compatibility/protocols/pop.md) covers simple maildrop
+retrieval.
 
 ## Future transports
 

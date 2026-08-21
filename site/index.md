@@ -64,7 +64,9 @@ retrying while the matching submission is in progress returns
 
 ### Protocols
 
+- [IMAP](compatibility/protocols/imap.html)
 - [JMAP](compatibility/protocols/jmap.html)
+- [POP3](compatibility/protocols/pop.html)
 - [SMTP](compatibility/protocols/smtp.html)
 
 ### Frameworks
