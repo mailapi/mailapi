@@ -37,8 +37,9 @@ jobs:
             exit 1
           fi
 
-          git -c http.extraheader="AUTHORIZATION: bearer $PAGES_REPO_TOKEN" \
-            clone --depth 1 https://github.com/mailapi/mailapi.github.io.git pages-repository
+          git clone --depth 1 \
+            "https://x-access-token:${PAGES_REPO_TOKEN}@github.com/mailapi/mailapi.github.io.git" \
+            pages-repository
           rsync --archive --delete --exclude .git public/ pages-repository/
 
           cd pages-repository
@@ -52,5 +53,4 @@ jobs:
           fi
 
           git commit --message "Deploy documentation for $TAG"
-          git -c http.extraheader="AUTHORIZATION: bearer $PAGES_REPO_TOKEN" \
-            push origin HEAD:main
+          git push origin HEAD:main
