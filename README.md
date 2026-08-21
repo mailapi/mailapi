@@ -54,9 +54,10 @@ current compatibility limits:
 
 ## Versioning
 
-Repository releases from `v0.0.0` through `v1.x.x` use the `/v1/` API path;
-`v2.x.x` releases use `/v2/`. The OpenAPI `info.version` and GitHub tags identify
-the repository release. See the [versioning policy](docs/versioning.md).
+Repository releases use `VERSION` and Git tags, including documentation-only
+releases. `openapi.yaml` `info.version` changes only when the API specification
+changes. Spec v1.* uses the `/v1/` API path. See the
+[versioning policy](docs/versioning.md).
 
 ## Transports
 
