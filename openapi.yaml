@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Mail API Specification
-  version: 1.0.0
+  version: v1
   description: Vendor-neutral API specification for sending and receiving email.
 servers:
   - url: https://api.example.com
