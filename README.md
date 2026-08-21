@@ -36,6 +36,11 @@ A successful response returns a Mail API message identifier:
 }
 ```
 
+`202 Accepted` means the provider has durably accepted responsibility for
+asynchronous processing; it does not confirm final recipient delivery. Invalid
+requests use standard HTTP error statuses and `application/problem+json`
+responses. `429` and `503` may include `Retry-After` to guide a retry.
+
 ## Message model
 
 The core message model follows established RFC 5322/MIME concepts where practical, including addresses, body content, attachments, and ordered header fields. The same core model is used for outbound and inbound messages, with inbound metadata (`id`, `receivedAt`) provided by an `InboundMessage` wrapper (see `examples/send.json` and `examples/received.json`).

@@ -27,15 +27,31 @@ the responsibility of an extension or deployment integration.
 | `$options['headers']` | `headers` | Preserve supplemental headers, including repeated names, in order. |
 | `$options['contentType']` | `headers` | Preserve as a `Content-Type` header when it is explicitly supplied. |
 
+## Submission semantics
+
+`IEmailer::send()` is a synchronous, single-submission call that returns a
+`StatusValue`. A Mail API `202` maps to successful provider acceptance, not
+final recipient delivery.
+
+If the HTTP request times out, the adapter cannot determine whether Mail API
+accepted the message before the response was lost. Mail API `v1` does not
+define an idempotency key or submission-status lookup, so retrying a timed-out
+call can create a duplicate message. This is comparable to an SMTP submission
+whose final acceptance response is lost; timeout and retry handling remain an
+adapter or deployment policy.
+
+The defined HTTP responses let an adapter distinguish invalid requests (`4xx`)
+from retryable rate-limit or temporary provider responses (`429`, `503`, and
+some `5xx` responses). A failed request is translated to a failed
+`StatusValue`.
+
 ## Differences and limits
 
 - `IEmailer::send()` has no attachment parameter. An adapter cannot infer Mail
   API `attachments` at this boundary; it should neither add them nor claim that
   they are supported.
-- The return value is a MediaWiki `StatusValue`; a Mail API `202` only confirms
-  provider acceptance. The adapter must translate submission failures to an
-  appropriate failed status and must not report recipient delivery as complete.
 - Inbound Mail API examples are data representations only. They do not add a
   MediaWiki inbound-mail feature or a callback endpoint.
-- Authentication, retries, delivery events, and attachment-size limits are not
-  specified by Mail API `v1` and remain deployment-specific.
+- Authentication, delivery events, idempotency, submission-status lookup, and
+  attachment-size limits are not specified by Mail API `v1` and remain
+  deployment-specific.

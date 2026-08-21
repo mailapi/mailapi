@@ -27,26 +27,34 @@ parts when available. Structured Mail API fields are authoritative, so an
 adapter must not duplicate `From`, `To`, `Cc`, `Bcc`, `Reply-To`, or `Subject`
 in `headers`.
 
-## Envelope and delivery differences
+## SMTP envelope boundary and delivery semantics
 
 SMTP's `MAIL FROM` and `RCPT TO` commands describe the delivery envelope; they
-are not necessarily the same as the visible message headers. Mail API `v1` has
-no separate envelope-sender field.
+are not necessarily the same as the visible message headers. Mail API `v1` is
+an HTTP submission API rather than an SMTP relay interface, so it deliberately
+does not expose a separate envelope-sender field. The provider determines its
+own transport envelope.
 
 - Use the MIME `From` header for `from`, not `MAIL FROM`.
 - An adapter must define a policy for envelope recipients that are absent from
   visible `To` or `Cc` headers. They are often Bcc recipients, but cannot be
   identified reliably after a message has been composed.
-- A Mail API `202` can be translated to SMTP `250` acceptance. HTTP failures
-  need an adapter-specific transient (`4xx`) or permanent (`5xx`) SMTP response
-  policy; neither result confirms final recipient delivery.
+- A Mail API `202` can be translated to SMTP `250` acceptance because it means
+  the provider durably accepted responsibility for asynchronous processing.
+  Neither result confirms final recipient delivery.
+- `400`, `413`, `415`, and `422` are non-retryable unless the message is
+  changed. `429` and `503` are retryable and may provide `Retry-After`; other
+  `5xx` responses require an adapter retry policy. A request timeout remains
+  an unknown-outcome condition, as it does in SMTP when an acceptance response
+  is lost.
 
 ## Unsupported or policy-dependent content
 
 - Inline MIME attachments using content IDs have no Mail API `v1` equivalent.
   The adapter should reject them or define a documented transformation rather
   than send HTML with broken `cid:` references.
-- SMTP authentication, TLS, client identity, retry behavior, size limits, and
-  rate limits are deployment concerns. They are not defined by Mail API.
+- SMTP authentication, TLS, client identity, retry scheduling, size limits,
+  and rate limits are deployment concerns. Mail API standardizes only the HTTP
+  response meaning for submission failures.
 - Inbound Mail API examples are received-message data representations only;
   they do not define an SMTP receiving service or webhook endpoint.
