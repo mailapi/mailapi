@@ -8,6 +8,9 @@ Mail API is a vendor-neutral API specification for sending and receiving email.
 It defines an HTTP boundary so applications are not tied directly to a mail
 provider.
 
+Repository release: `{{ site.repository_version }}` ·
+[Source: mailapi/mailapi](https://github.com/mailapi/mailapi)
+
 ## API
 
 The current outbound endpoint is:
@@ -38,8 +41,3 @@ POST /v1/messages
 ## Transport compatibility
 
 - [SMTP](transports/smtp.html)
-
-## Source
-
-The specification and documentation are maintained in the
-[mailapi/mailapi](https://github.com/mailapi/mailapi) repository.

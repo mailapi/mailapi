@@ -3,9 +3,15 @@
 set -euo pipefail
 
 output_dir="${1:-public}"
+repository_version="${MAILAPI_REPOSITORY_VERSION:-development}"
 
 if [[ "$output_dir" == /* || "$output_dir" == "." || "$output_dir" == ".." || "$output_dir" == *".."* ]]; then
   echo "Output directory must be a safe relative path." >&2
+  exit 1
+fi
+
+if [[ ! "$repository_version" =~ ^[0-9A-Za-z._+-]+$ ]]; then
+  echo "Repository version must contain only letters, numbers, dots, underscores, plus signs, or hyphens." >&2
   exit 1
 fi
 
@@ -14,6 +20,7 @@ mkdir -p "$output_dir/frameworks" "$output_dir/languages" "$output_dir/transport
 mkdir -p "$output_dir/api/swagger-ui"
 
 cp site/_config.yml "$output_dir/_config.yml"
+printf '\nrepository_version: "%s"\n' "$repository_version" >> "$output_dir/_config.yml"
 cp site/index.md "$output_dir/index.md"
 cp site/api/index.html "$output_dir/api/index.html"
 cp site/api/swagger-ui/LICENSE "$output_dir/api/swagger-ui/LICENSE"

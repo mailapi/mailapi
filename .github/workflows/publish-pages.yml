@@ -23,6 +23,8 @@ jobs:
           ref: ${{ github.event.release.tag_name }}
 
       - name: Build documentation site
+        env:
+          MAILAPI_REPOSITORY_VERSION: ${{ github.event.release.tag_name }}
         run: hack/build-pages.sh public
 
       - name: Publish documentation site
