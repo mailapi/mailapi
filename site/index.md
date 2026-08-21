@@ -23,6 +23,21 @@ POST /v1/messages
 - [OpenAPI source (`openapi.yaml`)](openapi.yaml)
 - [Versioning policy](versioning.html)
 
+## Submission responses
+
+| Status | Meaning | Retry guidance |
+| --- | --- | --- |
+| `202` | Provider durably accepted responsibility for asynchronous processing; this does not confirm final recipient delivery. | Do not retry. |
+| `400` | Malformed JSON or invalid request syntax. | Correct the request first. |
+| `413` | Request body or attachment content exceeds a provider limit. | Reduce the request first. |
+| `415` | Unsupported request media type. | Correct the request first. |
+| `422` | Message fields are semantically invalid. | Correct the message first. |
+| `429` | Submission rate limit exceeded. | Retry after `Retry-After` when provided. |
+| `500` | Unexpected provider error. | Retry only under the caller's failure policy. |
+| `503` | Provider is temporarily unable to accept the message. | Retry after `Retry-After` when provided. |
+
+Error responses use `application/problem+json`.
+
 ## Compatibility assessments
 
 ### Frameworks

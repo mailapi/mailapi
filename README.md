@@ -37,10 +37,20 @@ A successful response returns a Mail API message identifier:
 }
 ```
 
-`202 Accepted` means the provider has durably accepted responsibility for
-asynchronous processing; it does not confirm final recipient delivery. Invalid
-requests use standard HTTP error statuses and `application/problem+json`
-responses. `429` and `503` may include `Retry-After` to guide a retry.
+## Submission responses
+
+| Status | Meaning | Retry guidance |
+| --- | --- | --- |
+| `202` | Provider durably accepted responsibility for asynchronous processing; this does not confirm final recipient delivery. | Do not retry. |
+| `400` | Malformed JSON or invalid request syntax. | Correct the request first. |
+| `413` | Request body or attachment content exceeds a provider limit. | Reduce the request first. |
+| `415` | Unsupported request media type. | Correct the request first. |
+| `422` | Message fields are semantically invalid. | Correct the message first. |
+| `429` | Submission rate limit exceeded. | Retry after `Retry-After` when provided. |
+| `500` | Unexpected provider error. | Retry only under the caller's failure policy. |
+| `503` | Provider is temporarily unable to accept the message. | Retry after `Retry-After` when provided. |
+
+Error responses use `application/problem+json`.
 
 ## Message model
 
