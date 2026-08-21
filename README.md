@@ -39,7 +39,7 @@ The core message model follows established RFC 5322/MIME concepts where practica
 
 Structured fields (`from`, `to`, `subject`, and similar) are authoritative for those concepts, while `headers` provides supplemental values including repeatable fields such as `Received`.
 
-## CMS integration compatibility
+## Application integration compatibility
 
 Mail API is designed as a provider-neutral HTTP boundary, not as a drop-in
 WordPress plugin or MediaWiki extension. Integrations need an adapter between
