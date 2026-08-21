@@ -16,10 +16,12 @@ if [[ ! "$repository_version" =~ ^[0-9A-Za-z._+-]+$ ]]; then
 fi
 
 rm -rf -- "$output_dir"
-mkdir -p "$output_dir/examples" "$output_dir/compatibility/clouds" "$output_dir/compatibility/frameworks" "$output_dir/compatibility/languages" "$output_dir/compatibility/protocols"
+mkdir -p "$output_dir/_layouts" "$output_dir/assets/css" "$output_dir/examples" "$output_dir/compatibility/clouds" "$output_dir/compatibility/frameworks" "$output_dir/compatibility/languages" "$output_dir/compatibility/protocols"
 mkdir -p "$output_dir/api/swagger-ui"
 
 cp site/_config.yml "$output_dir/_config.yml"
+cp site/_layouts/default.html "$output_dir/_layouts/default.html"
+cp site/assets/css/style.scss "$output_dir/assets/css/style.scss"
 printf '\nrepository_version: "%s"\n' "$repository_version" >> "$output_dir/_config.yml"
 cp site/index.md "$output_dir/index.md"
 cp site/api/index.html "$output_dir/api/index.html"
@@ -45,5 +47,7 @@ cp compatibility/clouds/amazon-ses.md "$output_dir/compatibility/clouds/amazon-s
 cp compatibility/clouds/gmail-api.md "$output_dir/compatibility/clouds/gmail-api.md"
 cp compatibility/clouds/azure-email.md "$output_dir/compatibility/clouds/azure-email.md"
 cp compatibility/clouds/resend.md "$output_dir/compatibility/clouds/resend.md"
+cp compatibility/protocols/imap.md "$output_dir/compatibility/protocols/imap.md"
 cp compatibility/protocols/jmap.md "$output_dir/compatibility/protocols/jmap.md"
+cp compatibility/protocols/pop.md "$output_dir/compatibility/protocols/pop.md"
 cp compatibility/protocols/smtp.md "$output_dir/compatibility/protocols/smtp.md"
