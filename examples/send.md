@@ -1,16 +1,14 @@
 # Send a message
 
-Submit an outbound message to `POST /v1/messages`. `Idempotency-Key` is
-optional, but using a client-generated value makes retries of the same payload
-safe for 24 hours.
+Submit an outbound message to `POST /v1/messages`.
 
-`Idempotency-Key` is optional; omit the header when the client does not need
-idempotent retry handling.
+To safely retry a request, clients can optionally add an `Idempotency-Key`
+header with a client-generated value. It makes retries of the same payload safe
+for 24 hours; omit it when idempotent retry handling is unnecessary.
 
 ```http
 POST https://api.example.com/v1/messages HTTP/1.1
 Content-Type: application/json
-Idempotency-Key: welcome-user/123456
 
 {
   "from": {
