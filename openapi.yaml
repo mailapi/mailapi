@@ -46,7 +46,7 @@ components:
       properties:
         name:
           type: string
-          description: Header field name (for example, Subject or Received).
+          description: Header field name (for example, Received or X-Custom-Header).
         value:
           type: string
           description: Header field value.
@@ -112,12 +112,14 @@ components:
             $ref: '#/components/schemas/Attachment'
       required:
         - from
-        - to
       additionalProperties: false
 
     OutboundMessageRequest:
       allOf:
         - $ref: '#/components/schemas/Message'
+        - type: object
+          required:
+            - to
 
     InboundMessage:
       type: object
