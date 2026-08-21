@@ -58,6 +58,12 @@ Repository releases from `v0.0.0` through `v1.x.x` use the `/v1/` API path;
 `v2.x.x` releases use `/v2/`. The OpenAPI `info.version` and GitHub tags identify
 the repository release. See the [versioning policy](docs/versioning.md).
 
+## Transports
+
+Mail API defines HTTP submission. See [SMTP transport compatibility](docs/transports/smtp.md)
+for the adapter boundary and MIME-to-API mapping when interoperating with SMTP
+systems.
+
 ## Future transports
 
 The core model is transport-agnostic. Additional transports, such as gRPC, may be defined later without changing the message model.

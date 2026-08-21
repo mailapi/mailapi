@@ -26,6 +26,10 @@ POST /v1/messages
 - [Drupal (`MailInterface`)](integrations/drupal.html)
 - [Symfony/Laravel (custom transport)](integrations/symfony-laravel.html)
 
+## Transport compatibility
+
+- [SMTP](transports/smtp.html)
+
 ## Source
 
 The specification and documentation are maintained in the
