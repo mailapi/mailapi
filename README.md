@@ -49,6 +49,8 @@ current compatibility limits:
 
 - [MediaWiki (`IEmailer`)](docs/integrations/mediawiki.md)
 - [WordPress (`wp_mail()`)](docs/integrations/wordpress.md)
+- [Drupal (`MailInterface`)](docs/integrations/drupal.md)
+- [Laravel (custom transport)](docs/integrations/laravel.md)
 
 ## Versioning
 

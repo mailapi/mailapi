@@ -23,6 +23,8 @@ POST /v1/messages
 
 - [MediaWiki (`IEmailer`)](integrations/mediawiki.html)
 - [WordPress (`wp_mail()`)](integrations/wordpress.html)
+- [Drupal (`MailInterface`)](integrations/drupal.html)
+- [Laravel (custom transport)](integrations/laravel.html)
 
 ## Source
 
