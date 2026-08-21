@@ -8,9 +8,9 @@ Applications such as MediaWiki or WordPress should be able to send and receive e
 
 This repository contains the specification only. It does not contain a mail server, provider adapters, SDKs, or application plugins.
 
-## MVP HTTP API
+## HTTP API
 
-The initial MVP defines a single outbound endpoint:
+The API defines a single outbound endpoint:
 
 `POST /v1/messages`
 
