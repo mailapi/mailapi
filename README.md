@@ -51,6 +51,11 @@ including the remaining compatibility limits:
 - [Drupal (`MailInterface`)](docs/compatibility/drupal.md)
 - [Symfony/Laravel (custom transport)](docs/compatibility/symfony-laravel.md)
 
+### Languages
+
+- [PHP](docs/compatibility/php.md)
+- [Go](docs/compatibility/go.md)
+
 ## Versioning
 
 Repository releases use manually created Git tags and GitHub Releases, including
