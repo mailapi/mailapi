@@ -57,6 +57,7 @@ including the remaining compatibility limits:
 
 - [PHP](docs/languages/php.md)
 - [Go](docs/languages/go.md)
+- [Python (`email`)](docs/languages/python.md)
 
 ## Versioning
 

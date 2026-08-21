@@ -32,6 +32,7 @@ POST /v1/messages
 
 - [PHP](languages/php.html)
 - [Go](languages/go.html)
+- [Python (`email`)](languages/python.html)
 
 ## Transport compatibility
 
