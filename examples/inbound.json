@@ -1,0 +1,34 @@
+{
+  "messageId": "msg_01HZXKJ42P6X0Q7J9ZMY1P4R8B",
+  "receivedAt": "2026-08-21T10:55:00Z",
+  "from": {
+    "email": "sender@example.net",
+    "name": "Sender Name"
+  },
+  "to": [
+    {
+      "email": "inbox@example.org",
+      "name": "Inbound Inbox"
+    }
+  ],
+  "cc": [
+    {
+      "email": "team@example.org",
+      "name": "Team"
+    }
+  ],
+  "subject": "Question about order #12345",
+  "text": "Hi, I have a question about my order.",
+  "html": "<p>Hi, I have a question about my order.</p>",
+  "headers": {
+    "Message-ID": "<abc123@example.net>",
+    "In-Reply-To": "<thread-root@example.org>"
+  },
+  "attachments": [
+    {
+      "filename": "details.txt",
+      "contentType": "text/plain",
+      "content": "T3JkZXIgZGV0YWlscy4="
+    }
+  ]
+}

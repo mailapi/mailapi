@@ -1,0 +1,119 @@
+openapi: 3.0.3
+info:
+  title: Mail API Specification
+  version: 0.1.0
+  description: Vendor-neutral API specification for sending and receiving email.
+servers:
+  - url: https://api.example.com
+paths:
+  /v1/messages:
+    post:
+      summary: Send a message
+      operationId: createMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutboundMessageRequest'
+      responses:
+        '202':
+          description: Message accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageAcceptedResponse'
+components:
+  schemas:
+    EmailAddress:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          description: Optional display name for the address.
+      additionalProperties: false
+
+    Attachment:
+      type: object
+      required:
+        - filename
+        - contentType
+        - content
+      properties:
+        filename:
+          type: string
+        contentType:
+          type: string
+          description: MIME media type for the attachment.
+        content:
+          type: string
+          format: byte
+          description: Base64-encoded attachment content.
+      additionalProperties: false
+
+    Message:
+      type: object
+      properties:
+        messageId:
+          type: string
+          description: Provider-independent message identifier.
+        receivedAt:
+          type: string
+          format: date-time
+          description: Timestamp when an inbound message was received.
+        from:
+          $ref: '#/components/schemas/EmailAddress'
+        to:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        cc:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        bcc:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        replyTo:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmailAddress'
+        subject:
+          type: string
+        text:
+          type: string
+        html:
+          type: string
+        headers:
+          type: object
+          additionalProperties:
+            type: string
+          description: RFC 5322-style header fields.
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+      required:
+        - from
+        - to
+      additionalProperties: false
+
+    OutboundMessageRequest:
+      allOf:
+        - $ref: '#/components/schemas/Message'
+
+    MessageAcceptedResponse:
+      type: object
+      required:
+        - messageId
+      properties:
+        messageId:
+          type: string
+          description: Identifier assigned to the accepted message.
+      additionalProperties: false
