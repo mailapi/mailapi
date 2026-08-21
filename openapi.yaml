@@ -38,6 +38,20 @@ components:
           description: Optional display name for the address.
       additionalProperties: false
 
+    Header:
+      type: object
+      required:
+        - name
+        - value
+      properties:
+        name:
+          type: string
+          description: Header field name (for example, Subject or Received).
+        value:
+          type: string
+          description: Header field value.
+      additionalProperties: false
+
     Attachment:
       type: object
       required:
@@ -59,17 +73,11 @@ components:
     Message:
       type: object
       properties:
-        messageId:
-          type: string
-          description: Provider-independent message identifier.
-        receivedAt:
-          type: string
-          format: date-time
-          description: Timestamp when an inbound message was received.
         from:
           $ref: '#/components/schemas/EmailAddress'
         to:
           type: array
+          minItems: 1
           items:
             $ref: '#/components/schemas/EmailAddress'
         cc:
@@ -91,10 +99,13 @@ components:
         html:
           type: string
         headers:
-          type: object
-          additionalProperties:
-            type: string
-          description: RFC 5322-style header fields.
+          type: array
+          description: >-
+            Ordered RFC 5322-style header fields. Structured fields such as
+            from, to, and subject are authoritative for those concepts; headers
+            provide supplemental values, including repeated fields.
+          items:
+            $ref: '#/components/schemas/Header'
         attachments:
           type: array
           items:
@@ -108,12 +119,30 @@ components:
       allOf:
         - $ref: '#/components/schemas/Message'
 
+    InboundMessage:
+      type: object
+      required:
+        - id
+        - receivedAt
+        - message
+      properties:
+        id:
+          type: string
+          description: Mail API identifier for the received message record.
+        receivedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the inbound message was received.
+        message:
+          $ref: '#/components/schemas/Message'
+      additionalProperties: false
+
     MessageAcceptedResponse:
       type: object
       required:
-        - messageId
+        - id
       properties:
-        messageId:
+        id:
           type: string
-          description: Identifier assigned to the accepted message.
+          description: Mail API identifier assigned to the accepted message.
       additionalProperties: false

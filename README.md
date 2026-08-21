@@ -25,17 +25,19 @@ Example request body:
 }
 ```
 
-A successful response returns a message identifier:
+A successful response returns a Mail API message identifier:
 
 ```json
 {
-  "messageId": "msg_01HZXKJ42P6X0Q7J9ZMY1P4R8B"
+  "id": "msg_01HZXKJ42P6X0Q7J9ZMY1P4R8B"
 }
 ```
 
 ## Message model
 
-The core message model follows established RFC 5322/MIME concepts where practical, including addresses, headers, body content, and attachments. The same model is used for outbound and inbound messages (see `examples/send.json` and `examples/inbound.json`).
+The core message model follows established RFC 5322/MIME concepts where practical, including addresses, body content, attachments, and ordered header fields. The same core model is used for outbound and inbound messages, with inbound metadata (`id`, `receivedAt`) provided by an `InboundMessage` wrapper (see `examples/send.json` and `examples/inbound.json`).
+
+Structured fields (`from`, `to`, `subject`, and similar) are authoritative for those concepts, while `headers` provides supplemental values including repeatable fields such as `Received`.
 
 ## Future transports
 

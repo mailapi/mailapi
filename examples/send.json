@@ -18,9 +18,12 @@
   "subject": "Welcome to Example App",
   "text": "Hello, welcome to Example App.",
   "html": "<p>Hello, welcome to <strong>Example App</strong>.</p>",
-  "headers": {
-    "X-App": "example"
-  },
+  "headers": [
+    {
+      "name": "X-App",
+      "value": "example"
+    }
+  ],
   "attachments": [
     {
       "filename": "terms.txt",
