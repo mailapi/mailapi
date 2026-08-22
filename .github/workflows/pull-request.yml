@@ -2,10 +2,6 @@ name: Pull request checks
 
 on:
   pull_request:
-  pull_request_target:
-    types:
-      - opened
-      - reopened
 
 permissions:
   contents: read
@@ -14,7 +10,7 @@ permissions:
 jobs:
   assign-author:
     name: Assign jmnote
-    if: github.event_name == 'pull_request_target'
+    if: github.event.pull_request.head.repo.full_name == github.repository && (github.event.action == 'opened' || github.event.action == 'reopened')
     runs-on: ubuntu-latest
     steps:
       - name: Assign jmnote
