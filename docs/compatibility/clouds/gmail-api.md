@@ -1,5 +1,7 @@
 ---
 title: "Gmail API compatibility"
+sidebar:
+  label: Gmail API
 ---
 
 This assessment compares Mail API with the Gmail API `users.messages.send`

@@ -1,5 +1,7 @@
 ---
 title: "JMAP compatibility"
+sidebar:
+  label: JMAP
 ---
 
 This assessment compares Mail API with the IETF JSON Meta Application Protocol

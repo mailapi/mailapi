@@ -1,5 +1,7 @@
 ---
 title: "Resend compatibility"
+sidebar:
+  label: Resend
 ---
 
 This assessment compares Mail API with Resend's Email API. An adapter converts

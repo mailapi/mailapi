@@ -1,5 +1,7 @@
 ---
 title: "POP3 compatibility"
+sidebar:
+  label: POP3
 ---
 
 Post Office Protocol version 3 (POP3) is a simple mail-access protocol for

@@ -1,5 +1,7 @@
 ---
 title: "WordPress compatibility"
+sidebar:
+  label: WordPress
 ---
 
 This assessment compares Mail API with WordPress's public `wp_mail()` sending

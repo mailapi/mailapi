@@ -1,5 +1,7 @@
 ---
 title: "Python `email` compatibility"
+sidebar:
+  label: Python email
 ---
 
 This assessment considers Mail API compatibility with Python's standard

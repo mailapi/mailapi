@@ -1,5 +1,7 @@
 ---
 title: "MediaWiki compatibility"
+sidebar:
+  label: MediaWiki
 ---
 
 This assessment compares Mail API with MediaWiki's

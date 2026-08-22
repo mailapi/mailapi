@@ -1,5 +1,7 @@
 ---
 title: "Symfony/Laravel compatibility"
+sidebar:
+  label: Symfony/Laravel
 ---
 
 This assessment uses Symfony Mailer's custom transport as the common Mail API
