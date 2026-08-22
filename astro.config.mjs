@@ -35,7 +35,24 @@ export default defineConfig({
         },
         {
           label: 'Compatibility',
-          items: [{ autogenerate: { directory: 'compatibility' } }]
+          items: [
+            {
+              label: 'Protocols',
+              items: [{ autogenerate: { directory: 'compatibility/protocols' } }]
+            },
+            {
+              label: 'Clouds',
+              items: [{ autogenerate: { directory: 'compatibility/clouds' } }]
+            },
+            {
+              label: 'Frameworks',
+              items: [{ autogenerate: { directory: 'compatibility/frameworks' } }]
+            },
+            {
+              label: 'Languages',
+              items: [{ autogenerate: { directory: 'compatibility/languages' } }]
+            }
+          ]
         },
         {
           label: 'Versioning',
