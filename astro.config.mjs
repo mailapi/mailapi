@@ -8,6 +8,9 @@ export default defineConfig({
     starlight({
       title: 'Mail API',
       description: 'Vendor-neutral API specification for sending and receiving email.',
+      components: {
+        Sidebar: './src/components/Sidebar.astro'
+      },
       social: [
         {
           icon: 'github',
