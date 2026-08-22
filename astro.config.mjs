@@ -31,17 +31,18 @@ export default defineConfig({
         ])
       ],
       sidebar: [
+        { label: 'Home', link: '/' },
         {
-          label: 'Overview',
-          items: [{ label: 'Mail API', link: '/' }]
+          label: 'Examples',
+          items: [{ autogenerate: { directory: 'examples' } }]
         },
         {
           label: 'API',
           items: openAPISidebarGroups
         },
         {
-          label: 'Examples',
-          items: [{ autogenerate: { directory: 'examples' } }]
+          label: 'Versioning',
+          link: '/versioning/'
         },
         {
           label: 'Implementations',
@@ -67,10 +68,6 @@ export default defineConfig({
               items: [{ autogenerate: { directory: 'compatibility/languages' } }]
             }
           ]
-        },
-        {
-          label: 'Versioning',
-          link: '/versioning/'
         }
       ]
     })

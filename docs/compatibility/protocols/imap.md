@@ -1,5 +1,7 @@
 ---
 title: "IMAP compatibility"
+sidebar:
+  label: IMAP
 ---
 
 IMAP4rev2 is a mail-access protocol: clients use it to access and manipulate

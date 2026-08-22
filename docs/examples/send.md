@@ -1,5 +1,7 @@
 ---
 title: "Send a message"
+sidebar:
+  order: 1
 ---
 
 Submit an outbound message to `POST /v1/messages`.
