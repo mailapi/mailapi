@@ -73,6 +73,6 @@ retrying while the matching submission is in progress returns
 
 ### Languages
 
-- [Go](/compatibility/languages/go/)
+- [Rust (`lettre`)](/compatibility/languages/rust/)
 - [PHP](/compatibility/languages/php/)
 - [Python (`email`)](/compatibility/languages/python/)

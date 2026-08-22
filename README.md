@@ -86,7 +86,7 @@ including the remaining compatibility limits:
 ### Languages
 
 - [PHP](compatibility/languages/php.md)
-- [Go](compatibility/languages/go.md)
+- [Rust (`lettre`)](compatibility/languages/rust.md)
 - [Python (`email`)](compatibility/languages/python.md)
 
 ### Cloud mail APIs
