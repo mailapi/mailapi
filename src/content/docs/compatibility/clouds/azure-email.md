@@ -2,8 +2,6 @@
 title: "Azure Communication Services Email compatibility"
 ---
 
-# Azure Communication Services Email compatibility
-
 This assessment compares Mail API with Azure Communication Services Email. An
 adapter converts an `OutboundMessageRequest` into an Azure email send request,
 then normalizes the accepted operation to a Mail API `200` response. It does

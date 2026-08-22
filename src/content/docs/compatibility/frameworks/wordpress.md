@@ -2,8 +2,6 @@
 title: "WordPress compatibility"
 ---
 
-# WordPress compatibility
-
 This assessment compares Mail API with WordPress's public `wp_mail()` sending
 contract. WordPress exposes a pluggable `wp_mail()` function and the
 `pre_wp_mail` filter can preempt sending; either could be an adapter boundary.
@@ -45,4 +43,3 @@ accepts the message; this is submission success, not recipient delivery.
 - Inbound Mail API examples do not provide a WordPress inbound-mail feature or
   callback endpoint. Authentication, retries, and delivery events remain
   deployment-specific.
-

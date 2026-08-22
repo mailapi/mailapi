@@ -2,8 +2,6 @@
 title: "Send a message"
 ---
 
-# Send a message
-
 Submit an outbound message to `POST /v1/messages`.
 
 To safely retry a request, clients can optionally add an `Idempotency-Key`

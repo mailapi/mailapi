@@ -2,8 +2,6 @@
 title: "Versioning policy"
 ---
 
-# Versioning policy
-
 Mail API has separate repository-release and API-contract versions.
 
 | Version | Source of truth | Purpose |
@@ -28,4 +26,3 @@ under `v1` and `/v1/` while the repository is pre-1.0. Breaking changes are
 permitted during that phase and must be described in the appropriate repository
 release notes. A future stable API release defines the compatibility and path
 versioning rules for subsequent breaking changes.
-

@@ -2,8 +2,6 @@
 title: "Go compatibility"
 ---
 
-# Go compatibility
-
 This assessment considers Mail API compatibility with Go applications. The API
 is a strong fit at the HTTP/JSON boundary: Go's standard
 [`net/http`](https://pkg.go.dev/net/http) package provides HTTP client support,
@@ -31,4 +29,3 @@ policies for headers, body alternatives, and attachments.
 - Do not treat a `200` response as recipient delivery confirmation.
 - Inline attachments with content IDs require an explicit policy because Mail
   API 0.1 has no equivalent field.
-

@@ -2,8 +2,6 @@
 title: "SMTP compatibility"
 ---
 
-# SMTP compatibility
-
 Mail API defines an HTTP submission endpoint; it does not define an SMTP
 endpoint. An SMTP-based application needs an adapter or relay that accepts an
 SMTP message, converts it to an `OutboundMessageRequest`, and submits it to
@@ -64,4 +62,3 @@ own transport envelope.
   response meaning for submission failures.
 - Inbound Mail API examples are received-message data representations only;
   they do not define an SMTP receiving service or webhook endpoint.
-

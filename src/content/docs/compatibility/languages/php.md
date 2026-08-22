@@ -2,8 +2,6 @@
 title: "PHP compatibility"
 ---
 
-# PHP compatibility
-
 This assessment considers Mail API compatibility with PHP applications in
 general. PHP can readily submit the API's JSON over HTTP, but the quality of
 mapping from an existing mail call depends on the mail abstraction in use.

@@ -2,8 +2,6 @@
 title: "JMAP compatibility"
 ---
 
-# JMAP compatibility
-
 This assessment compares Mail API with the IETF JSON Meta Application Protocol
 (JMAP). JMAP is a mail-store and submission protocol, not merely an outbound
 transactional-email API: it synchronizes mailboxes and messages, supports push,
@@ -42,4 +40,3 @@ and return a Mail API `200` after the server accepts the submission.
 - JMAP offers standardized inbound mailbox access and synchronization. This is
   a useful future reference for Mail API inbound and status capabilities, but
   it does not add endpoints to Mail API `v1`.
-

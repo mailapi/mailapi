@@ -2,8 +2,6 @@
 title: "POP3 compatibility"
 ---
 
-# POP3 compatibility
-
 Post Office Protocol version 3 (POP3) is a simple mail-access protocol for
 retrieving messages from a server mailbox. It is a useful comparison point for
 inbound mail, but it does not define message submission and it has no mailbox
