@@ -1,0 +1,2 @@
+# Astro writes static assets to directories such as /_astro. GitHub Pages must
+# serve them directly rather than processing the site with Jekyll.
