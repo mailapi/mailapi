@@ -2,14 +2,9 @@
 title: Mail API
 ---
 
-# Mail API
-
 Mail API is a vendor-neutral API specification for sending and receiving email.
 It defines an HTTP boundary so applications are not tied directly to a mail
 provider.
-
-Repository release: `{{ site.repository_version }}` ·
-[Source: mailapi/mailapi](https://github.com/mailapi/mailapi)
 
 ## API
 
@@ -19,9 +14,9 @@ The current outbound endpoint is:
 POST /v1/messages
 ```
 
-- [API reference (Swagger UI)](api/)
-- [OpenAPI source (`openapi.yaml`)](openapi.yaml)
-- [Versioning policy](versioning.html)
+- [API reference](/api/)
+- [OpenAPI source (`openapi.yaml`)](https://github.com/mailapi/mailapi/blob/main/openapi.yaml)
+- [Versioning policy](/versioning/)
 
 ## Submission responses
 
@@ -50,34 +45,34 @@ retrying while the matching submission is in progress returns
 
 ## Examples
 
-- [Send a message](examples/send.html)
-- [Received message](examples/received.html)
+- [Send a message](/examples/send/)
+- [Received message](/examples/received/)
 
 ## Compatibility assessments
 
 ### Cloud mail APIs
 
-- [Amazon SES](compatibility/clouds/amazon-ses.html)
-- [Azure Communication Services Email](compatibility/clouds/azure-email.html)
-- [Gmail API](compatibility/clouds/gmail-api.html)
-- [Resend](compatibility/clouds/resend.html)
+- [Amazon SES](/compatibility/clouds/amazon-ses/)
+- [Azure Communication Services Email](/compatibility/clouds/azure-email/)
+- [Gmail API](/compatibility/clouds/gmail-api/)
+- [Resend](/compatibility/clouds/resend/)
 
 ### Protocols
 
-- [IMAP](compatibility/protocols/imap.html)
-- [JMAP](compatibility/protocols/jmap.html)
-- [POP3](compatibility/protocols/pop.html)
-- [SMTP](compatibility/protocols/smtp.html)
+- [IMAP](/compatibility/protocols/imap/)
+- [JMAP](/compatibility/protocols/jmap/)
+- [POP3](/compatibility/protocols/pop/)
+- [SMTP](/compatibility/protocols/smtp/)
 
 ### Frameworks
 
-- [Drupal (`MailInterface`)](compatibility/frameworks/drupal.html)
-- [MediaWiki (`IEmailer`)](compatibility/frameworks/mediawiki.html)
-- [Symfony/Laravel (custom transport)](compatibility/frameworks/symfony-laravel.html)
-- [WordPress (`wp_mail()`)](compatibility/frameworks/wordpress.html)
+- [Drupal (`MailInterface`)](/compatibility/frameworks/drupal/)
+- [MediaWiki (`IEmailer`)](/compatibility/frameworks/mediawiki/)
+- [Symfony/Laravel (custom transport)](/compatibility/frameworks/symfony-laravel/)
+- [WordPress (`wp_mail()`)](/compatibility/frameworks/wordpress/)
 
 ### Languages
 
-- [Go](compatibility/languages/go.html)
-- [PHP](compatibility/languages/php.html)
-- [Python (`email`)](compatibility/languages/python.html)
+- [Go](/compatibility/languages/go/)
+- [PHP](/compatibility/languages/php/)
+- [Python (`email`)](/compatibility/languages/python/)
