@@ -69,6 +69,13 @@ The core message model follows established RFC 5322/MIME concepts where practica
 
 Structured fields (`from`, `to`, `subject`, and similar) are authoritative for those concepts, while `headers` provides supplemental values including repeatable fields such as `Received`.
 
+## Implementations
+
+- [MailAPI MediaWiki Extension](https://github.com/mailapi/mediawiki-extension-MailAPI)
+  routes MediaWiki mail through a Mail API service.
+- [Resend Mailer](https://github.com/mailapi/resend-mailer) implements the Mail
+  API message-sending endpoint using Resend.
+
 ## Compatibility assessments
 
 Mail API is designed as a provider-neutral HTTP boundary, not as a drop-in

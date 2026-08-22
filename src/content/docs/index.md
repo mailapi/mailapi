@@ -48,6 +48,11 @@ retrying while the matching submission is in progress returns
 - [Send a message](/examples/send/)
 - [Received message](/examples/received/)
 
+## Implementations
+
+- [MediaWiki Extension](/implementations/#mediawiki-extension)
+- [Resend Mailer](/implementations/#resend-mailer)
+
 ## Compatibility assessments
 
 ### Cloud mail APIs

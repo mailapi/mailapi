@@ -41,6 +41,10 @@ export default defineConfig({
           items: [{ autogenerate: { directory: 'examples' } }]
         },
         {
+          label: 'Implementations',
+          link: '/implementations/'
+        },
+        {
           label: 'Compatibility',
           items: [
             {
