@@ -44,6 +44,10 @@ export default defineConfig({
           items: openAPISidebarGroups
         },
         {
+          label: 'Versioning',
+          link: '/versioning/'
+        },
+        {
           label: 'Implementations',
           items: [{ autogenerate: { directory: 'implementations' } }]
         },
@@ -67,10 +71,6 @@ export default defineConfig({
               items: [{ autogenerate: { directory: 'compatibility/languages' } }]
             }
           ]
-        },
-        {
-          label: 'Versioning',
-          link: '/versioning/'
         }
       ]
     })
