@@ -43,11 +43,7 @@ export default defineConfig({
         },
         {
           label: 'API',
-          items: openAPISidebarGroups
-        },
-        {
-          label: 'Versioning',
-          link: '/versioning/'
+          items: [...openAPISidebarGroups, { label: 'Versioning', link: '/versioning/' }]
         },
         {
           label: 'Implementations',
