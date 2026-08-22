@@ -1,5 +1,8 @@
 ---
 title: Mail API
+head:
+  - tag: title
+    content: Mail API
 ---
 
 Mail API is a vendor-neutral API specification for sending and receiving email.
