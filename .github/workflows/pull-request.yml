@@ -13,13 +13,14 @@ permissions:
 
 jobs:
   assign-author:
-    name: Assign jmnote
+    name: Auto assign
     if: github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
     steps:
       - name: Assign jmnote
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.PR_ASSIGN_TOKEN }}
           script: |
             await github.rest.issues.addAssignees({
               owner: context.repo.owner,
