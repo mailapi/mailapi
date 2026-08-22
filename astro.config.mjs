@@ -8,6 +8,11 @@ export default defineConfig({
     starlight({
       title: 'Mail API',
       description: 'Vendor-neutral API specification for sending and receiving email.',
+      favicon: '/mailapi-logo.png',
+      logo: {
+        src: './public/mailapi-logo.png',
+        alt: 'Mail API logo'
+      },
       components: {
         Sidebar: './src/components/Sidebar.astro'
       },
