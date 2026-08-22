@@ -36,12 +36,12 @@ export default defineConfig({
           items: [{ label: 'Mail API', link: '/' }]
         },
         {
-          label: 'API',
-          items: openAPISidebarGroups
-        },
-        {
           label: 'Examples',
           items: [{ autogenerate: { directory: 'examples' } }]
+        },
+        {
+          label: 'API',
+          items: openAPISidebarGroups
         },
         {
           label: 'Implementations',
