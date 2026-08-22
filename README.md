@@ -14,7 +14,7 @@ The API defines a single outbound endpoint:
 
 `POST /v1/messages`
 
-The latest released [API reference (Swagger UI)](https://mailapi.github.io/api/)
+The latest released [API reference](https://mailapi.github.io/api/)
 renders the OpenAPI specification. The source specification is
 [`openapi.yaml`](openapi.yaml).
 
