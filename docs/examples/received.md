@@ -1,5 +1,7 @@
 ---
 title: "Received message"
+sidebar:
+  order: 2
 ---
 
 An inbound message is represented by an `InboundMessage` wrapper. It adds the
