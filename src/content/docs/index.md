@@ -50,8 +50,8 @@ retrying while the matching submission is in progress returns
 
 ## Implementations
 
-- [MediaWiki Extension](/implementations/#mediawiki-extension)
-- [Resend Mailer](/implementations/#resend-mailer)
+- [MediaWiki Extension](/implementations/mediawiki-extension/)
+- [Resend Mailer](/implementations/resend-mailer/)
 
 ## Compatibility assessments
 

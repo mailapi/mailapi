@@ -42,7 +42,7 @@ export default defineConfig({
         },
         {
           label: 'Implementations',
-          link: '/implementations/'
+          items: [{ autogenerate: { directory: 'implementations' } }]
         },
         {
           label: 'Compatibility',

@@ -61,17 +61,17 @@ and object-member ordering are significant. Reusing a key with a different body
 returns problem type `https://api.example.com/problems/idempotency-key-reused`;
 retrying while the matching submission is in progress returns
 `https://api.example.com/problems/idempotency-key-in-progress`. See [the
-complete HTTP request example](examples/send.md).
+complete HTTP request example](https://mailapi.github.io/examples/send/).
 
 ## Message model
 
-The core message model follows established RFC 5322/MIME concepts where practical, including addresses, body content, attachments, and ordered header fields. The same core model is used for outbound and inbound messages, with inbound metadata (`id`, `receivedAt`) provided by an `InboundMessage` wrapper. See the [outbound](examples/send.md) and [inbound](examples/received.md) examples.
+The core message model follows established RFC 5322/MIME concepts where practical, including addresses, body content, attachments, and ordered header fields. The same core model is used for outbound and inbound messages, with inbound metadata (`id`, `receivedAt`) provided by an `InboundMessage` wrapper. See the [outbound](https://mailapi.github.io/examples/send/) and [inbound](https://mailapi.github.io/examples/received/) examples.
 
 Structured fields (`from`, `to`, `subject`, and similar) are authoritative for those concepts, while `headers` provides supplemental values including repeatable fields such as `Received`.
 
 ## Implementations
 
-- [MailAPI MediaWiki Extension](https://github.com/mailapi/mediawiki-extension-MailAPI)
+- [MailAPI MediaWiki Extension](https://github.com/mailapi/mediawiki-extensions-MailAPI)
   routes MediaWiki mail through a Mail API service.
 - [Resend Mailer](https://github.com/mailapi/resend-mailer) implements the Mail
   API message-sending endpoint using Resend.
@@ -85,44 +85,44 @@ including the remaining compatibility limits:
 
 ### Frameworks
 
-- [MediaWiki (`IEmailer`)](compatibility/frameworks/mediawiki.md)
-- [WordPress (`wp_mail()`)](compatibility/frameworks/wordpress.md)
-- [Drupal (`MailInterface`)](compatibility/frameworks/drupal.md)
-- [Symfony/Laravel (custom transport)](compatibility/frameworks/symfony-laravel.md)
+- [MediaWiki (`IEmailer`)](https://mailapi.github.io/compatibility/frameworks/mediawiki/)
+- [WordPress (`wp_mail()`)](https://mailapi.github.io/compatibility/frameworks/wordpress/)
+- [Drupal (`MailInterface`)](https://mailapi.github.io/compatibility/frameworks/drupal/)
+- [Symfony/Laravel (custom transport)](https://mailapi.github.io/compatibility/frameworks/symfony-laravel/)
 
 ### Languages
 
-- [PHP](compatibility/languages/php.md)
-- [Rust (`lettre`)](compatibility/languages/rust.md)
-- [Python (`email`)](compatibility/languages/python.md)
+- [PHP](https://mailapi.github.io/compatibility/languages/php/)
+- [Rust (`lettre`)](https://mailapi.github.io/compatibility/languages/rust/)
+- [Python (`email`)](https://mailapi.github.io/compatibility/languages/python/)
 
 ### Cloud mail APIs
 
-- [Amazon SES](compatibility/clouds/amazon-ses.md)
-- [Gmail API](compatibility/clouds/gmail-api.md)
-- [Azure Communication Services Email](compatibility/clouds/azure-email.md)
-- [Resend](compatibility/clouds/resend.md)
+- [Amazon SES](https://mailapi.github.io/compatibility/clouds/amazon-ses/)
+- [Gmail API](https://mailapi.github.io/compatibility/clouds/gmail-api/)
+- [Azure Communication Services Email](https://mailapi.github.io/compatibility/clouds/azure-email/)
+- [Resend](https://mailapi.github.io/compatibility/clouds/resend/)
 
 ### Protocols
 
-- [IMAP](compatibility/protocols/imap.md)
-- [JMAP](compatibility/protocols/jmap.md)
-- [POP3](compatibility/protocols/pop.md)
+- [IMAP](https://mailapi.github.io/compatibility/protocols/imap/)
+- [JMAP](https://mailapi.github.io/compatibility/protocols/jmap/)
+- [POP3](https://mailapi.github.io/compatibility/protocols/pop/)
 
 ## Versioning
 
 Repository releases use manually created Git tags and GitHub Releases, including
 documentation-only releases. `openapi.yaml` `info.version` changes only when
 the API contract changes. The current `v1` contract uses the `/v1/` API path. See the
-[versioning policy](compatibility/versioning.md).
+[versioning policy](https://mailapi.github.io/versioning/).
 
 ## Protocols
 
-Mail API defines HTTP submission. See [SMTP compatibility](compatibility/protocols/smtp.md)
+Mail API defines HTTP submission. See [SMTP compatibility](https://mailapi.github.io/compatibility/protocols/smtp/)
 for the adapter boundary and MIME-to-API mapping when interoperating with SMTP
-systems. [IMAP compatibility](compatibility/protocols/imap.md) explains the
+systems. [IMAP compatibility](https://mailapi.github.io/compatibility/protocols/imap/) explains the
 separate mailbox-access and inbound-retrieval boundary; [POP3
-compatibility](compatibility/protocols/pop.md) covers simple maildrop
+compatibility](https://mailapi.github.io/compatibility/protocols/pop/) covers simple maildrop
 retrieval.
 
 ## Future transports
