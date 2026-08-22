@@ -1,0 +1,52 @@
+---
+import MobileMenuFooter from 'virtual:starlight/components/MobileMenuFooter';
+import SidebarPersister from '@astrojs/starlight/components/SidebarPersister.astro';
+import SidebarSublist from '@astrojs/starlight/components/SidebarSublist.astro';
+
+const { sidebar } = Astro.locals.starlightRoute;
+const version = import.meta.env.PUBLIC_MAILAPI_VERSION ?? 'Unreleased';
+---
+
+<div class="sidebar-navigation">
+	<SidebarPersister>
+		<SidebarSublist sublist={sidebar} />
+	</SidebarPersister>
+</div>
+
+<footer class="documentation-version">
+	<a href={`https://github.com/mailapi/mailapi/releases/tag/${version}`}>
+		Documentation: {version}
+	</a>
+</footer>
+
+<div class="md:sl-hidden">
+	<MobileMenuFooter />
+</div>
+
+<style>
+	@layer starlight.core {
+		.sidebar-navigation {
+			flex: 1;
+			min-height: 0;
+			overflow-y: auto;
+		}
+
+		.documentation-version {
+			margin-top: auto;
+			border-top: 1px solid var(--sl-color-hairline-light);
+			padding: 0.75rem 0.5rem 1rem;
+			font-size: var(--sl-text-sm);
+		}
+
+		.documentation-version a {
+			color: var(--sl-color-gray-3);
+			text-decoration: none;
+		}
+
+		.documentation-version a:hover,
+		.documentation-version a:focus {
+			color: var(--sl-color-white);
+			text-decoration: underline;
+		}
+	}
+</style>

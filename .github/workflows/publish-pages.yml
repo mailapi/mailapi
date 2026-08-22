@@ -32,6 +32,8 @@ jobs:
         run: npm ci
 
       - name: Build documentation site
+        env:
+          PUBLIC_MAILAPI_VERSION: ${{ github.event.release.tag_name }}
         run: npm run build
 
       - name: Publish documentation site
