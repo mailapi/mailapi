@@ -31,10 +31,7 @@ export default defineConfig({
         ])
       ],
       sidebar: [
-        {
-          label: 'Overview',
-          items: [{ label: 'Mail API', link: '/' }]
-        },
+        { label: 'Home', link: '/' },
         {
           label: 'Examples',
           items: [{ autogenerate: { directory: 'examples' } }]
