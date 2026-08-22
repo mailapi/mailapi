@@ -8,6 +8,13 @@ export default defineConfig({
     starlight({
       title: 'Mail API',
       description: 'Vendor-neutral API specification for sending and receiving email.',
+      social: [
+        {
+          icon: 'github',
+          label: 'GitHub',
+          href: 'https://github.com/mailapi/mailapi'
+        }
+      ],
       plugins: [
         starlightOpenAPI([
           {
