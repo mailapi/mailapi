@@ -80,5 +80,5 @@ Content-Type: application/problem+json
 }
 ```
 
-See the [submission response table](../index.html#submission-responses) for the
+See the [submission response table](/#submission-responses) for the
 other success and failure status codes.

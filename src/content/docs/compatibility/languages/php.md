@@ -30,7 +30,6 @@ they do not expose a complete structured message model.
 - PHP applications using Symfony Mailer have a substantially stronger match:
   its composed message and custom transport boundary retain structured
   recipients, both body types, and attachments. See the
-  [Symfony/Laravel compatibility assessment](symfony-laravel.md).
+  [Symfony/Laravel compatibility assessment](/compatibility/frameworks/symfony-laravel/).
 - Inline attachments with content IDs remain a Mail API `v1` gap regardless of
   the PHP mail library.
-
