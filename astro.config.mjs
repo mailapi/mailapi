@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-import starlightOpenAPI, { openAPISidebarGroups } from 'starlight-openapi';
+import starlightOpenAPI from 'starlight-openapi';
 
 export default defineConfig({
   site: 'https://mailapi.github.io',
@@ -27,11 +27,7 @@ export default defineConfig({
         starlightOpenAPI([
           {
             base: 'api',
-            schema: './openapi.yaml',
-            sidebar: {
-              label: 'Reference',
-              collapsed: false
-            }
+            schema: './openapi.yaml'
           }
         ])
       ],
@@ -43,7 +39,11 @@ export default defineConfig({
         },
         {
           label: 'API',
-          items: [...openAPISidebarGroups, { label: 'Versioning', link: '/versioning/' }]
+          items: [
+            { label: 'Specification', link: '/api/' },
+            { label: 'Send a message', link: '/api/operations/createmessage/' },
+            { label: 'Versioning', link: '/versioning/' }
+          ]
         },
         {
           label: 'Implementations',
