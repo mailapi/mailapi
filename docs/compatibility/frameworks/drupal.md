@@ -1,5 +1,7 @@
 ---
 title: "Drupal compatibility"
+sidebar:
+  label: Drupal
 ---
 
 This assessment compares Mail API with Drupal's pluggable

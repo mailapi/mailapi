@@ -1,5 +1,7 @@
 ---
 title: "Azure Communication Services Email compatibility"
+sidebar:
+  label: Azure Communication Services Email
 ---
 
 This assessment compares Mail API with Azure Communication Services Email. An

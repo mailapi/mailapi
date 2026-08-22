@@ -1,5 +1,7 @@
 ---
 title: "SMTP compatibility"
+sidebar:
+  label: SMTP
 ---
 
 Mail API defines an HTTP submission endpoint; it does not define an SMTP

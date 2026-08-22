@@ -1,5 +1,7 @@
 ---
 title: "Amazon SES compatibility"
+sidebar:
+  label: Amazon SES
 ---
 
 This assessment compares Mail API with Amazon Simple Email Service (SES) API
