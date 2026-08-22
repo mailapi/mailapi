@@ -3,6 +3,7 @@ import starlight from '@astrojs/starlight';
 import starlightOpenAPI, { openAPISidebarGroups } from 'starlight-openapi';
 
 export default defineConfig({
+  site: 'https://mailapi.github.io',
   integrations: [
     starlight({
       title: 'Mail API',
