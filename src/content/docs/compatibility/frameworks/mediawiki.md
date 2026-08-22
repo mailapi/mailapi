@@ -2,8 +2,6 @@
 title: "MediaWiki compatibility"
 ---
 
-# MediaWiki compatibility
-
 This assessment compares Mail API with MediaWiki's
 `MediaWiki\\Mail\\IEmailer` interface. `IEmailer::send()` is the relevant
 outgoing-mail abstraction; it accepts recipients, a sender, subject, text and
@@ -63,4 +61,3 @@ failed `StatusValue`.
 - Authentication, delivery events, submission-status lookup, and attachment-size
   limits are not specified by Mail API `v1` and remain
   deployment-specific.
-

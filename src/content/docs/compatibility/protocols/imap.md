@@ -2,8 +2,6 @@
 title: "IMAP compatibility"
 ---
 
-# IMAP compatibility
-
 IMAP4rev2 is a mail-access protocol: clients use it to access and manipulate
 messages and mailboxes on a server. It is an essential comparison point for
 inbound mail, but it is not a message-submission protocol. IMAP4rev2 explicitly

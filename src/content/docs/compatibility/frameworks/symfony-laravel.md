@@ -2,8 +2,6 @@
 title: "Symfony/Laravel compatibility"
 ---
 
-# Symfony/Laravel compatibility
-
 This assessment uses Symfony Mailer's custom transport as the common Mail API
 compatibility boundary. A potential transport would convert the fully composed
 Symfony message into an `OutboundMessageRequest` and submit it to
@@ -51,4 +49,3 @@ See Laravel's [custom transports documentation](https://laravel.com/docs/12.x/ma
   feature or callback endpoint.
 - Authentication, retries, delivery events, and attachment-size limits remain
   deployment-specific.
-

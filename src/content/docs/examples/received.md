@@ -2,8 +2,6 @@
 title: "Received message"
 ---
 
-# Received message
-
 An inbound message is represented by an `InboundMessage` wrapper. It adds the
 Mail API record ID and receipt timestamp around the same core message model
 used for outbound submission. Mail API `v1` does not yet define an inbound
@@ -61,4 +59,3 @@ Content-Type: application/json
   }
 }
 ```
-

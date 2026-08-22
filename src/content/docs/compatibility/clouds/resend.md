@@ -2,8 +2,6 @@
 title: "Resend compatibility"
 ---
 
-# Resend compatibility
-
 This assessment compares Mail API with Resend's Email API. An adapter converts
 an `OutboundMessageRequest` to Resend `POST /emails`, then normalizes a
 successful Resend response to Mail API's `200` response. It does not require a

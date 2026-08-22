@@ -2,8 +2,6 @@
 title: "Python `email` compatibility"
 ---
 
-# Python `email` compatibility
-
 This assessment considers Mail API compatibility with Python's standard
 library [`email`](https://docs.python.org/3/library/email.html) package.
 `email` provides an RFC-oriented message and MIME object model; it deliberately
@@ -33,4 +31,3 @@ the Mail API message model, while HTTP submission remains a separate concern.
   They require a documented transformation or rejection policy.
 - A `200` response confirms API submission acceptance only; it does not
   confirm recipient delivery.
-

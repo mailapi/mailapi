@@ -2,8 +2,6 @@
 title: "Drupal compatibility"
 ---
 
-# Drupal compatibility
-
 This assessment compares Mail API with Drupal's pluggable
 `Drupal\Core\Mail\MailInterface` mail back-end. A potential Mail API module
 would receive the composed Drupal message in `mail(array $message)` and submit
@@ -41,4 +39,3 @@ Drupal has constructed the message. This keeps module-specific templates and
 - Inbound Mail API examples do not provide a Drupal inbound-mail feature or
   callback endpoint. Authentication, retries, delivery events, and attachment
   limits remain deployment-specific.
-

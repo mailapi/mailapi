@@ -2,8 +2,6 @@
 title: "Amazon SES compatibility"
 ---
 
-# Amazon SES compatibility
-
 This assessment compares Mail API with Amazon Simple Email Service (SES) API
 v2. An adapter receives an `OutboundMessageRequest`, calls SES `SendEmail`, and
 normalizes an accepted SES response to Mail API's `200` response. It is an
