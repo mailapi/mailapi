@@ -49,7 +49,7 @@ jobs:
           git clone --depth 1 \
             "https://x-access-token:${PAGES_REPO_TOKEN}@github.com/mailapi/mailapi.github.io.git" \
             pages-repository
-          rsync --archive --delete --exclude .git dist/ pages-repository/
+          rsync --archive --checksum --delete --exclude .git dist/ pages-repository/
 
           cd pages-repository
           git config user.name "github-actions[bot]"
