@@ -2,27 +2,81 @@ openapi: 3.0.3
 info:
   title: Mail API Specification
   version: v1
-  description: Vendor-neutral API specification for sending and receiving email.
+  description: >-
+    Vendor-neutral API specification for sending and receiving email.
+
+
+    Mail API defines the HTTP submission boundary only. Credential issuance,
+    rotation, transport hardening, provider quotas, and delivery
+    infrastructure are deployment concerns; this specification defines the
+    request and response contract a conformant provider exposes to a client.
+  license:
+    name: Apache-2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  contact:
+    name: Mail API
+    url: https://github.com/mailapi/mailapi
+externalDocs:
+  description: Mail API documentation
+  url: https://mailapi.github.io/
 servers:
   - url: https://api.example.com
+    description: >-
+      Placeholder provider origin. A provider publishes its own origin; only
+      the `/v1/` path prefix is part of this specification.
+tags:
+  - name: Messages
+    description: Outbound message submission.
+security:
+  - bearerAuth: []
 paths:
   /v1/messages:
     post:
+      tags:
+        - Messages
       summary: Send a message
       operationId: createMessage
+      description: >-
+        Submits an outbound message for asynchronous processing. A `200`
+        response means the provider durably accepted responsibility for the
+        message; it does not confirm delivery to any recipient.
       parameters:
         - name: Idempotency-Key
           in: header
           required: false
           description: >-
-            Client-generated key that makes a message submission idempotent for
-            24 hours. Reusing a key requires byte-for-byte identical UTF-8
-            request-body content; JSON whitespace and object-member ordering
-            are significant.
+            Client-generated key that makes submission execution idempotent for
+            24 hours. The key namespace is scoped to the authenticated principal
+            and this operation; one principal cannot collide with or replay
+            another principal's key.
+
+
+            Authentication, authorization, media-type and size checks, JSON
+            parsing, message validation, and rate-limit admission happen before
+            the key is reserved. Responses from those checks (`400`, `401`,
+            `403`, `413`, `415`, `422`, and `429`) are not stored and may be
+            corrected and retried with the same key.
+
+
+            After those checks pass, the provider atomically associates the key
+            with the byte-for-byte UTF-8 request body. JSON whitespace and
+            object-member ordering are significant. A different body or an
+            execution still in progress returns `409`. Once execution produces
+            a terminal `200` or `500` outcome, the provider stores its status
+            and body for the remainder of the retention period. A matching
+            retry replays that response with `Idempotency-Replayed: true` rather
+            than executing again. A `503` means execution did not begin and is
+            not stored. After 24 hours the association is forgotten and the key
+            can start a new submission.
+
+
+            The key is transmitted as an HTTP field value, so it is restricted
+            to visible ASCII characters.
           schema:
             type: string
             minLength: 1
             maxLength: 256
+            pattern: '^[\x21-\x7E]+$'
           example: welcome-user/123456
       requestBody:
         required: true
@@ -34,7 +88,13 @@ paths:
         '200':
           description: >-
             Message accepted for asynchronous processing. This does not confirm
-            final recipient delivery.
+            final recipient delivery. The submission request itself is complete;
+            `200` rather than `202` is a deliberate contract choice, because
+            this API defines no delivery-status resource to return to. See
+            https://mailapi.github.io/concepts/rationale/.
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
           content:
             application/json:
               schema:
@@ -45,26 +105,47 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        '413':
-          description: Request body or attachment content exceeds a provider limit.
+              example:
+                type: https://mailapi.github.io/problems/malformed-request
+                title: Malformed request
+                status: 400
+                detail: The request body is not valid JSON.
+        '401':
+          description: >-
+            Authentication credentials are missing, malformed, or invalid.
+          headers:
+            WWW-Authenticate:
+              description: Challenge describing the authentication scheme the provider expects.
+              schema:
+                type: string
+              example: Bearer realm="mailapi"
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
-        '415':
-          description: Unsupported request media type.
+              example:
+                type: https://mailapi.github.io/problems/unauthenticated
+                title: Unauthenticated
+                status: 401
+                detail: The request did not include valid credentials.
+        '403':
+          description: >-
+            Credentials are valid but not authorized for this submission, for
+            example when the authenticated principal may not send as the
+            requested `from` identity.
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+              example:
+                type: https://mailapi.github.io/problems/forbidden
+                title: Forbidden
+                status: 403
+                detail: This principal is not authorized to send as noreply@example.org.
         '409':
           description: >-
             Idempotency key conflicts with a different request payload, or an
-            identical submission using that key is still in progress. The
-            problem type is `https://api.example.com/problems/idempotency-key-reused`
-            for a different payload and
-            `https://api.example.com/problems/idempotency-key-in-progress` for
-            an identical submission still in progress.
+            identical submission using that key is still in progress.
           content:
             application/problem+json:
               schema:
@@ -73,55 +154,137 @@ paths:
                 keyReused:
                   summary: The key was reused with a different payload.
                   value:
-                    type: https://api.example.com/problems/idempotency-key-reused
+                    type: https://mailapi.github.io/problems/idempotency-key-reused
                     title: Idempotency key reused
                     status: 409
                     detail: This key was already used with a different request body.
                 submissionInProgress:
                   summary: The matching submission is still in progress.
                   value:
-                    type: https://api.example.com/problems/idempotency-key-in-progress
+                    type: https://mailapi.github.io/problems/idempotency-key-in-progress
                     title: Idempotent submission in progress
                     status: 409
                     detail: Retry the request with the same key later.
+        '413':
+          description: Request body or attachment content exceeds a provider limit.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+              example:
+                type: https://mailapi.github.io/problems/payload-too-large
+                title: Payload too large
+                status: 413
+                detail: The request body exceeds the provider submission limit.
+        '415':
+          description: Unsupported request media type.
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+              example:
+                type: https://mailapi.github.io/problems/unsupported-media-type
+                title: Unsupported media type
+                status: 415
+                detail: Send the request body as application/json.
         '422':
           description: Message fields are syntactically valid but semantically invalid.
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+              example:
+                type: https://mailapi.github.io/problems/invalid-message
+                title: Message fields are invalid
+                status: 422
+                detail: At least one recipient address is invalid.
         '429':
           description: Submission rate limit exceeded. The request may be retried.
           headers:
             Retry-After:
-              description: Time to wait before retrying the request.
-              schema:
-                type: string
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+              example:
+                type: https://mailapi.github.io/problems/rate-limit-exceeded
+                title: Rate limit exceeded
+                status: 429
+                detail: Too many submissions. Retry after the indicated delay.
         '500':
           description: >-
             Unexpected provider error. The submission outcome may be unknown;
-            without an Idempotency-Key, a retry can create a duplicate and
-            requires a caller retry policy.
+            without an Idempotency-Key, a retry can create a duplicate. With an
+            Idempotency-Key, this terminal response is stored and a matching
+            retry replays it rather than executing another submission.
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+              example:
+                type: https://mailapi.github.io/problems/provider-error
+                title: Provider error
+                status: 500
+                detail: The submission outcome is unknown.
         '503':
-          description: Provider is temporarily unable to accept the message. The request may be retried.
+          description: >-
+            Provider is temporarily unable to accept the message. Submission
+            execution did not begin, so an Idempotency-Key is not retained and
+            the same request and key may be retried.
           headers:
             Retry-After:
-              description: Time to wait before retrying the request.
-              schema:
-                type: string
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/Problem'
+              example:
+                type: https://mailapi.github.io/problems/provider-unavailable
+                title: Provider unavailable
+                status: 503
+                detail: The provider did not accept the message. Retry later.
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        Default Mail API authentication: a provider-issued bearer token sent in
+        the `Authorization` header. A provider MAY document an equivalent
+        scheme instead, but it MUST use the `401` and `403` contract defined by
+        this specification. Credential issuance, scoping, and rotation are
+        deployment concerns.
+
+  headers:
+    RetryAfter:
+      description: >-
+        Delay before retrying, as defined by RFC 9110: either a non-negative
+        number of seconds or an HTTP-date.
+      required: false
+      schema:
+        type: string
+      examples:
+        delaySeconds:
+          summary: Delay in seconds.
+          value: '30'
+        httpDate:
+          summary: Absolute retry time.
+          value: Fri, 21 Aug 2026 10:55:00 GMT
+
+    IdempotencyReplayed:
+      description: >-
+        Present with the value `true` when the response was replayed from a
+        previous submission that used the same `Idempotency-Key`. Absent for a
+        newly processed submission.
+      required: false
+      schema:
+        type: boolean
+      example: true
+
   schemas:
     EmailAddress:
       type: object
@@ -144,10 +307,17 @@ components:
       properties:
         name:
           type: string
-          description: Header field name (for example, Received or X-Custom-Header).
+          minLength: 1
+          pattern: '^[\x21-\x39\x3B-\x7E]+$'
+          description: >-
+            RFC 5322 field name (printable ASCII excluding colon), for example
+            Received or X-Custom-Header.
         value:
           type: string
-          description: Header field value.
+          pattern: '^[^\r\n]*$'
+          description: >-
+            Unfolded header field value. Carriage return and line feed are not
+            permitted.
       additionalProperties: false
 
     Attachment:
@@ -168,8 +338,25 @@ components:
           description: Base64-encoded attachment content.
       additionalProperties: false
 
+    Extensions:
+      type: object
+      description: >-
+        Provider-specific extension members. Mail API defines no extension
+        name. A provider must document every name it accepts, must not require
+        one for a conformant submission, and must ignore rather than reject
+        names it does not recognize. Keeping extensions in one container lets
+        the rest of the message model stay strictly validated.
+      additionalProperties: true
+      example:
+        vendorTags:
+          - welcome-series
+
     Message:
       type: object
+      description: >-
+        Core message model shared by outbound submission and inbound
+        representation. Structured fields are authoritative for the concepts
+        they name.
       properties:
         from:
           $ref: '#/components/schemas/EmailAddress'
@@ -180,10 +367,12 @@ components:
             $ref: '#/components/schemas/EmailAddress'
         cc:
           type: array
+          minItems: 1
           items:
             $ref: '#/components/schemas/EmailAddress'
         bcc:
           type: array
+          minItems: 1
           items:
             $ref: '#/components/schemas/EmailAddress'
         replyTo:
@@ -208,19 +397,49 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Attachment'
+        extensions:
+          $ref: '#/components/schemas/Extensions'
       required:
         - from
       additionalProperties: false
 
     OutboundMessageRequest:
+      description: >-
+        A submission additionally requires at least one recipient across `to`,
+        `cc`, and `bcc`, and at least one body representation. Entries in
+        `headers` are supplemental: names represented by structured fields
+        (`From`, `To`, `Cc`, `Bcc`, `Reply-To`, and `Subject`) and MIME framing
+        fields (`Content-Type`, `Content-Transfer-Encoding`, and `MIME-Version`)
+        are invalid in an outbound request and produce `422` rather than
+        overriding the structured message.
       allOf:
         - $ref: '#/components/schemas/Message'
-        - type: object
-          required:
-            - to
+        - anyOf:
+            - type: object
+              required:
+                - to
+            - type: object
+              required:
+                - cc
+            - type: object
+              required:
+                - bcc
+        - anyOf:
+            - type: object
+              required:
+                - text
+            - type: object
+              required:
+                - html
 
     InboundMessage:
       type: object
+      description: >-
+        Representation of a received message. Mail API v1 defines no inbound
+        retrieval, mailbox, or webhook operation, so no v1 operation returns
+        this schema; it is specified so that host-defined and future endpoints
+        share one inbound shape. See
+        https://mailapi.github.io/examples/received/.
       required:
         - id
         - receivedAt
@@ -249,7 +468,13 @@ components:
 
     Problem:
       type: object
-      description: RFC 9457 problem details for an unsuccessful request.
+      description: >-
+        RFC 9457 problem details for an unsuccessful request. The `type` values
+        listed at https://mailapi.github.io/problems/ are stable, specification-owned
+        identifiers; a conformant provider uses them unchanged so that clients
+        can match a condition across providers. A provider may define
+        additional `type` values under its own namespace for conditions this
+        specification does not name.
       required:
         - type
         - title
@@ -264,6 +489,9 @@ components:
           description: Short, human-readable summary of the problem type.
         status:
           type: integer
+          format: int32
+          minimum: 100
+          maximum: 599
           description: HTTP status code generated by the origin server.
         detail:
           type: string

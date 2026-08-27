@@ -1,7 +1,7 @@
 ---
 title: "PHP compatibility"
 sidebar:
-  label: PHP
+  label: PHP mail()
 ---
 
 This assessment considers Mail API compatibility with PHP applications in
@@ -30,6 +30,6 @@ they do not expose a complete structured message model.
 - PHP applications using Symfony Mailer have a substantially stronger match:
   its composed message and custom transport boundary retain structured
   recipients, both body types, and attachments. See the
-  [Symfony/Laravel compatibility assessment](/compatibility/frameworks/symfony-laravel/).
+  [Symfony Mailer compatibility assessment](/compatibility/libraries/symfony-mailer/).
 - Inline attachments with content IDs remain a Mail API `v1` gap regardless of
   the PHP mail library.

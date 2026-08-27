@@ -43,5 +43,6 @@ accepts the message; this is submission success, not recipient delivery.
 - A `true` return from `wp_mail()` and a `200` response from Mail API both mean
   the mail was accepted for processing, not that it reached a recipient.
 - Inbound Mail API examples do not provide a WordPress inbound-mail feature or
-  callback endpoint. Authentication, retries, and delivery events remain
-  deployment-specific.
+  callback endpoint. Credential issuance and rotation, retries, and delivery
+  events remain deployment-specific, though Mail API does define the `401` and
+  `403` responses the adapter must convert into a `wp_mail()` failure.

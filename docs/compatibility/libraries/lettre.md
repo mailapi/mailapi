@@ -1,7 +1,7 @@
 ---
 title: "Rust `lettre` compatibility"
 sidebar:
-  label: Rust lettre
+  label: lettre (Rust)
 ---
 
 This assessment considers Mail API compatibility with the Rust

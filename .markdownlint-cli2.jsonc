@@ -1,0 +1,38 @@
+{
+  // Run with `npm run lint:markdown`. CI runs the same command.
+  "globs": ["**/*.md"],
+  "ignores": [
+    "node_modules/**",
+    "dist/**",
+    ".astro/**",
+    // `src/content/docs` is a symlink to `docs/`; linting both reports every
+    // finding twice.
+    "src/content/docs/**"
+  ],
+  "config": {
+    "default": true,
+
+    // Prose wraps at 80 columns. MD013 already exempts lines with no
+    // whitespace past the limit, so a long URL on its own line is fine;
+    // tables and code blocks cannot be wrapped at all.
+    "MD013": {
+      "line_length": 80,
+      "tables": false,
+      "code_blocks": false
+    },
+
+    // Starlight pages take their <h1> from frontmatter `title`, so body content
+    // correctly starts at <h2> and has no top-level heading.
+    "MD041": false,
+    "MD025": false,
+
+    // Sibling compatibility assessments deliberately share section names such
+    // as "References" and "Differences and limits".
+    "MD024": { "siblings_only": true },
+
+    "MD004": { "style": "dash" },
+    "MD048": { "style": "backtick" },
+    "MD049": { "style": "asterisk" },
+    "MD050": { "style": "asterisk" }
+  }
+}

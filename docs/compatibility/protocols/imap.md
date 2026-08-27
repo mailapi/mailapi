@@ -4,46 +4,55 @@ sidebar:
   label: IMAP
 ---
 
-IMAP4rev2 is a mail-access protocol: clients use it to access and manipulate
-messages and mailboxes on a server. It is an essential comparison point for
-inbound mail, but it is not a message-submission protocol. IMAP4rev2 explicitly
-leaves posting mail to a mail-submission protocol.
+## Protocol role
+
+IMAP4rev2 is a stateful mail-access protocol. It lets a client access and
+manipulate messages and mailboxes, fetch complete messages or selected MIME
+parts, maintain flags, search, and resynchronize offline state. It does not
+post mail; RFC 9051 assigns that function to a separate submission protocol.
 
 ## References
 
-- [RFC 9051: IMAP4rev2](https://www.rfc-editor.org/rfc/rfc9051.html) — mailbox access, message retrieval, synchronization, and the boundary with mail submission.
-- [RFC 6409: Message Submission for Mail](https://www.rfc-editor.org/rfc/rfc6409.html) — the standard SMTP submission protocol referenced by IMAP4rev2.
+- [RFC 9051: IMAP4rev2](https://www.rfc-editor.org/rfc/rfc9051.html):
+  mailbox access, message attributes, synchronization, and commands.
+- [RFC 9051 section 2.3.3](https://www.rfc-editor.org/rfc/rfc9051.html#section-2.3.3):
+  `INTERNALDATE` semantics.
+- [RFC 6409: Message Submission for Mail](https://www.rfc-editor.org/rfc/rfc6409.html):
+  the separate SMTP submission protocol referenced by IMAP4rev2.
 
 ## Potential adapter boundary
 
-An IMAP-to-Mail-API adapter can fetch a message and convert its RFC 5322/MIME
-content into an `InboundMessage` representation. This is a representation
-mapping only: Mail API `v1` does not currently define an inbound retrieval,
-mailbox, synchronization, or webhook endpoint.
+An IMAP adapter can fetch an RFC 5322/MIME message and create an
+`InboundMessage`. This is a representation mapping only: Mail API `v1` defines
+no inbound retrieval, mailbox, synchronization, or webhook operation.
 
 | IMAP concept | Mail API concept | Mapping and limit |
 | --- | --- | --- |
-| `FETCH` message headers and body sections | `InboundMessage.message` | Parse RFC 5322/MIME content into structured addresses, bodies, headers, and attachments. |
-| `INTERNALDATE` | `InboundMessage.receivedAt` | A provider may use it as received metadata, subject to its documented policy. |
-| UID and `UIDVALIDITY` | `InboundMessage.id` | No direct mapping. IMAP mailbox-scoped identifiers and validity epochs are not Mail API message IDs. |
-| Mailboxes, `SELECT`, `LIST`, and subscriptions | — | Out of scope; Mail API does not model mailboxes or folders. |
-| `SEARCH`, `SORT`, flags, `STORE`, `MOVE`, and `EXPUNGE` | — | Out of scope; Mail API does not define mailbox query or mutation operations. |
-| `IDLE` and resynchronization | — | Out of scope; Mail API does not define change streams, push, or synchronization state. |
-| `APPEND` | — | `APPEND` stores a message in a mailbox; it is not recipient delivery or Mail API submission. |
+| `FETCH BODY[]` | `InboundMessage.message` | Parse the complete RFC 5322/MIME message. This can be lossy because Mail API has no raw-message field and flattens MIME structure. |
+| `ENVELOPE` and `BODYSTRUCTURE` | Structured message fields | Useful parsed views, but `ENVELOPE` represents RFC 5322 headers rather than the SMTP envelope, and neither item alone preserves the complete message. |
+| `INTERNALDATE` | `InboundMessage.receivedAt` | Suitable when the provider documents that it uses IMAP's internal date. For SMTP-delivered mail it reflects final delivery; `APPEND`, `COPY`, and `MOVE` have separate rules. |
+| mailbox name, `UIDVALIDITY`, and UID | Source correlation | Together they identify an IMAP message version within a mailbox. A UID alone is not a globally stable Mail API ID. |
+| `RFC822.SIZE` | — | Mail API does not expose stored-message size metadata. |
+| flags, keywords, `STORE`, `MOVE`, and `EXPUNGE` | — | Mail API does not model mailbox state or mutation. |
+| `SEARCH`, `ESEARCH`, `IDLE`, and resynchronization state | — | Mail API does not define queries, change streams, or synchronization tokens. |
+| `APPEND` | — | Stores a message in a mailbox; it is not submission for delivery. It may also store drafts that omit normally required RFC 5322 fields. |
 
 ## Submission and delivery boundary
 
-IMAP does not replace `POST /v1/messages`. A Mail API provider can use IMAP for
-inbound retrieval internally or offer IMAP alongside its HTTP API, but that is
-an implementation or deployment choice. Outbound submission belongs at the
-Mail API HTTP boundary (or an SMTP submission adapter), while recipient
-delivery remains asynchronous and is not confirmed by either API's acceptance.
+IMAP does not replace `POST /v1/messages`. A provider may use IMAP for mailbox
+access or inbound ingestion while using Mail API or SMTP submission for
+outbound mail. Fetching a stored message says nothing about whether a prior
+submission reached its recipients.
 
-## Why Mail API remains smaller
+## Mail API implications
 
-IMAP includes persistent connection state, mailbox hierarchy, message flags,
-partial MIME retrieval, searches, and synchronization. Those capabilities are
-needed by mail clients, whereas Mail API focuses on a small, provider-neutral
-contract for message submission and received-message representation. An
-integration that needs mailbox access should use IMAP directly; it should not
-expect Mail API `v1` to emulate IMAP.
+- `InboundMessage.message` requires `from`, but IMAP can contain drafts,
+  malformed mail, and imported messages without that field. A general IMAP
+  bridge therefore cannot represent every stored message.
+- Nested multiparts, inline parts, encapsulated `message/rfc822` content, and
+  unknown MIME types do not round-trip through Mail API's flattened
+  `text`/`html`/`attachments` model.
+- A future inbound contract should consider preserving raw RFC 5322 bytes and
+  source metadata separately from normalized fields. Mailbox and synchronization
+  operations should remain a separate capability rather than being inferred
+  from `InboundMessage`.

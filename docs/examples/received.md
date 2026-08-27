@@ -10,6 +10,24 @@ used for outbound submission. Mail API `v1` does not yet define an inbound
 retrieval endpoint; the following `200 OK` response illustrates how a
 host-defined or future endpoint can return this representation.
 
+## `InboundMessage` fields
+
+Because no `v1` operation returns this schema, it does not appear in the
+[rendered API reference](/api/). It is specified so that host-defined and
+future inbound endpoints share one shape, and is documented here instead.
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `id` | string | yes | Mail API identifier for the received message record. |
+| `receivedAt` | string (`date-time`) | yes | Timestamp when the inbound message was received. |
+| `message` | `Message` | yes | The core message model, identical to the one used for outbound submission. |
+
+No additional members are permitted at the wrapper level. Inbound `message`
+objects follow the same rules as outbound ones, except that the submission-only
+constraints do not apply: an inbound `message` needs neither a `to` recipient
+nor a body representation, because a received message may legitimately have
+neither.
+
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json

@@ -26,3 +26,31 @@ under `v1` and `/v1/` while the repository is pre-1.0. Breaking changes are
 permitted during that phase and must be described in the appropriate repository
 release notes. A future stable API release defines the compatibility and path
 versioning rules for subsequent breaking changes.
+
+Before repository release 0.5 there is no separate changelog file. The release
+notes are the record of what changed, and a breaking change must be labelled
+there.
+
+## What counts as breaking
+
+While the repository is pre-1.0 these changes are permitted, but they must be
+labelled as breaking:
+
+- Removing or renaming a field, or making an optional field required.
+- Changing the status code for an existing outcome.
+- Changing a registered [problem type](/problems/) URI or its meaning.
+- Narrowing a value's accepted range or format.
+
+These changes are not breaking:
+
+- Adding an optional field, a new problem type, or a new response header.
+- Adding a new operation.
+- Adding a member to `extensions`, which is provider-defined by design.
+- Clarifying prose without changing the contract.
+
+## Stability of problem types
+
+Registered problem type URIs are part of the contract. Because clients match on
+`type` rather than status code alone, changing one is a breaking change even if
+the status code stays the same. New conditions get new URIs instead of
+redefining existing ones.

@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Mail API documentation
+    url: https://mailapi.github.io/
+    about: The submission response table, problem type registry, and compatibility assessments.
+  - name: MailAPI MediaWiki Extension
+    url: https://github.com/mailapi/mediawiki-extensions-MailAPI
+    about: Report issues with the MediaWiki extension in its own repository.
+  - name: Resend Mailer
+    url: https://github.com/mailapi/resend-mailer
+    about: Report issues with the Resend implementation in its own repository.

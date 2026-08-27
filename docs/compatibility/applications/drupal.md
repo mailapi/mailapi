@@ -39,5 +39,6 @@ Drupal has constructed the message. This keeps module-specific templates and
   delivery. A Mail API `200` likewise means provider acceptance, not recipient
   delivery.
 - Inbound Mail API examples do not provide a Drupal inbound-mail feature or
-  callback endpoint. Authentication, retries, delivery events, and attachment
-  limits remain deployment-specific.
+  callback endpoint. Credential issuance and rotation, retries, delivery
+  events, and attachment limits remain deployment-specific, though Mail API
+  does define the `401` and `403` responses a plug-in must report as failure.

@@ -11,16 +11,23 @@ not require a Mail API provider to use Azure.
 
 ## References
 
-- [Azure Email Send REST API](https://learn.microsoft.com/en-us/rest/api/communication/email/email/send?view=rest-communication-email-2025-09-01) — `202 Accepted`, operation ID, and `Operation-Location`.
-- [Azure Email get-send-result REST API](https://learn.microsoft.com/en-us/rest/api/communication/email/email/get-send-result?view=rest-communication-email-2025-09-01) — operation-state polling and `Retry-After`.
-- [Azure email sending quickstart](https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/email/send-email) — SDK model and delivery boundary.
-- [Azure Email Event Grid events](https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/email/handle-email-events) — delivery and engagement events.
+- [Azure Email Send REST API](https://learn.microsoft.com/en-us/rest/api/communication/email/email/send?view=rest-communication-email-2025-09-01):
+  `202 Accepted`, operation ID, and `Operation-Location`.
+- [Azure Email get-send-result REST API](https://learn.microsoft.com/en-us/rest/api/communication/email/email/get-send-result?view=rest-communication-email-2025-09-01):
+  operation-state polling and `Retry-After`.
+- [Azure email sending quickstart](https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/email/send-email):
+  SDK model and delivery boundary.
+- [Azure Email Event Grid events](https://learn.microsoft.com/en-us/azure/communication-services/quickstarts/email/handle-email-events):
+  delivery and engagement events.
 
 ## Potential adapter boundary
 
 Azure starts email sending as a long-running operation. The adapter submits the
 request, maps the returned operation ID to Mail API's accepted-message `id`,
-and returns `200` without waiting for delivery.
+and returns `200` without waiting for delivery. Azure is one of the assessed
+providers that answers with `202`; unlike SendGrid, it also exposes an
+operation resource to poll. Mail API defines no such resource, which is part of
+the [rationale for `200`](/concepts/rationale/).
 
 | Mail API field | Azure Email mapping | Notes |
 | --- | --- | --- |
@@ -43,14 +50,20 @@ Azure status codes are provider-facing responses. The adapter converts them to
 Mail API's public contract and must not expose Azure credentials or resource
 configuration to the caller.
 
+Mail API's `401` and `403` describe the *caller's* credentials at the Mail API
+boundary. They are not a channel for the adapter's own Azure credentials: if
+the adapter cannot authenticate to Azure, the caller's request was still valid,
+so the adapter returns `500`.
+
 | Azure result | Mail API response | Adapter handling |
 | --- | --- | --- |
-| `202 Accepted` with `Operation-Location` and an operation ID | `200` | Return the operation ID as the accepted-message `id`. |
+| `202 Accepted` with `Operation-Location` and an operation ID | `200` | Return the operation ID as the accepted-message `id`. The Mail API response has no counterpart to `Operation-Location`. |
 | `400` malformed request | `500` | Treat invalid generated Azure request syntax or serialization as an adapter defect. |
-| `400` invalid sender, recipient, content, or attachment | `422` | The Mail API message is unacceptable under the selected Azure provider policy. |
+| `400` unverified or unauthorized sender domain | `403` | The caller may not send as the requested `from` identity under the configured Azure resource. |
+| `400` invalid recipient, content, or attachment | `422` | The Mail API message is unacceptable under the selected Azure provider policy. |
 | `401`, `403`, or missing Azure resource caused by adapter configuration | `500` | Repair credentials, permissions, or Azure resource configuration. |
 | `429` | `429` | Apply backoff; preserve a provider retry delay when available. |
-| Azure `5xx`, timeout, or connection failure | `500` | The submission outcome can be unknown; retry only under a duplicate-risk policy. |
+| Azure `5xx`, timeout, or connection failure | `500` | The submission outcome can be unknown. A matching Mail API key replays the stored `500`; starting another execution requires a new key and a duplicate-risk policy. |
 
 Use `503` only when the adapter knows it did not submit the message and is
 temporarily unable to accept it. Once a request may have reached Azure, return

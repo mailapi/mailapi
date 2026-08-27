@@ -11,9 +11,12 @@ adapter boundary, not a requirement that a Mail API provider use SES.
 
 ## References
 
-- [SES `SendEmail` API reference](https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_SendEmail.html) — request fields, `200` response, and API errors.
-- [How email sending works in Amazon SES](https://docs.aws.amazon.com/ses/latest/dg/send-email-concepts-process.html) — provider acceptance and unknown-outcome retry risk.
-- [Managing Amazon SES sending limits](https://docs.aws.amazon.com/ses/latest/dg/manage-sending-quotas.html) — quotas and rate limits.
+- [SES `SendEmail` API reference](https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_SendEmail.html):
+  request fields, `200` response, and API errors.
+- [How email sending works in Amazon SES](https://docs.aws.amazon.com/ses/latest/dg/send-email-concepts-process.html):
+  provider acceptance and unknown-outcome retry risk.
+- [Managing Amazon SES sending limits](https://docs.aws.amazon.com/ses/latest/dg/manage-sending-quotas.html):
+  quotas and rate limits.
 
 ## Potential adapter boundary
 
@@ -31,8 +34,9 @@ use Raw content when it must preserve the complete message representation.
 | accepted response `id` | SES `MessageId` | Store a mapping if an application needs to correlate SES events. |
 
 SES returns HTTP `200` with a `MessageId` after accepting a message. The
-adapter translates that result to Mail API `200`; neither indicates final
-recipient delivery.
+adapter reports that result as Mail API `200`; neither indicates final
+recipient delivery. The two status codes agree because both mean acceptance at
+the submission boundary; see the [rationale for `200`](/concepts/rationale/).
 
 ## Response and error mapping
 
@@ -40,14 +44,20 @@ SES status codes are provider-facing responses. The adapter consumes them and
 returns a Mail API response; it must not expose AWS credentials or resource
 configuration as a client error.
 
+Mail API's `401` and `403` describe the *caller's* credentials at the Mail API
+boundary. They are not a channel for the adapter's own AWS credentials: if the
+adapter cannot authenticate to SES, the caller's request was still valid, so
+the adapter returns `500`.
+
 | SES result | Mail API response | Adapter handling |
 | --- | --- | --- |
 | `200` with `MessageId` | `200` | Return the `MessageId` as the accepted-message `id`. |
 | `400` malformed request | `500` | Treat syntax or serialization errors in the generated SES request as adapter defects. |
-| `400` `MessageRejected`, unverified sender, or invalid message content | `422` | The Mail API message is unacceptable under the selected SES provider policy. |
+| `400` unverified or unauthorized sender identity | `403` | The caller may not send as the requested `from` identity under the configured SES account. |
+| `400` `MessageRejected` or invalid message content | `422` | The Mail API message is unacceptable under the selected SES provider policy. |
 | `429` `TooManyRequestsException` | `429` | Apply backoff; include `Retry-After` only when the adapter can determine a wait period. |
 | SES credentials, region, configuration-set, or account configuration failure | `500` | Treat this as adapter or deployment configuration, not caller input. |
-| SES `5xx`, timeout, or connection failure | `500` | The submission outcome can be unknown; retry only under a duplicate-risk policy. |
+| SES `5xx`, timeout, or connection failure | `500` | The submission outcome can be unknown. A matching Mail API key replays the stored `500`; starting another execution requires a new key and a duplicate-risk policy. |
 
 Use `503` only when the adapter knows it did not submit the message and is
 temporarily unable to accept it. Once a request may have reached SES, return
