@@ -6,8 +6,8 @@ sidebar:
 
 This assessment compares Mail API with Resend's Email API. An adapter converts
 an `OutboundMessageRequest` to Resend `POST /emails`, then normalizes a
-successful Resend response to Mail API's `200` response. It does not require a
-Mail API provider to use Resend.
+successful Resend result to Mail API's default `202` or bounded-wait `200`
+response. It does not require a Mail API provider to use Resend.
 
 ## References
 
@@ -21,10 +21,10 @@ Mail API provider to use Resend.
 ## Potential adapter boundary
 
 Resend's send-email request directly represents most Mail API message fields.
-The adapter maps the accepted Resend email `id` to the Mail API accepted-message
-identifier and returns `200`; that acceptance is not final recipient delivery.
-The two status codes agree because both mean acceptance at the submission
-boundary; see the [rationale for `200`](/concepts/rationale/).
+The adapter maps the accepted Resend email `id` to the Mail API submission
+identifier. It returns Mail API `202` by default, or `200` if an applied wait
+covers completion of the Resend call. Neither response confirms final recipient
+delivery; see the [bounded-wait rationale](/concepts/rationale/).
 
 | Mail API field | Resend mapping | Notes |
 | --- | --- | --- |
@@ -35,7 +35,7 @@ boundary; see the [rationale for `200`](/concepts/rationale/).
 | `headers` | `headers` | Resend custom headers are an object, so repeated header names cannot be preserved without an explicit adapter policy. |
 | `attachments` | `attachments` | Map filename and Base64 content; enforce Resend attachment limits. |
 | `Idempotency-Key` request header | Adapter idempotency record and Resend `Idempotency-Key` | Scope the client key to the authenticated Mail API principal. Persist a separate opaque downstream key for the Resend call; do not forward a multi-tenant client key unchanged. |
-| accepted response `id` | Resend email `id` | This identifies a Resend email, not a Mail API delivery-status endpoint. |
+| submission `id` | Provider-generated Mail API ID mapped to the Resend email `id` | The Mail API ID must exist before the default asynchronous response. |
 
 ## Response and error mapping
 
@@ -50,7 +50,7 @@ the adapter returns `500`.
 
 | Resend result | Mail API response | Adapter handling |
 | --- | --- | --- |
-| `200` with an email `id` | `200` | Return the Resend ID as the accepted-message `id`. |
+| `200` with an email `id` | `202` by default; `200` after an applied wait | Retain the Mail API submission `id` and store its mapping to the Resend ID. |
 | `400` malformed request | `500` | Treat invalid generated Resend request syntax or serialization as an adapter defect. |
 | `400` unverified or unauthorized sending domain | `403` | The caller may not send as the requested `from` identity under the configured Resend account. |
 | `400` provider validation failure | `422` | The Mail API message is unacceptable under the selected Resend provider policy. |
@@ -68,8 +68,8 @@ the unknown-outcome `500` contract instead.
 Resend supports an `Idempotency-Key` request header that prevents duplicate
 emails for 24 hours, but that mechanism alone does not implement the complete
 Mail API contract. A Mail API adapter must own the principal-scoped key record,
-the exact-body comparison, the in-progress state, and replay of stored `200`
-and `500` responses.
+the exact-body comparison, the in-progress state, non-terminal `202` handling,
+and replay of stored terminal `200` and `500` responses.
 
 For the downstream Resend request, the adapter creates an opaque key unique to
 the local idempotency record and persists it before calling Resend. It reuses

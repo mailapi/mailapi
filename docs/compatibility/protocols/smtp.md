@@ -58,12 +58,17 @@ either reject transactions whose envelope differs from the derivation Mail API
 would make or operate under a deployment policy that guarantees they match.
 
 After accepting the complete SMTP transaction, a Mail API `200` can map to the
-final SMTP `250` response: both mean the next system accepted responsibility
-for further processing, not that recipients received the message.
+final SMTP `250` response when bounded waiting was applied: both mean the next
+system accepted responsibility for further processing, not that recipients
+received the message. A Mail API `202` is not yet sufficient for a final SMTP
+`250`; an SMTP-facing adapter must keep the SMTP transaction open until the
+Mail API execution reaches a terminal result or apply a transient-failure
+policy.
 
 | Mail API result | SMTP-facing result | Adapter policy |
 | --- | --- | --- |
 | `200` | `250` after message content | Accept the transaction; do not present this as final delivery. |
+| `202` | no final reply yet | Continue waiting for terminal submission state; `202` alone does not establish the SMTP handoff result. |
 | `400` or `415` | transient local failure, commonly `451` | A conforming adapter creates valid JSON with the correct media type, so these normally indicate an adapter defect rather than bad client content. |
 | `413` | permanent size failure, commonly `552` | Reject the unchanged message because it exceeds a provider or adapter limit. |
 | `422` | permanent content failure, commonly `554` | Reject semantically invalid message content. |

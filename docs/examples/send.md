@@ -55,12 +55,36 @@ Idempotency-Key: welcome-user/123456
 }
 ```
 
-When the provider accepts the message for asynchronous processing, it returns
-`200 OK`. This does not confirm delivery to the recipient.
+By default, the provider accepts the message for asynchronous processing and
+returns `202 Accepted`. This does not confirm delivery to the recipient.
+
+```http
+HTTP/1.1 202 Accepted
+Content-Type: application/json
+
+{
+  "id": "msg_01HZXKJ42P6X0Q7J9ZMY1P4R8B"
+}
+```
+
+## Bounded wait
+
+A client can ask the provider to wait up to a specified number of seconds for
+submission to complete:
+
+```http
+Prefer: wait=10
+```
+
+The provider may ignore this preference. If it applies the preference and
+submission completes within ten seconds, it can return `200 OK` and identifies
+the applied preference. If the wait expires first, it returns `202 Accepted`
+with the same `Preference-Applied` header and continues asynchronously.
 
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/json
+Preference-Applied: wait=10
 
 {
   "id": "msg_01HZXKJ42P6X0Q7J9ZMY1P4R8B"
@@ -69,9 +93,11 @@ Content-Type: application/json
 
 ## Replayed response
 
-Retrying with the same `Idempotency-Key` and a byte-for-byte identical body
-replays the stored terminal outcome rather than sending a second message. The
-replay is marked with `Idempotency-Replayed`.
+The initial `202` is not a terminal stored outcome. Retrying while execution is
+still running returns `409`. After execution completes, retrying with the same
+`Idempotency-Key` and a byte-for-byte identical body replays the stored terminal
+outcome rather than sending a second message. The replay is marked with
+`Idempotency-Replayed`.
 
 ```http
 HTTP/1.1 200 OK

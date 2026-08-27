@@ -39,7 +39,7 @@ The provider accepts the message for asynchronous processing and returns a Mail
 API message identifier. This does not confirm final recipient delivery.
 
 ```http
-HTTP/1.1 200 OK
+HTTP/1.1 202 Accepted
 Content-Type: application/json
 
 {
@@ -66,8 +66,8 @@ README is only an entry point.
 - [Scope and capabilities](https://mailapi.github.io/concepts/scope/) — the
   supported contract and explicit non-goals
 - [Versioning policy](https://mailapi.github.io/concepts/versioning/)
-- [Design rationale](https://mailapi.github.io/concepts/rationale/) — why the contract
-  makes its non-obvious choices, starting with `200` over `202`
+- [Design rationale](https://mailapi.github.io/concepts/rationale/) — why the
+  contract defaults to `202` and supports bounded waiting with `Prefer: wait=N`
 - Examples: [send](https://mailapi.github.io/examples/send/) and
   [received](https://mailapi.github.io/examples/received/)
 

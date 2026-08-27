@@ -6,14 +6,13 @@ sidebar:
 
 This assessment compares Mail API with Twilio SendGrid's v3 Mail Send API. An
 adapter receives an `OutboundMessageRequest`, calls `POST /v3/mail/send`, and
-normalizes an accepted SendGrid response to Mail API's `200` response. It is an
-adapter boundary, not a requirement that a Mail API provider use SendGrid.
+normalizes an accepted SendGrid result to Mail API's default `202` or
+bounded-wait `200` response. It is an adapter boundary, not a requirement that
+a Mail API provider use SendGrid.
 
-SendGrid is also the closest provider comparison for the contract's own success
-status: it answers an accepted submission with `202` and defines no
-per-submission status resource. See the
-[rationale for `200`](/concepts/rationale/), which records SendGrid as the strongest
-evidence against that choice.
+SendGrid also answers an accepted submission with `202` and defines no
+per-submission status resource. This aligns closely with Mail API's default
+response; see the [bounded-wait rationale](/concepts/rationale/).
 
 ## References
 
@@ -28,7 +27,7 @@ SendGrid's request body is structurally further from Mail API than the other
 assessed providers, because one request can carry many messages. A
 `personalizations` array holds a separate recipient set, and optional
 substitutions, per entry. A Mail API submission is one message with one
-accepted-message `id`, so an adapter constructs exactly one personalization and
+submission `id`, so an adapter constructs exactly one personalization and
 does not expose SendGrid's batching.
 
 | Mail API field | SendGrid mapping | Notes |
@@ -40,7 +39,7 @@ does not expose SendGrid's batching.
 | `text`, `html` | `content` | An array of `{type, value}` ordered by increasing preference: `text/plain` before `text/html`. |
 | `headers` | `headers` | An object, so repeated header names cannot be preserved without an explicit adapter policy. SendGrid also reserves several headers. |
 | `attachments` | `attachments` | Map filename, MIME type, and Base64 `content`; enforce SendGrid attachment and message-size limits. |
-| accepted response `id` | `X-Message-Id` response header | The success body is empty, so the identifier comes from a header rather than from the response document. |
+| submission `id` | Provider-generated Mail API ID mapped to `X-Message-Id` after acceptance | The Mail API ID must exist before the default asynchronous response. |
 
 ## Response and error mapping
 
@@ -55,7 +54,7 @@ so the adapter returns `500`.
 
 | SendGrid result | Mail API response | Adapter handling |
 | --- | --- | --- |
-| `202` with an empty body and `X-Message-Id` | `200` | Return the header value as the accepted-message `id`. Both results mean acceptance; neither confirms recipient delivery. |
+| `202` with an empty body and `X-Message-Id` | `202` by default; `200` after an applied wait | Retain the Mail API submission `id` and map it to the header value. Neither result confirms recipient delivery. |
 | `400` malformed request | `500` | Treat syntax or serialization errors in the generated SendGrid request as adapter defects. |
 | `400` or `403` unverified sender identity | `403` | The caller may not send as the requested `from` identity under the configured SendGrid account. |
 | `400` provider validation failure | `422` | The Mail API message is unacceptable under the selected SendGrid provider policy. |

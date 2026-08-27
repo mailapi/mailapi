@@ -6,8 +6,9 @@ sidebar:
 
 This assessment compares Mail API with Azure Communication Services Email. An
 adapter converts an `OutboundMessageRequest` into an Azure email send request,
-then normalizes the accepted operation to a Mail API `200` response. It does
-not require a Mail API provider to use Azure.
+then normalizes the accepted operation to Mail API's default `202` or
+bounded-wait `200` response. It does not require a Mail API provider to use
+Azure.
 
 ## References
 
@@ -23,11 +24,11 @@ not require a Mail API provider to use Azure.
 ## Potential adapter boundary
 
 Azure starts email sending as a long-running operation. The adapter submits the
-request, maps the returned operation ID to Mail API's accepted-message `id`,
-and returns `200` without waiting for delivery. Azure is one of the assessed
-providers that answers with `202`; unlike SendGrid, it also exposes an
-operation resource to poll. Mail API defines no such resource, which is part of
-the [rationale for `200`](/concepts/rationale/).
+request and maps the Mail API submission `id` to the returned operation ID. It
+returns Mail API `202` by default, or `200` if it applies `Prefer: wait=N` and
+the Mail API submission boundary completes in time. Azure exposes an operation
+resource to poll, but Mail API v1 does not; see the
+[bounded-wait rationale](/concepts/rationale/).
 
 | Mail API field | Azure Email mapping | Notes |
 | --- | --- | --- |
@@ -37,7 +38,7 @@ the [rationale for `200`](/concepts/rationale/).
 | `subject`, `text`, `html` | `content.subject`, `plainText`, `html` | At least one body representation is required by Azure. |
 | `headers` | Custom headers | Preserve supplemental headers permitted by Azure. |
 | `attachments` | Attachments | Convert Base64 content to Azure attachment data. |
-| accepted response `id` | Azure operation ID | This identifies the send operation, not final recipient delivery. |
+| submission `id` | Provider-generated Mail API ID mapped to the Azure operation ID | The Mail API ID must exist before the default asynchronous response. |
 
 Azure's operation result can later be `Running`, `Succeeded`, or `Failed`.
 That provider status is not a Mail API `v1` submission-status endpoint.
@@ -57,7 +58,7 @@ so the adapter returns `500`.
 
 | Azure result | Mail API response | Adapter handling |
 | --- | --- | --- |
-| `202 Accepted` with `Operation-Location` and an operation ID | `200` | Return the operation ID as the accepted-message `id`. The Mail API response has no counterpart to `Operation-Location`. |
+| `202 Accepted` with `Operation-Location` and an operation ID | `202` by default; `200` after an applied wait | Retain the Mail API submission `id` and map it to the Azure operation ID. Mail API has no counterpart to `Operation-Location`. |
 | `400` malformed request | `500` | Treat invalid generated Azure request syntax or serialization as an adapter defect. |
 | `400` unverified or unauthorized sender domain | `403` | The caller may not send as the requested `from` identity under the configured Azure resource. |
 | `400` invalid recipient, content, or attachment | `422` | The Mail API message is unacceptable under the selected Azure provider policy. |

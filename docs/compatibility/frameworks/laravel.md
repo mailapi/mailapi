@@ -27,9 +27,10 @@ Mail API request.
 
 ## Differences and limits
 
-- A Mail API `200` is transport acceptance. Laravel's `MessageSent` event and
-  the `Mail::assertSent()` test helpers fire on that acceptance, so neither
-  confirms recipient delivery.
+- Mail API `202` is asynchronous acceptance and `200` is completion within an
+  applied wait. Laravel's `MessageSent` event and the `Mail::assertSent()` test
+  helpers map either success to a sent result, so neither confirms recipient
+  delivery.
 - Laravel's `Mail::fake()` bypasses the transport entirely. It verifies that
   the application asked to send a mailable, not that a Mail API request is
   well-formed; an adapter needs its own tests at the transport boundary.

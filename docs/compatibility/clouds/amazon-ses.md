@@ -6,8 +6,9 @@ sidebar:
 
 This assessment compares Mail API with Amazon Simple Email Service (SES) API
 v2. An adapter receives an `OutboundMessageRequest`, calls SES `SendEmail`, and
-normalizes an accepted SES response to Mail API's `200` response. It is an
-adapter boundary, not a requirement that a Mail API provider use SES.
+normalizes the result to Mail API's default `202` or bounded-wait `200`
+response. It is an adapter boundary, not a requirement that a Mail API provider
+use SES.
 
 ## References
 
@@ -31,12 +32,12 @@ use Raw content when it must preserve the complete message representation.
 | `replyTo` | `ReplyToAddresses` | Preserve all reply-to addresses. |
 | `subject`, `text`, `html` | `Content.Simple.Subject`, `Body.Text`, `Body.Html` | Supply a charset explicitly when the adapter needs one. |
 | `headers`, `attachments` | `Content.Simple.Headers`, `Attachments`, or `Content.Raw` | Raw MIME is the fallback for features that Simple content cannot represent faithfully. |
-| accepted response `id` | SES `MessageId` | Store a mapping if an application needs to correlate SES events. |
+| submission `id` | Provider-generated Mail API ID mapped to SES `MessageId` after acceptance | The Mail API ID must exist before the default asynchronous response. |
 
-SES returns HTTP `200` with a `MessageId` after accepting a message. The
-adapter reports that result as Mail API `200`; neither indicates final
-recipient delivery. The two status codes agree because both mean acceptance at
-the submission boundary; see the [rationale for `200`](/concepts/rationale/).
+SES returns HTTP `200` with a `MessageId` after accepting a message. The adapter
+returns Mail API `202` by default, or `200` if it applied `Prefer: wait=N` and
+the SES call completed in time. None of these responses indicates final
+recipient delivery; see the [bounded-wait rationale](/concepts/rationale/).
 
 ## Response and error mapping
 
@@ -51,7 +52,7 @@ the adapter returns `500`.
 
 | SES result | Mail API response | Adapter handling |
 | --- | --- | --- |
-| `200` with `MessageId` | `200` | Return the `MessageId` as the accepted-message `id`. |
+| `200` with `MessageId` | `202` by default; `200` after an applied wait | Retain the Mail API submission `id` and store its mapping to `MessageId`. |
 | `400` malformed request | `500` | Treat syntax or serialization errors in the generated SES request as adapter defects. |
 | `400` unverified or unauthorized sender identity | `403` | The caller may not send as the requested `from` identity under the configured SES account. |
 | `400` `MessageRejected` or invalid message content | `422` | The Mail API message is unacceptable under the selected SES provider policy. |
