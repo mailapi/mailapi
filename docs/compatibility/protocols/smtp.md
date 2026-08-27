@@ -45,11 +45,18 @@ own transport envelope.
   identified reliably after a message has been composed.
 - A Mail API `200` can be translated to SMTP `250` acceptance because it means
   the provider durably accepted responsibility for asynchronous processing.
-  Neither result confirms final recipient delivery.
+  Neither result confirms final recipient delivery. SMTP has no separate
+  acceptance code at all: `250` is its ordinary success reply, and taking
+  responsibility for onward delivery is what submission success has always
+  meant. That precedent is part of the
+  [rationale for `200`](/concepts/rationale/).
 - `400`, `413`, `415`, and `422` are non-retryable unless the message is
-  changed. A `409` for a matching idempotent request in progress may be retried
-  later; a key used with a different payload requires a new key or payload.
-  `429` and `503` are retryable and may provide `Retry-After`; other `5xx`
+  changed, and map to SMTP `5xx` permanent failures. `401` and `403` are
+  non-retryable until credentials or authorization change; `403` for a
+  disallowed `from` identity corresponds to SMTP `550`. A `409` for a matching
+  idempotent request in progress may be retried later; a key used with a
+  different payload requires a new key or payload. `429` and `503` are
+  retryable and may provide `Retry-After`, mapping to SMTP `4xx`; other `5xx`
   responses require an adapter retry policy. A request timeout without an
   `Idempotency-Key` remains an unknown-outcome condition, as it does in SMTP
   when an acceptance response is lost.
@@ -58,9 +65,12 @@ own transport envelope.
 
 - Inline MIME attachments using content IDs have no Mail API `v1` equivalent.
   The adapter should reject them or define a documented transformation rather
-  than send HTML with broken `cid:` references.
+  than send HTML with broken `cid:` references. A provider may expose them
+  through an `extensions` member, but a portable adapter must not depend on
+  one, because no extension name is specified.
 - SMTP authentication, TLS, client identity, retry scheduling, size limits,
-  and rate limits are deployment concerns. Mail API standardizes only the HTTP
-  response meaning for submission failures.
+  and rate limits are deployment concerns. An adapter authenticates to Mail API
+  with its own credentials; it does not forward SMTP `AUTH` credentials, so an
+  SMTP client's identity is not the Mail API principal.
 - Inbound Mail API examples are received-message data representations only;
   they do not define an SMTP receiving service or webhook endpoint.

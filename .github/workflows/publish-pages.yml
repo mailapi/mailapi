@@ -10,7 +10,9 @@ permissions:
 
 concurrency:
   group: publish-documentation
-  cancel-in-progress: true
+  # A deploy must not be interrupted midway through `git push`, so queue
+  # instead of cancelling.
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -30,6 +32,9 @@ jobs:
 
       - name: Install documentation dependencies
         run: npm ci
+
+      - name: Lint OpenAPI specification
+        run: npm run lint:openapi
 
       - name: Build documentation site
         env:
@@ -51,7 +56,17 @@ jobs:
           git clone --depth 1 \
             "https://x-access-token:${PAGES_REPO_TOKEN}@github.com/mailapi/mailapi.github.io.git" \
             pages-repository
-          rsync --archive --checksum --delete --exclude .git dist/ pages-repository/
+
+          # `--delete` removes files absent from dist/, so anything the Pages
+          # repository owns rather than this build must be excluded or it would
+          # be deleted and break the site. CNAME is configured on the Pages
+          # repository for a custom domain; `.nojekyll` is NOT excluded because
+          # the build emits it from public/, and excluding it would stop it
+          # being copied at all.
+          rsync --archive --checksum --delete \
+            --exclude .git \
+            --exclude CNAME \
+            dist/ pages-repository/
 
           cd pages-repository
           git config user.name "github-actions[bot]"

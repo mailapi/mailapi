@@ -11,8 +11,10 @@ hierarchy or synchronization model comparable to IMAP.
 
 ## References
 
-- [RFC 1939: Post Office Protocol - Version 3](https://www.rfc-editor.org/rfc/rfc1939.html) — POP3 retrieval, deletion, and message format.
-- [RFC 6409: Message Submission for Mail](https://www.rfc-editor.org/rfc/rfc6409.html) — the separate standard SMTP submission protocol.
+- [RFC 1939: Post Office Protocol - Version 3](https://www.rfc-editor.org/rfc/rfc1939.html):
+  POP3 retrieval, deletion, and message format.
+- [RFC 6409: Message Submission for Mail](https://www.rfc-editor.org/rfc/rfc6409.html):
+  the separate standard SMTP submission protocol.
 
 ## Potential adapter boundary
 

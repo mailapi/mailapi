@@ -11,8 +11,11 @@ leaves posting mail to a mail-submission protocol.
 
 ## References
 
-- [RFC 9051: IMAP4rev2](https://www.rfc-editor.org/rfc/rfc9051.html) — mailbox access, message retrieval, synchronization, and the boundary with mail submission.
-- [RFC 6409: Message Submission for Mail](https://www.rfc-editor.org/rfc/rfc6409.html) — the standard SMTP submission protocol referenced by IMAP4rev2.
+- [RFC 9051: IMAP4rev2](https://www.rfc-editor.org/rfc/rfc9051.html):
+  mailbox access, message retrieval, synchronization, and the boundary with
+  mail submission.
+- [RFC 6409: Message Submission for Mail](https://www.rfc-editor.org/rfc/rfc6409.html):
+  the standard SMTP submission protocol referenced by IMAP4rev2.
 
 ## Potential adapter boundary
 

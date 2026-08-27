@@ -11,9 +11,12 @@ is not a provider-neutral, account-wide transactional-email API.
 
 ## References
 
-- [Gmail API sending guide](https://developers.google.com/workspace/gmail/api/guides/sending) — raw MIME request construction.
-- [`users.messages.send` reference](https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.messages/send) — send endpoint, response, and OAuth scopes.
-- [Gmail API error handling](https://developers.google.com/workspace/gmail/api/guides/handle-errors) — HTTP status codes, error reasons, and retry guidance.
+- [Gmail API sending guide](https://developers.google.com/workspace/gmail/api/guides/sending):
+  raw MIME request construction.
+- [`users.messages.send` reference](https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.messages/send):
+  send endpoint, response, and OAuth scopes.
+- [Gmail API error handling](https://developers.google.com/workspace/gmail/api/guides/handle-errors):
+  HTTP status codes, error reasons, and retry guidance.
 
 ## Potential adapter boundary
 
@@ -34,7 +37,8 @@ Gmail message `id` to Mail API's accepted-message identifier.
 
 A successful Gmail response means Gmail accepted the message for sending. An
 adapter maps that to Mail API `200`; it must not report final recipient
-delivery.
+delivery. Gmail's own documentation of that limit is part of the
+[rationale for `200`](/concepts/rationale/).
 
 ## Response and error mapping
 
@@ -42,12 +46,17 @@ Gmail HTTP codes describe the Gmail API call, rather than Mail API's public
 contract. The adapter must inspect Gmail's error `reason`, not only its status
 code: for example, `403` can mean either a permission problem or a rate limit.
 
+Mail API's `401` and `403` describe the *caller's* credentials at the Mail API
+boundary. They are not a channel for the adapter's own OAuth credentials: if
+the adapter cannot authenticate to Gmail, the caller's request was still valid,
+so the adapter returns `500`.
+
 | Gmail result | Mail API response | Adapter handling |
 | --- | --- | --- |
 | `200` with a Gmail message resource | `200` | Return the Gmail message `id` as the accepted-message `id`; do not treat it as delivery confirmation. |
 | `400` `badRequest` | `500` or `422` | Use `500` for malformed generated MIME/API input and `422` for a valid Mail API message Gmail rejects semantically. |
 | `401` authentication failure | `500` | Refresh or repair the adapter's OAuth credentials; do not expose them to the Mail API caller. |
-| `403` send-as identity permission failure | `422` | The selected mailbox cannot send as the requested `from` identity. |
+| `403` send-as identity permission failure | `403` | The selected mailbox cannot send as the requested `from` identity, so the caller is not authorized for this submission. |
 | `403` domain-policy or OAuth-scope failure | `500` | Repair adapter authorization or Workspace administration; this is not caller input. |
 | `403` quota reason, or `429` | `429` | Back off according to the provider guidance and any available retry delay. |
 | `404` selected mailbox or adapter resource missing | `500` | Treat the configured Gmail account/resource as an adapter configuration failure. |

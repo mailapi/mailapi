@@ -6,6 +6,9 @@ sidebar:
 
 Submit an outbound message to `POST /v1/messages`.
 
+A submission requires `from`, at least one `to` recipient, and at least one
+body representation (`text`, `html`, or both).
+
 To safely retry a request, clients can optionally add an `Idempotency-Key`
 header with a client-generated value. It makes retries of the same payload safe
 for 24 hours; omit it when idempotent retry handling is unnecessary.
@@ -13,6 +16,8 @@ for 24 hours; omit it when idempotent retry handling is unnecessary.
 ```http
 POST https://api.example.com/v1/messages HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer <token>
+Idempotency-Key: welcome-user/123456
 
 {
   "from": {
@@ -62,6 +67,26 @@ Content-Type: application/json
 }
 ```
 
+## Replayed response
+
+Retrying with the same `Idempotency-Key` and a byte-for-byte identical body
+replays the original outcome rather than sending a second message. The replay
+is marked with `Idempotency-Replayed`.
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+Idempotency-Replayed: true
+
+{
+  "id": "msg_01HZXKJ42P6X0Q7J9ZMY1P4R8B"
+}
+```
+
+A replay repeats the original outcome even when it was unsuccessful: if the
+first submission returned `422`, a matching retry returns that same `422`
+problem document with `Idempotency-Replayed: true`.
+
 ## Failure response
 
 Failures use `application/problem+json`. For example, a message with
@@ -72,7 +97,7 @@ HTTP/1.1 422 Unprocessable Content
 Content-Type: application/problem+json
 
 {
-  "type": "https://api.example.com/problems/invalid-message",
+  "type": "https://mailapi.github.io/problems/invalid-message",
   "title": "Message fields are invalid",
   "status": 422,
   "detail": "At least one recipient address is invalid.",
@@ -80,5 +105,7 @@ Content-Type: application/problem+json
 }
 ```
 
-See the [submission response table](/#submission-responses) for the
-other success and failure status codes.
+The `type` member is a stable identifier owned by this specification, so a
+client can match the condition across providers. See the
+[problem type registry](/problems/) for the full list and the
+[submission response table](/concepts/responses/) for the other status codes.

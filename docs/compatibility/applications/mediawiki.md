@@ -5,13 +5,15 @@ sidebar:
 ---
 
 This assessment compares Mail API with MediaWiki's
-`MediaWiki\\Mail\\IEmailer` interface. `IEmailer::send()` is the relevant
+`MediaWiki\Mail\IEmailer` interface. `IEmailer::send()` is the relevant
 outgoing-mail abstraction; it accepts recipients, a sender, subject, text and
 optional HTML bodies, and an options array. It is marked internal by MediaWiki,
 so an implementation would need to isolate and test this dependency for every
 supported MediaWiki version.
 
-See the [IEmailer interface reference](https://doc.wikimedia.org/mediawiki-core/1.39.17/php/interfaceMediaWiki_1_1Mail_1_1IEmailer.html).
+See the [IEmailer interface reference](https://doc.wikimedia.org/mediawiki-core/1.43.0/php/interfaceMediaWiki_1_1Mail_1_1IEmailer.html),
+which matches the MediaWiki 1.43 baseline targeted by the
+[MediaWiki extension](/implementations/mediawiki-extension/).
 
 ## Potential adapter boundary
 
@@ -45,8 +47,9 @@ comparable to an SMTP submission whose final acceptance response is lost;
 timeout and retry handling remain an adapter or deployment policy.
 
 The defined HTTP responses let an adapter distinguish non-retryable request
-errors (`400`, `413`, `415`, and `422`), idempotency conflicts (`409`), and
-retryable rate-limit or temporary provider responses (`429` and `503`). A
+errors (`400`, `413`, `415`, and `422`), credential and authorization failures
+(`401` and `403`), idempotency conflicts (`409`), and retryable rate-limit or
+temporary provider responses (`429` and `503`). A
 matching submission that is still in progress may be retried later; a key used
 with a different payload requires a new key or payload. Other `5xx` responses
 can leave the submission outcome unknown, so retries require an adapter policy
@@ -60,6 +63,7 @@ failed `StatusValue`.
   they are supported.
 - Inbound Mail API examples are data representations only. They do not add a
   MediaWiki inbound-mail feature or a callback endpoint.
-- Authentication, delivery events, submission-status lookup, and attachment-size
-  limits are not specified by Mail API `v1` and remain
-  deployment-specific.
+- Credential issuance and rotation, delivery events, submission-status lookup,
+  and attachment-size limits are not specified by Mail API `v1` and remain
+  deployment-specific. Mail API does define the `401` and `403` responses an
+  adapter must translate into a failed `StatusValue`.

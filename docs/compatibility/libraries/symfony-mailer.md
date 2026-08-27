@@ -1,15 +1,19 @@
 ---
-title: "Symfony/Laravel compatibility"
+title: "Symfony Mailer compatibility"
 sidebar:
-  label: Symfony/Laravel
+  label: Symfony Mailer (PHP)
 ---
 
-This assessment uses Symfony Mailer's custom transport as the common Mail API
-compatibility boundary. A potential transport would convert the fully composed
-Symfony message into an `OutboundMessageRequest` and submit it to
-`POST /v1/messages`.
+This assessment uses Symfony Mailer's custom transport as the Mail API
+compatibility boundary. Symfony Mailer is a standalone component: it is usable
+without the Symfony framework, and other PHP frameworks delegate to it. A
+potential transport would convert the fully composed Symfony message into an
+`OutboundMessageRequest` and submit it to `POST /v1/messages`.
 
 See Symfony's [custom transport documentation](https://symfony.com/doc/current/mailer.html#custom-transport-factories).
+
+For the framework-level registration hook, see the
+[Laravel compatibility assessment](/compatibility/frameworks/laravel/).
 
 ## Potential Symfony Mailer transport
 
@@ -32,22 +36,14 @@ The transport should treat a Mail API `200` as send success, consistent with
 Symfony's definition of success as acceptance by a transport. It must not
 present this as recipient delivery confirmation.
 
-## Laravel
-
-Laravel uses Symfony Mailer. Register the same transport through
-`Mail::extend()`, configure it as a named mailer in `config/mail.php`, and
-select it as the default mailer or for individual messages. Laravel queueing
-remains unchanged: queued jobs invoke the selected transport when they run.
-
-See Laravel's [custom transports documentation](https://laravel.com/docs/12.x/mail#custom-transports).
-
 ## Differences and limits
 
-- Symfony and Laravel support inline embedded attachments with content IDs. Mail
-  API 0.1 has no content-ID/inline-embed field, so the transport needs an
+- Symfony Mailer supports inline embedded attachments with content IDs. Mail
+  API `v1` has no content-ID/inline-embed field, so the transport needs an
   explicit policy, such as rejecting embeds, rather than silently emitting
   broken HTML.
-- Inbound Mail API examples do not provide a Symfony or Laravel inbound-mail
+- Inbound Mail API examples do not provide a Symfony Mailer inbound-mail
   feature or callback endpoint.
-- Authentication, retries, delivery events, and attachment-size limits remain
-  deployment-specific.
+- Credential issuance and rotation, retries, delivery events, and
+  attachment-size limits remain deployment-specific. Mail API defines the `401`
+  and `403` responses the transport must surface, not how a token is obtained.

@@ -1,0 +1,22 @@
+# OpenAPI lint configuration for `openapi.yaml`.
+#
+# Run locally with `npm run lint:openapi`. CI runs the same command, so a rule
+# disabled here must carry the reason it does not apply to this specification.
+extends:
+  - recommended
+
+apis:
+  mailapi@v1:
+    root: openapi.yaml
+
+rules:
+  # Mail API is vendor-neutral: it specifies the `/v1/` path contract, not an
+  # origin. `servers` therefore holds a documented placeholder rather than a
+  # real host, and no provider origin belongs in this repository.
+  no-server-example.com: off
+
+  # `InboundMessage` is specified on purpose without a v1 operation that
+  # returns it, so that host-defined and future inbound endpoints share one
+  # shape. Its schema is documented in prose at /examples/received/ because an
+  # unreferenced component does not appear in the rendered reference.
+  no-unused-components: off

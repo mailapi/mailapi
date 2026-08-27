@@ -19,32 +19,17 @@ POST /v1/messages
 
 - [API reference](/api/)
 - [OpenAPI source (`openapi.yaml`)](https://github.com/mailapi/mailapi/blob/main/openapi.yaml)
-- [Versioning policy](/versioning/)
+- [Problem types](/problems/)
 
-## Submission responses
+## Concepts
 
-| Status | Meaning | Retry guidance |
-| --- | --- | --- |
-| `200` | Provider accepted responsibility for asynchronous processing; this does not confirm final recipient delivery. | Do not retry. |
-| `400` | Malformed JSON or invalid request syntax. | Correct the request first. |
-| `413` | Request body or attachment content exceeds a provider limit. | Reduce the request first. |
-| `415` | Unsupported request media type. | Correct the request first. |
-| `409` | `Idempotency-Key` conflicts with a different payload or matching request still in progress. | Use a new key for a different message; retry a matching in-progress request later. |
-| `422` | Message fields are semantically invalid. | Correct the message first. |
-| `429` | Submission rate limit exceeded. | Retry after `Retry-After` when provided. |
-| `500` | Unexpected provider error; the submission outcome may be unknown. | Without an `Idempotency-Key`, retry only under a caller policy that accepts duplicate-submission risk. |
-| `503` | Provider is temporarily unable to accept the message. | Retry after `Retry-After` when provided. |
-
-Error responses use `application/problem+json`.
-
-To make a submission safe to retry, clients can supply an `Idempotency-Key`
-header containing a unique 1–256 character key. For 24 hours, a retry with the
-same key and byte-for-byte identical UTF-8 request body returns the original
-successful result instead of submitting a duplicate message. JSON whitespace
-and object-member ordering are significant. Reusing a key with a different body
-returns problem type `https://api.example.com/problems/idempotency-key-reused`;
-retrying while the matching submission is in progress returns
-`https://api.example.com/problems/idempotency-key-in-progress`.
+- [Authentication](/concepts/authentication/) — the bearer token a request carries.
+- [Submission responses](/concepts/responses/) — every status code and its
+  retry guidance.
+- [Idempotency](/concepts/idempotency/) — how `Idempotency-Key` makes a retry safe.
+- [Versioning policy](/concepts/versioning/) — what may change without a new
+  major version.
+- [Design rationale](/concepts/rationale/) — why the contract is shaped this way.
 
 ## Examples
 
@@ -64,6 +49,7 @@ retrying while the matching submission is in progress returns
 - [Azure Communication Services Email](/compatibility/clouds/azure-email/)
 - [Gmail API](/compatibility/clouds/gmail-api/)
 - [Resend](/compatibility/clouds/resend/)
+- [SendGrid](/compatibility/clouds/sendgrid/)
 
 ### Protocols
 
@@ -72,15 +58,36 @@ retrying while the matching submission is in progress returns
 - [POP3](/compatibility/protocols/pop/)
 - [SMTP](/compatibility/protocols/smtp/)
 
-### Frameworks
-
-- [Drupal (`MailInterface`)](/compatibility/frameworks/drupal/)
-- [MediaWiki (`IEmailer`)](/compatibility/frameworks/mediawiki/)
-- [Symfony/Laravel (custom transport)](/compatibility/frameworks/symfony-laravel/)
-- [WordPress (`wp_mail()`)](/compatibility/frameworks/wordpress/)
+The caller-side assessments are grouped by the layer an adapter attaches to,
+from the language upward.
 
 ### Languages
 
-- [Rust (`lettre`)](/compatibility/languages/rust/)
-- [PHP](/compatibility/languages/php/)
+Mail facilities that ship with the language, with no added dependency.
+
+- [PHP (`mail()`)](/compatibility/languages/php/)
 - [Python (`email`)](/compatibility/languages/python/)
+
+### Libraries
+
+Framework-agnostic libraries added as a dependency to compose or send mail.
+
+- [Jakarta Mail (Java)](/compatibility/libraries/jakarta-mail/)
+- [lettre (Rust)](/compatibility/libraries/lettre/)
+- [Symfony Mailer (PHP)](/compatibility/libraries/symfony-mailer/)
+
+### Frameworks
+
+Application frameworks that own mail configuration and expose a swappable
+transport or sender.
+
+- [Laravel (`Mail::extend()`)](/compatibility/frameworks/laravel/)
+- [Spring (`JavaMailSender`)](/compatibility/frameworks/spring/)
+
+### Applications
+
+Deployed products with a mail hook an extension can replace.
+
+- [Drupal (`MailInterface`)](/compatibility/applications/drupal/)
+- [MediaWiki (`IEmailer`)](/compatibility/applications/mediawiki/)
+- [WordPress (`wp_mail()`)](/compatibility/applications/wordpress/)

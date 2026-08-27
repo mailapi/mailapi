@@ -11,15 +11,20 @@ Mail API provider to use Resend.
 
 ## References
 
-- [Resend send-email reference](https://resend.com/docs/api-reference/emails/send-email) — request fields, `200` response, email ID, and `Idempotency-Key`.
-- [Resend API introduction](https://resend.com/docs/api-reference/introduction) — standard API error status codes.
-- [Resend usage limits](https://resend.com/docs/api-reference/rate-limit) — `429` and rate-limit response headers, including `retry-after`.
+- [Resend send-email reference](https://resend.com/docs/api-reference/emails/send-email):
+  request fields, `200` response, email ID, and `Idempotency-Key`.
+- [Resend API introduction](https://resend.com/docs/api-reference/introduction):
+  standard API error status codes.
+- [Resend usage limits](https://resend.com/docs/api-reference/rate-limit):
+  `429` and rate-limit response headers, including `retry-after`.
 
 ## Potential adapter boundary
 
 Resend's send-email request directly represents most Mail API message fields.
 The adapter maps the accepted Resend email `id` to the Mail API accepted-message
 identifier and returns `200`; that acceptance is not final recipient delivery.
+The two status codes agree because both mean acceptance at the submission
+boundary; see the [rationale for `200`](/concepts/rationale/).
 
 | Mail API field | Resend mapping | Notes |
 | --- | --- | --- |
@@ -38,10 +43,16 @@ Resend status codes are provider-facing responses. The adapter converts them to
 Mail API's public contract and must not expose Resend API keys or account
 configuration to the caller.
 
+Mail API's `401` and `403` describe the *caller's* credentials at the Mail API
+boundary. They are not a channel for the adapter's own Resend API key: if the
+adapter cannot authenticate to Resend, the caller's request was still valid, so
+the adapter returns `500`.
+
 | Resend result | Mail API response | Adapter handling |
 | --- | --- | --- |
 | `200` with an email `id` | `200` | Return the Resend ID as the accepted-message `id`. |
 | `400` malformed request | `500` | Treat invalid generated Resend request syntax or serialization as an adapter defect. |
+| `400` unverified or unauthorized sending domain | `403` | The caller may not send as the requested `from` identity under the configured Resend account. |
 | `400` provider validation failure | `422` | The Mail API message is unacceptable under the selected Resend provider policy. |
 | `409` idempotency-key conflict | `409` | Preserve the distinction between a different payload and an in-progress matching request. |
 | `401`, `403`, or provider domain/account configuration failure | `500` | Repair adapter credentials, authorization, or Resend account configuration. |
