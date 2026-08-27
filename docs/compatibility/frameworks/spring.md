@@ -49,10 +49,10 @@ fidelity.
 
 ## Differences and limits
 
-- A Mail API `200` is provider acceptance, not recipient delivery. Wrapping
-  `send()` in `@Async` or a retry advice does not change that; a retry after a
-  `200` is a duplicate submission unless it carries the same
-  `Idempotency-Key`.
+- Mail API `202` is asynchronous acceptance and `200` is completion within an
+  applied wait; neither is recipient delivery. Wrapping `send()` in `@Async`
+  or a retry advice does not change that. Retrying after either success can
+  duplicate a submission unless it carries the same `Idempotency-Key`.
 - The Actuator mail health indicator probes the SMTP connection of Spring's own
   sender implementation. An HTTP-backed sender needs its own readiness signal,
   or must disable that indicator, rather than reporting a mail-server check it

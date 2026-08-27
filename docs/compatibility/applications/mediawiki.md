@@ -36,8 +36,9 @@ the responsibility of an extension or deployment integration.
 ## Submission semantics
 
 `IEmailer::send()` is a synchronous, single-submission call that returns a
-`StatusValue`. A Mail API `200` maps to successful provider acceptance, not
-final recipient delivery.
+`StatusValue`. Mail API `200` and `202` both map to a successful result; neither
+confirms final recipient delivery. The adapter can send `Prefer: wait=N` when a
+bounded wait for submission completion is desirable.
 
 If the HTTP request times out, the adapter cannot determine whether Mail API
 accepted the message before the response was lost. A client-supplied

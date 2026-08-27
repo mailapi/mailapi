@@ -6,7 +6,8 @@ sidebar:
 
 | Status | Meaning | Retry guidance |
 | --- | --- | --- |
-| `200` | Provider accepted responsibility for asynchronous processing; this does not confirm final recipient delivery. | Do not retry. |
+| `200` | Submission completed; returned within an applied `Prefer: wait=N` period or when a keyed terminal result is replayed. This does not confirm final recipient delivery. | Do not retry. |
+| `202` | Submission was accepted for asynchronous processing. This is the default success response and does not confirm final recipient delivery. | Do not retry merely because processing is asynchronous. |
 | `400` | Malformed JSON or invalid request syntax. | Correct the request first. |
 | `401` | Credentials are missing, malformed, or invalid. | Fix credentials first. |
 | `403` | Credentials are valid but not authorized for this submission. | Fix authorization first. |
@@ -18,10 +19,11 @@ sidebar:
 | `500` | Unexpected provider error; the submission outcome may be unknown. | A matching `Idempotency-Key` safely replays the stored `500` but does not execute again. A new key or an unkeyed retry risks a duplicate. |
 | `503` | Provider is temporarily unable to accept the message; execution did not begin. | Retry the same request and key after `Retry-After` when provided. |
 
-`200` is the only success status, and it means acceptance rather than delivery.
-The [design rationale](/concepts/rationale/) records why the contract uses `200`
-rather than `202`, and how that lines up with SMTP, JMAP, and each cloud
-provider.
+`202` is the default success status. A client can send `Prefer: wait=N`; if the
+provider applies it and submission completes within the wait period, it can
+return `200` with `Preference-Applied: wait=N`. The
+[design rationale](/concepts/rationale/) explains this bounded-wait contract
+and its relationship to submission and delivery.
 
 Error responses use `application/problem+json` with a `type` from the
 [problem type registry](/problems/).

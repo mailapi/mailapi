@@ -28,13 +28,14 @@ property `mail.transport.protocol=mailapi` or call
 The adapter parses the composed `MimeMessage`, constructs an
 `OutboundMessageRequest`, and submits it to `POST /v1/messages` over HTTP.
 Because Jakarta Mail's `Transport.send()` is synchronous and expects a void
-return, the transport treats HTTP `200` as acceptance and raises
-`MessagingException` subtypes on HTTP error responses.
+return, the transport treats HTTP `200` and `202` as success and raises
+`MessagingException` subtypes on HTTP error responses. It can send
+`Prefer: wait=N` to request a bounded wait for submission completion.
 
 ## Differences and limits
 
-- A Mail API `200` confirms provider acceptance for asynchronous processing;
-  it does not confirm recipient delivery.
+- Mail API `202` indicates asynchronous acceptance, while `200` indicates
+  completion within an applied wait. Neither confirms recipient delivery.
 - Inline MIME parts with `Content-ID` headers have no structured field in
   Mail API `v1`. The transport requires an explicit policy (such as rejecting
   inline attachments) to prevent broken message rendering.

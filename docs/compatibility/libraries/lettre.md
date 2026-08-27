@@ -32,8 +32,8 @@ mechanism. For adapting existing SMTP submission code, see the
 
 ## Limits and response handling
 
-- A successful Mail API `200` confirms provider acceptance for asynchronous
-  processing; it does not confirm final recipient delivery.
+- Mail API `202` indicates asynchronous acceptance, while `200` indicates
+  completion within an applied wait. Neither confirms final recipient delivery.
 - Inline attachments with content IDs need an application policy because Mail
   API `v1` has no equivalent structured field.
 - Preserve retry safety by mapping a caller-generated idempotency key to the

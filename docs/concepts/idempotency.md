@@ -38,6 +38,10 @@ Both conflict conditions use status `409` and are not replayed outcomes.
 
 ## Stored outcomes
 
+The initial `202` response is not a terminal outcome and is not stored as the
+result. A matching retry while execution continues returns the `409`
+in-progress problem described above.
+
 Once execution produces a terminal `200` or `500`, the provider stores its
 status and body for 24 hours. A matching retry returns that response without
 executing another submission and adds `Idempotency-Replayed: true`. A newly

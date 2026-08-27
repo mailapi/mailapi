@@ -31,5 +31,5 @@ the Mail API message model, while HTTP submission remains a separate concern.
   [SMTP compatibility assessment](/compatibility/protocols/smtp/).
 - Inline MIME parts referenced by content IDs have no Mail API `v1` equivalent.
   They require a documented transformation or rejection policy.
-- A `200` response confirms API submission acceptance only; it does not
-  confirm recipient delivery.
+- Mail API `202` indicates asynchronous acceptance, while `200` indicates
+  completion within an applied wait. Neither confirms recipient delivery.

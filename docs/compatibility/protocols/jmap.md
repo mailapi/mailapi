@@ -26,8 +26,10 @@ submission. Unlike Mail API's one-shot send request, JMAP submits an existing
 For a new message, an adapter creates the JMAP `Email` and then creates an
 `EmailSubmission` that references it. JMAP back-references allow dependent
 method calls in one JMAP request when supported by the relevant methods. The
-adapter returns Mail API `200` only after `EmailSubmission/set` reports a
-successful creation.
+adapter treats submission as complete only after `EmailSubmission/set` reports
+a successful creation. It returns Mail API `200` when an applied wait covers
+that completion; otherwise Mail API returns the default `202` while the adapter
+continues asynchronously.
 
 | Mail API concept | JMAP equivalent | Mapping and limit |
 | --- | --- | --- |
@@ -35,7 +37,7 @@ successful creation.
 | `to`, `cc`, `bcc`, `replyTo` | `Email` address fields | These represent RFC 5322 message fields. JMAP removes `Bcc` during delivery. |
 | No explicit transport envelope | `EmailSubmission.envelope` | JMAP can supply `mailFrom`, `rcptTo`, and SMTP parameters explicitly, or let the server derive them from message fields. Mail API cannot express the explicit form. |
 | `subject`, bodies, attachments, headers | `Email` body structure and blobs | JMAP preserves nested body structure and binary blobs more precisely than Mail API's flattened model. |
-| accepted response `id` | `EmailSubmission` ID | The submission ID is the closest correspondence. The referenced Email ID is a separate mailbox-resource identifier. |
+| submission `id` | Provider-generated Mail API ID mapped to the `EmailSubmission` ID | The Mail API ID exists before asynchronous execution; the referenced JMAP Email ID is separate. |
 | `InboundMessage.receivedAt` | `Email.receivedAt` | Direct conceptual correspondence, subject to the JMAP server's stored metadata. |
 | No status resource | `undoStatus` and optional `deliveryStatus` | JMAP can expose cancellation state and known per-recipient SMTP or DSN status; Mail API `v1` cannot. |
 

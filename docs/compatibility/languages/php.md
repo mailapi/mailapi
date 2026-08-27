@@ -25,8 +25,9 @@ they do not expose a complete structured message model.
 - `mail()` has no standard attachment argument and provides a single opaque
   message body. MIME attachments and alternate text/HTML bodies need
   application-specific parsing or construction before they can map to Mail API.
-- PHP's boolean send result and Mail API's `200` both indicate submission
-  acceptance, not final delivery to a recipient.
+- PHP's boolean send result maps either Mail API success response to success.
+  `202` is asynchronous acceptance; `200` means submission completed within an
+  applied wait. Neither confirms final delivery to a recipient.
 - PHP applications using Symfony Mailer have a substantially stronger match:
   its composed message and custom transport boundary retain structured
   recipients, both body types, and attachments. See the

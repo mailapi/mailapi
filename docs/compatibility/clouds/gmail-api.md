@@ -22,8 +22,8 @@ is not a provider-neutral, account-wide transactional-email API.
 
 The Gmail API accepts an RFC 2822/MIME message in the `raw` field, encoded with
 base64url. An adapter composes that MIME message from an
-`OutboundMessageRequest`, calls `users.messages.send`, and maps the returned
-Gmail message `id` to Mail API's accepted-message identifier.
+`OutboundMessageRequest`, calls `users.messages.send`, and maps the Mail API
+submission `id` to the returned Gmail message `id`.
 
 | Mail API field | Gmail MIME mapping | Notes |
 | --- | --- | --- |
@@ -33,12 +33,12 @@ Gmail message `id` to Mail API's accepted-message identifier.
 | `subject`, `text`, `html` | `Subject` and MIME body parts | Compose multipart alternatives when both bodies are present. |
 | `headers` | Supplemental MIME headers | Structured Mail API fields remain authoritative. |
 | `attachments` | MIME attachment parts | Encode each part according to MIME before base64url-encoding the complete message. |
-| accepted response `id` | Gmail message `id` | This is a mailbox-resource identifier, not a delivery-status API. |
+| submission `id` | Provider-generated Mail API ID mapped to the Gmail message `id` | The Gmail ID is a mailbox-resource identifier and can arrive after the default Mail API response. |
 
 A successful Gmail response means Gmail accepted the message for sending. An
-adapter maps that to Mail API `200`; it must not report final recipient
-delivery. Gmail's own documentation of that limit is part of the
-[rationale for `200`](/concepts/rationale/).
+adapter returns Mail API `202` by default, or `200` if an applied wait covers
+completion of the Gmail call. It must not report final recipient delivery; see
+the [bounded-wait rationale](/concepts/rationale/).
 
 ## Response and error mapping
 
@@ -53,7 +53,7 @@ so the adapter returns `500`.
 
 | Gmail result | Mail API response | Adapter handling |
 | --- | --- | --- |
-| `200` with a Gmail message resource | `200` | Return the Gmail message `id` as the accepted-message `id`; do not treat it as delivery confirmation. |
+| `200` with a Gmail message resource | `202` by default; `200` after an applied wait | Retain the Mail API submission `id` and map it to the Gmail message `id`; neither is delivery confirmation. |
 | `400` `badRequest` | `500` or `422` | Use `500` for malformed generated MIME/API input and `422` for a valid Mail API message Gmail rejects semantically. |
 | `401` authentication failure | `500` | Refresh or repair the adapter's OAuth credentials; do not expose them to the Mail API caller. |
 | `403` send-as identity permission failure | `403` | The selected mailbox cannot send as the requested `from` identity, so the caller is not authorized for this submission. |
@@ -62,10 +62,9 @@ so the adapter returns `500`.
 | `404` selected mailbox or adapter resource missing | `500` | Treat the configured Gmail account/resource as an adapter configuration failure. |
 | `500`, `502`, `503`, `504`, timeout, or connection failure | `500` | The submission outcome can be unknown. A matching Mail API key replays the stored `500`; starting another execution requires a new key and a duplicate-risk policy. |
 
-Gmail documents that a `200` response does not establish successful end-to-end
-mail sending. This is compatible with Mail API `200`, which confirms provider
-acceptance rather than recipient delivery, but it is not a delivery-status
-contract.
+Gmail documents that its `200` response does not establish successful
+end-to-end mail sending. Mail API's `200` and `202` likewise stop at the
+submission boundary and do not form a delivery-status contract.
 
 ## Differences and limits
 

@@ -37,10 +37,27 @@ paths:
       summary: Send a message
       operationId: createMessage
       description: >-
-        Submits an outbound message for asynchronous processing. A `200`
-        response means the provider durably accepted responsibility for the
-        message; it does not confirm delivery to any recipient.
+        Submits an outbound message for asynchronous processing. The default
+        success response is `202`. A client can send `Prefer: wait=N` to ask
+        the provider to wait up to N seconds for submission to complete; when
+        the preference is applied and submission completes in time, the
+        provider can return `200`. Neither response confirms delivery to any
+        recipient.
       parameters:
+        - name: Prefer
+          in: header
+          required: false
+          description: >-
+            RFC 7240 processing preference. `wait=N`, where N is a
+            non-negative number of seconds, asks the provider to wait up to
+            that duration for submission to complete. The provider may ignore
+            the preference. If it applies the preference, it returns
+            `Preference-Applied: wait=N`; completion within the applied wait
+            can produce `200`, otherwise the response remains `202` and
+            processing continues asynchronously.
+          schema:
+            type: string
+          example: wait=10
         - name: Idempotency-Key
           in: header
           required: false
@@ -63,11 +80,14 @@ paths:
             object-member ordering are significant. A different body or an
             execution still in progress returns `409`. Once execution produces
             a terminal `200` or `500` outcome, the provider stores its status
-            and body for the remainder of the retention period. A matching
-            retry replays that response with `Idempotency-Replayed: true` rather
-            than executing again. A `503` means execution did not begin and is
-            not stored. After 24 hours the association is forgotten and the key
-            can start a new submission.
+            and body for the remainder of the retention period. The initial
+            `202` response is not terminal and is not stored as the outcome. A
+            matching retry while execution continues returns `409`; after
+            completion it replays the terminal response with
+            `Idempotency-Replayed: true` rather than executing again. A `503`
+            means execution did not begin and is not stored. After 24 hours
+            the association is forgotten and the key can start a new
+            submission.
 
 
             The key is transmitted as an HTTP field value, so it is restricted
@@ -87,14 +107,29 @@ paths:
       responses:
         '200':
           description: >-
-            Message accepted for asynchronous processing. This does not confirm
-            final recipient delivery. The submission request itself is complete;
-            `200` rather than `202` is a deliberate contract choice, because
-            this API defines no delivery-status resource to return to. See
-            https://mailapi.github.io/concepts/rationale/.
+            Submission completed and the provider accepted responsibility for
+            further processing. This is returned when submission completes
+            within an applied `Prefer: wait=N` period or when a completed,
+            keyed outcome is replayed. It does not confirm final recipient
+            delivery.
           headers:
+            Preference-Applied:
+              $ref: '#/components/headers/PreferenceApplied'
             Idempotency-Replayed:
               $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageAcceptedResponse'
+        '202':
+          description: >-
+            Submission was accepted for asynchronous processing. This is the
+            default success response and is also returned when an applied
+            `Prefer: wait=N` period expires before submission completes. It
+            does not confirm final recipient delivery.
+          headers:
+            Preference-Applied:
+              $ref: '#/components/headers/PreferenceApplied'
           content:
             application/json:
               schema:
@@ -219,6 +254,8 @@ paths:
             Idempotency-Key, this terminal response is stored and a matching
             retry replays it rather than executing another submission.
           headers:
+            Preference-Applied:
+              $ref: '#/components/headers/PreferenceApplied'
             Idempotency-Replayed:
               $ref: '#/components/headers/IdempotencyReplayed'
           content:
@@ -284,6 +321,16 @@ components:
       schema:
         type: boolean
       example: true
+
+    PreferenceApplied:
+      description: >-
+        RFC 7240 preference applied while processing the request. Present as
+        `wait=N` when the provider honored that preference; absent when no
+        preference was applied.
+      required: false
+      schema:
+        type: string
+      example: wait=10
 
   schemas:
     EmailAddress:
@@ -463,7 +510,11 @@ components:
       properties:
         id:
           type: string
-          description: Mail API identifier assigned to the accepted message.
+          description: >-
+            Mail API identifier assigned before asynchronous execution begins
+            and retained for correlation with any downstream provider
+            identifier. It is not a delivery receipt or the URL of a status
+            resource.
       additionalProperties: false
 
     Problem:

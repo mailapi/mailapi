@@ -32,9 +32,10 @@ attachments.
 | Supplemental headers | `headers` | Preserve headers not mapped to structured fields. |
 | Attachments | `attachments` | Read the attachment body, Base64-encode it, and retain filename and MIME type. |
 
-The transport should treat a Mail API `200` as send success, consistent with
-Symfony's definition of success as acceptance by a transport. It must not
-present this as recipient delivery confirmation.
+The transport should treat Mail API `200` and `202` as send success, consistent
+with Symfony's definition of success as acceptance by a transport. It can send
+`Prefer: wait=N` when bounded synchronous waiting is useful, but must not
+present either response as recipient delivery confirmation.
 
 ## Differences and limits
 
