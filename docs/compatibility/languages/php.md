@@ -1,7 +1,7 @@
 ---
 title: "PHP compatibility"
 sidebar:
-  label: PHP
+  label: PHP mail()
 ---
 
 This assessment considers Mail API compatibility with PHP applications in

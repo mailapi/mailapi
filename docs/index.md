@@ -23,6 +23,8 @@ POST /v1/messages
 
 ## Concepts
 
+- [Scope and capabilities](/concepts/scope/) — what `v1` supports, deliberately
+  omits, or reserves for a future capability.
 - [Authentication](/concepts/authentication/) — the bearer token a request carries.
 - [Submission responses](/concepts/responses/) — every status code and its
   retry guidance.

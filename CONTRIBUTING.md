@@ -40,9 +40,9 @@ it. Edit files under `docs/`, never under `src/content/docs/`.
 1. Keep the response list in numeric order.
 2. Use a problem `type` from the registry in `docs/problems.md`. A new
    condition needs a new entry there, not a reused URI.
-3. Update the response table in `docs/index.md` if you add or remove a status
-   code. It is the single source of truth; `README.md` links to it rather than
-   repeating it.
+3. Update the response table in `docs/concepts/responses.md` if you add or
+   remove a status code. It is the single source of truth; `README.md` links to
+   it rather than repeating it.
 4. Reflect the change in the affected compatibility assessments. A new status
    code usually needs a row in each `docs/compatibility/clouds/*.md` mapping
    table.

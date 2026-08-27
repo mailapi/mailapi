@@ -70,6 +70,7 @@ export default defineConfig({
           // from the request contract outward, which is not alphabetical.
           label: 'Concepts',
           items: [
+            { label: 'Scope and capabilities', link: '/concepts/scope/' },
             { label: 'Authentication', link: '/concepts/authentication/' },
             { label: 'Submission responses', link: '/concepts/responses/' },
             { label: 'Idempotency', link: '/concepts/idempotency/' },

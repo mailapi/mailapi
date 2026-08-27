@@ -56,12 +56,15 @@ made safe with an `Idempotency-Key` header.
 The documentation site is the single source of truth for the contract; this
 README is only an entry point.
 
-- [Documentation home](https://mailapi.github.io/) — submission response table,
-  authentication, and idempotency rules
+- [Documentation home](https://mailapi.github.io/) — documentation entry point
 - [API reference](https://mailapi.github.io/api/) — rendered from
   [`openapi.yaml`](openapi.yaml)
 - [Problem types](https://mailapi.github.io/problems/) — the error identifier
   registry
+- [Submission responses](https://mailapi.github.io/concepts/responses/) —
+  status meanings and retry guidance
+- [Scope and capabilities](https://mailapi.github.io/concepts/scope/) — the
+  supported contract and explicit non-goals
 - [Versioning policy](https://mailapi.github.io/concepts/versioning/)
 - [Design rationale](https://mailapi.github.io/concepts/rationale/) — why the contract
   makes its non-obvious choices, starting with `200` over `202`
