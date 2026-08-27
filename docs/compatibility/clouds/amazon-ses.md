@@ -57,7 +57,7 @@ the adapter returns `500`.
 | `400` `MessageRejected` or invalid message content | `422` | The Mail API message is unacceptable under the selected SES provider policy. |
 | `429` `TooManyRequestsException` | `429` | Apply backoff; include `Retry-After` only when the adapter can determine a wait period. |
 | SES credentials, region, configuration-set, or account configuration failure | `500` | Treat this as adapter or deployment configuration, not caller input. |
-| SES `5xx`, timeout, or connection failure | `500` | The submission outcome can be unknown; retry only under a duplicate-risk policy. |
+| SES `5xx`, timeout, or connection failure | `500` | The submission outcome can be unknown. A matching Mail API key replays the stored `500`; starting another execution requires a new key and a duplicate-risk policy. |
 
 Use `503` only when the adapter knows it did not submit the message and is
 temporarily unable to accept it. Once a request may have reached SES, return

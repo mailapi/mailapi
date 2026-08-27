@@ -62,7 +62,7 @@ so the adapter returns `500`.
 | `413` payload too large | `413` | Surface the size limit rather than retrying an unchanged request. |
 | `401` or adapter API-key, sender-authentication, or account configuration failure | `500` | Treat this as adapter or deployment configuration, not caller input. |
 | `429` | `429` | Apply backoff and propagate a `Retry-After` value when available. |
-| SendGrid `5xx`, timeout, or connection failure | `500` | The submission outcome can be unknown; retry only under a duplicate-risk policy. |
+| SendGrid `5xx`, timeout, or connection failure | `500` | The submission outcome can be unknown. A matching Mail API key replays the stored `500`; starting another execution requires a new key and a duplicate-risk policy. |
 
 Use `503` only when the adapter knows it did not submit the message and is
 temporarily unable to accept it. Once a request may have reached SendGrid,
@@ -72,9 +72,11 @@ return the unknown-outcome `500` contract instead.
 
 - SendGrid's Mail Send API has no idempotency-key mechanism. An adapter that
   honors Mail API's optional `Idempotency-Key` must implement retention,
-  replay, and the `409` conflict cases itself; it cannot delegate them to the
-  provider as a Resend adapter can. It must not derive a key from message
-  content, because identical content can be a legitimate second submission.
+  replay, and the `409` conflict cases itself. Unlike Resend, SendGrid cannot
+  also suppress a repeated downstream call, so the adapter must persist its
+  execution state before calling SendGrid and must not call it again after an
+  unknown-outcome `500`. It must not derive a key from message content, because
+  identical content can be a legitimate second submission.
 - SendGrid reports delivery, bounce, and engagement outcomes asynchronously
   through the Event Webhook, which posts to a deployment-owned endpoint. That
   is not a status resource the send call points to, and Mail API `v1` defines

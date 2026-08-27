@@ -24,8 +24,8 @@ not require a Mail API provider to use Azure.
 
 Azure starts email sending as a long-running operation. The adapter submits the
 request, maps the returned operation ID to Mail API's accepted-message `id`,
-and returns `200` without waiting for delivery. Azure is the one assessed
-provider that answers with `202`, and it earns that code by also exposing an
+and returns `200` without waiting for delivery. Azure is one of the assessed
+providers that answers with `202`; unlike SendGrid, it also exposes an
 operation resource to poll. Mail API defines no such resource, which is part of
 the [rationale for `200`](/concepts/rationale/).
 
@@ -63,7 +63,7 @@ so the adapter returns `500`.
 | `400` invalid recipient, content, or attachment | `422` | The Mail API message is unacceptable under the selected Azure provider policy. |
 | `401`, `403`, or missing Azure resource caused by adapter configuration | `500` | Repair credentials, permissions, or Azure resource configuration. |
 | `429` | `429` | Apply backoff; preserve a provider retry delay when available. |
-| Azure `5xx`, timeout, or connection failure | `500` | The submission outcome can be unknown; retry only under a duplicate-risk policy. |
+| Azure `5xx`, timeout, or connection failure | `500` | The submission outcome can be unknown. A matching Mail API key replays the stored `500`; starting another execution requires a new key and a duplicate-risk policy. |
 
 Use `503` only when the adapter knows it did not submit the message and is
 temporarily unable to accept it. Once a request may have reached Azure, return

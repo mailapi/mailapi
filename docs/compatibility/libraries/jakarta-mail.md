@@ -43,6 +43,11 @@ return, the transport treats HTTP `200` as acceptance and raises
 - Idempotency requires caller coordination: the transport should accept an
   `Idempotency-Key` via message headers or session properties to make retries
   safe.
-- Exception mapping: HTTP `401`/`403` should map to
-  `AuthenticationFailedException`, `422` or `400` to `SendFailedException`, and
-  unexpected provider errors (`500`/`503`) to `MessagingException`.
+- Exception mapping: HTTP `401` should map to
+  `AuthenticationFailedException`; `403` should map to `SendFailedException`
+  (or another `MessagingException` that represents authorization failure),
+  because the credentials were accepted but the submission was not authorized.
+  Map `422` to `SendFailedException`. Because the transport itself serializes
+  the HTTP request, a `400` indicates an adapter defect rather than a malformed
+  caller message and should map to a general `MessagingException`. Unexpected
+  provider errors (`500`/`503`) also map to `MessagingException`.

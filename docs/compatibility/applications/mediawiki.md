@@ -31,7 +31,7 @@ the responsibility of an extension or deployment integration.
 | `$bodyHtml` | `html` | Include when it is not `null`. |
 | `$options['replyTo']` | `replyTo` | Convert to an `EmailAddress` when present. |
 | `$options['headers']` | `headers` | Preserve supplemental headers, including repeated names, in order. |
-| `$options['contentType']` | `headers` | Preserve as a `Content-Type` header when it is explicitly supplied. |
+| `$options['contentType']` | `text` or `html` | Use it to interpret the corresponding body input. Do not forward it as a supplemental `Content-Type` header, because Mail API derives MIME framing from the structured body fields. |
 
 ## Submission semantics
 
@@ -52,9 +52,10 @@ errors (`400`, `413`, `415`, and `422`), credential and authorization failures
 temporary provider responses (`429` and `503`). A
 matching submission that is still in progress may be retried later; a key used
 with a different payload requires a new key or payload. Other `5xx` responses
-can leave the submission outcome unknown, so retries require an adapter policy
-that accepts duplicate-submission risk. A failed request is translated to a
-failed `StatusValue`.
+can leave the submission outcome unknown. A matching key replays a stored
+`500`; starting another execution requires a new key and an adapter policy that
+accepts duplicate-submission risk. A failed request is translated to a failed
+`StatusValue`.
 
 ## Differences and limits
 

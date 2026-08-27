@@ -45,20 +45,33 @@ paths:
           in: header
           required: false
           description: >-
-            Client-generated key that makes a message submission idempotent for
-            24 hours. Reusing a key requires byte-for-byte identical UTF-8
-            request-body content; JSON whitespace and object-member ordering
-            are significant. The key is transmitted as an HTTP field value, so
-            it is restricted to visible ASCII characters.
+            Client-generated key that makes submission execution idempotent for
+            24 hours. The key namespace is scoped to the authenticated principal
+            and this operation; one principal cannot collide with or replay
+            another principal's key.
 
 
-            A replayed response repeats the status code and body of the
-            original outcome, including an unsuccessful one: if the first
-            submission returned `422`, a matching retry within the retention
-            period returns that same `422` problem document. Replayed responses
-            carry `Idempotency-Replayed: true`. After the retention period
-            expires the key is forgotten, and a subsequent request using it is
-            processed as a new submission.
+            Authentication, authorization, media-type and size checks, JSON
+            parsing, message validation, and rate-limit admission happen before
+            the key is reserved. Responses from those checks (`400`, `401`,
+            `403`, `413`, `415`, `422`, and `429`) are not stored and may be
+            corrected and retried with the same key.
+
+
+            After those checks pass, the provider atomically associates the key
+            with the byte-for-byte UTF-8 request body. JSON whitespace and
+            object-member ordering are significant. A different body or an
+            execution still in progress returns `409`. Once execution produces
+            a terminal `200` or `500` outcome, the provider stores its status
+            and body for the remainder of the retention period. A matching
+            retry replays that response with `Idempotency-Replayed: true` rather
+            than executing again. A `503` means execution did not begin and is
+            not stored. After 24 hours the association is forgotten and the key
+            can start a new submission.
+
+
+            The key is transmitted as an HTTP field value, so it is restricted
+            to visible ASCII characters.
           schema:
             type: string
             minLength: 1
@@ -202,8 +215,12 @@ paths:
         '500':
           description: >-
             Unexpected provider error. The submission outcome may be unknown;
-            without an Idempotency-Key, a retry can create a duplicate and
-            requires a caller retry policy.
+            without an Idempotency-Key, a retry can create a duplicate. With an
+            Idempotency-Key, this terminal response is stored and a matching
+            retry replays it rather than executing another submission.
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
           content:
             application/problem+json:
               schema:
@@ -214,7 +231,10 @@ paths:
                 status: 500
                 detail: The submission outcome is unknown.
         '503':
-          description: Provider is temporarily unable to accept the message. The request may be retried.
+          description: >-
+            Provider is temporarily unable to accept the message. Submission
+            execution did not begin, so an Idempotency-Key is not retained and
+            the same request and key may be retried.
           headers:
             Retry-After:
               $ref: '#/components/headers/RetryAfter'
@@ -287,10 +307,17 @@ components:
       properties:
         name:
           type: string
-          description: Header field name (for example, Received or X-Custom-Header).
+          minLength: 1
+          pattern: '^[\x21-\x39\x3B-\x7E]+$'
+          description: >-
+            RFC 5322 field name (printable ASCII excluding colon), for example
+            Received or X-Custom-Header.
         value:
           type: string
-          description: Header field value.
+          pattern: '^[^\r\n]*$'
+          description: >-
+            Unfolded header field value. Carriage return and line feed are not
+            permitted.
       additionalProperties: false
 
     Attachment:
@@ -340,10 +367,12 @@ components:
             $ref: '#/components/schemas/EmailAddress'
         cc:
           type: array
+          minItems: 1
           items:
             $ref: '#/components/schemas/EmailAddress'
         bcc:
           type: array
+          minItems: 1
           items:
             $ref: '#/components/schemas/EmailAddress'
         replyTo:
@@ -376,13 +405,25 @@ components:
 
     OutboundMessageRequest:
       description: >-
-        A submission additionally requires at least one recipient and at least
-        one body representation.
+        A submission additionally requires at least one recipient across `to`,
+        `cc`, and `bcc`, and at least one body representation. Entries in
+        `headers` are supplemental: names represented by structured fields
+        (`From`, `To`, `Cc`, `Bcc`, `Reply-To`, and `Subject`) and MIME framing
+        fields (`Content-Type`, `Content-Transfer-Encoding`, and `MIME-Version`)
+        are invalid in an outbound request and produce `422` rather than
+        overriding the structured message.
       allOf:
         - $ref: '#/components/schemas/Message'
-        - type: object
-          required:
-            - to
+        - anyOf:
+            - type: object
+              required:
+                - to
+            - type: object
+              required:
+                - cc
+            - type: object
+              required:
+                - bcc
         - anyOf:
             - type: object
               required:

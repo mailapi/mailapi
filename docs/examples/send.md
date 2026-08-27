@@ -6,8 +6,8 @@ sidebar:
 
 Submit an outbound message to `POST /v1/messages`.
 
-A submission requires `from`, at least one `to` recipient, and at least one
-body representation (`text`, `html`, or both).
+A submission requires `from`, at least one recipient across `to`, `cc`, and
+`bcc`, and at least one body representation (`text`, `html`, or both).
 
 To safely retry a request, clients can optionally add an `Idempotency-Key`
 header with a client-generated value. It makes retries of the same payload safe
@@ -70,8 +70,8 @@ Content-Type: application/json
 ## Replayed response
 
 Retrying with the same `Idempotency-Key` and a byte-for-byte identical body
-replays the original outcome rather than sending a second message. The replay
-is marked with `Idempotency-Replayed`.
+replays the stored terminal outcome rather than sending a second message. The
+replay is marked with `Idempotency-Replayed`.
 
 ```http
 HTTP/1.1 200 OK
@@ -83,9 +83,10 @@ Idempotency-Replayed: true
 }
 ```
 
-A replay repeats the original outcome even when it was unsuccessful: if the
-first submission returned `422`, a matching retry returns that same `422`
-problem document with `Idempotency-Replayed: true`.
+A terminal `500` is also stored and replayed. Preflight failures such as `400`,
+`401`, `403`, `413`, `415`, `422`, and `429` are not stored, so a corrected
+request can reuse the same key. See [idempotency](/concepts/idempotency/) for
+the processing order and conflict behavior.
 
 ## Failure response
 

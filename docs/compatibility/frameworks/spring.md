@@ -39,10 +39,13 @@ fidelity.
   URL, the bearer token, and idempotency behavior.
 - `send()` returns nothing and signals failure by throwing `MailException`.
   Mail API's defined responses map onto its existing subtypes:
-  `401` and `403` to `MailAuthenticationException`, a rejected payload to
-  `MailSendException`, and an adapter that cannot build the request at all to
-  `MailParseException`. Reusing the established types keeps existing `catch`
-  blocks correct.
+  `401` to `MailAuthenticationException`, `403` to `MailSendException` (or a
+  dedicated `MailException` subtype), a rejected payload to `MailSendException`,
+  and an adapter that cannot build the request at all to `MailParseException`.
+  A `403` means that authentication succeeded but this submission is not
+  authorized; it must not be reported as an authentication failure that could
+  trigger credential refresh. Reusing the established types keeps existing
+  `catch` blocks correct.
 
 ## Differences and limits
 

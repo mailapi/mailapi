@@ -60,7 +60,7 @@ so the adapter returns `500`.
 | `403` domain-policy or OAuth-scope failure | `500` | Repair adapter authorization or Workspace administration; this is not caller input. |
 | `403` quota reason, or `429` | `429` | Back off according to the provider guidance and any available retry delay. |
 | `404` selected mailbox or adapter resource missing | `500` | Treat the configured Gmail account/resource as an adapter configuration failure. |
-| `500`, `502`, `503`, `504`, timeout, or connection failure | `500` | The submission outcome can be unknown; retry only under a duplicate-risk policy. |
+| `500`, `502`, `503`, `504`, timeout, or connection failure | `500` | The submission outcome can be unknown. A matching Mail API key replays the stored `500`; starting another execution requires a new key and a duplicate-risk policy. |
 
 Gmail documents that a `200` response does not establish successful end-to-end
 mail sending. This is compatible with Mail API `200`, which confirms provider

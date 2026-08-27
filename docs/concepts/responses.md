@@ -15,8 +15,8 @@ sidebar:
 | `415` | Unsupported request media type. | Correct the request first. |
 | `422` | Message fields are semantically invalid. | Correct the message first. |
 | `429` | Submission rate limit exceeded. | Retry after `Retry-After` when provided. |
-| `500` | Unexpected provider error; the submission outcome may be unknown. | Without an `Idempotency-Key`, retry only under a caller policy that accepts duplicate-submission risk. |
-| `503` | Provider is temporarily unable to accept the message. | Retry after `Retry-After` when provided. |
+| `500` | Unexpected provider error; the submission outcome may be unknown. | A matching `Idempotency-Key` safely replays the stored `500` but does not execute again. A new key or an unkeyed retry risks a duplicate. |
+| `503` | Provider is temporarily unable to accept the message; execution did not begin. | Retry the same request and key after `Retry-After` when provided. |
 
 `200` is the only success status, and it means acceptance rather than delivery.
 The [design rationale](/concepts/rationale/) records why the contract uses `200`
