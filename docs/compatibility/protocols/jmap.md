@@ -4,62 +4,63 @@ sidebar:
   label: JMAP
 ---
 
-This assessment compares Mail API with the IETF JSON Meta Application Protocol
-(JMAP). JMAP is a mail-store and submission protocol, not merely an outbound
-transactional-email API: it synchronizes mailboxes and messages, supports push,
-and submits an existing email for delivery.
+## Protocol role
+
+JMAP is an HTTP/JSON protocol for mail-store access, synchronization, push, and
+submission. Unlike Mail API's one-shot send request, JMAP submits an existing
+`Email` through an `Identity` by creating an `EmailSubmission` object.
 
 ## References
 
 - [RFC 8620: JMAP Core](https://www.rfc-editor.org/rfc/rfc8620.html):
-  session discovery, method calls, and generic synchronization model.
-- [RFC 8620 section 3: The JMAP API](https://www.rfc-editor.org/rfc/rfc8620.html#section-3):
-  the Request and Response objects, and the split between request-level and
-  method-level errors.
+  session discovery, method calls, errors, and synchronization.
+- [RFC 8620 section 3.6](https://www.rfc-editor.org/rfc/rfc8620.html#section-3.6):
+  request-level and method-level errors.
 - [RFC 8621: JMAP for Mail](https://www.rfc-editor.org/rfc/rfc8621.html):
-  `Email`, `Identity`, `EmailSubmission`, mail access, and submission.
-- [RFC 8621 section 7: Email submission](https://www.rfc-editor.org/rfc/rfc8621.html#section-7):
-  the `EmailSubmission` object, including its `undoStatus` and
-  `deliveryStatus` properties.
-- [JMAP specifications](https://jmap.io/spec.html):
-  current protocol specifications and extensions.
+  `Email`, `Identity`, and mail access.
+- [RFC 8621 section 7](https://www.rfc-editor.org/rfc/rfc8621.html#section-7):
+  `EmailSubmission`, its SMTP envelope, lifecycle, and delivery status.
 
 ## Potential adapter boundary
 
-A Mail API submission contains a complete structured message and returns a
-single accepted-message ID. JMAP ordinarily creates or imports an `Email` into
-a mailbox, then uses `EmailSubmission/set` to submit that existing `Email`
-through a selected `Identity`. A JMAP adapter can perform those method calls
-and return a Mail API `200` after the server accepts the submission.
+For a new message, an adapter creates the JMAP `Email` and then creates an
+`EmailSubmission` that references it. JMAP back-references allow dependent
+method calls in one JMAP request when supported by the relevant methods. The
+adapter returns Mail API `200` only after `EmailSubmission/set` reports a
+successful creation.
 
-JMAP itself answers a successful method batch with HTTP `200`. A method that
-fails returns an `error` response object inside that same `200`; only a
-request-level failure, such as an unparseable or unauthorized request, gets a
-non-`2xx` HTTP status. State belongs to the objects: `EmailSubmission` carries
-`undoStatus` for the submission's own lifecycle and an optional
-`deliveryStatus` for per-recipient delivery. JMAP therefore keeps even
-*delivery* state in a resource rather than in the HTTP status of the submit
-call. Mail API makes the same division, which is part of the
-[rationale for `200`](/concepts/rationale/).
-
-| Mail API concept | JMAP equivalent | Notes |
+| Mail API concept | JMAP equivalent | Mapping and limit |
 | --- | --- | --- |
-| `from` | `Identity` and Email sender fields | JMAP authorizes submission through a server-defined identity. |
-| `to`, `cc`, `bcc`, `replyTo` | `Email` address fields | An adapter composes the JMAP email representation from structured addresses. |
-| `subject`, `text`, `html`, attachments, headers | `Email` body structure and blobs | JMAP models mailbox email and binary data in more detail than Mail API `v1`. |
-| accepted response `id` | `EmailSubmission` ID | Keep the JMAP email and submission IDs internal unless the adapter documents one as the Mail API ID. |
-| incoming message representation | `Email` in a mailbox | JMAP has standardized query, changes, and push semantics that Mail API `v1` does not define. |
+| `from` | `Email.from`, `Email.sender`, and `Identity` | The visible authors, responsible sender, and authorized submission identity are distinct. Mail API's single `from` address cannot represent every JMAP/RFC 5322 combination. |
+| `to`, `cc`, `bcc`, `replyTo` | `Email` address fields | These represent RFC 5322 message fields. JMAP removes `Bcc` during delivery. |
+| No explicit transport envelope | `EmailSubmission.envelope` | JMAP can supply `mailFrom`, `rcptTo`, and SMTP parameters explicitly, or let the server derive them from message fields. Mail API cannot express the explicit form. |
+| `subject`, bodies, attachments, headers | `Email` body structure and blobs | JMAP preserves nested body structure and binary blobs more precisely than Mail API's flattened model. |
+| accepted response `id` | `EmailSubmission` ID | The submission ID is the closest correspondence. The referenced Email ID is a separate mailbox-resource identifier. |
+| `InboundMessage.receivedAt` | `Email.receivedAt` | Direct conceptual correspondence, subject to the JMAP server's stored metadata. |
+| No status resource | `undoStatus` and optional `deliveryStatus` | JMAP can expose cancellation state and known per-recipient SMTP or DSN status; Mail API `v1` cannot. |
 
-## Differences and limits
+## Submission and delivery boundary
 
-- JMAP's method-response envelope and per-method error objects are not a direct
-  HTTP-status mapping: an adapter cannot forward JMAP's HTTP status, because a
-  failed `EmailSubmission/set` arrives inside a `200`. It must inspect the
-  method response and normalize both error levels to the public `200` and
-  problem-details responses.
-- JMAP submission includes mailbox placement, drafts, identities, and a
-  separate `EmailSubmission` lifecycle. Mail API intentionally exposes only a
-  compact send boundary and no mailbox model.
-- JMAP offers standardized inbound mailbox access and synchronization. This is
-  a useful future reference for Mail API inbound and status capabilities, but
-  it does not add endpoints to Mail API `v1`.
+JMAP normally returns HTTP `200` for a syntactically valid JMAP request. A
+failed method call is represented by an `error` item in `methodResponses`, not
+by an HTTP error status. An adapter must inspect both HTTP-level failures and
+method responses, then translate them to Mail API problem responses.
+
+Creating an `EmailSubmission` means the message will be sent to its envelope
+recipients. It does not mean final delivery has occurred. `undoStatus` describes
+whether submission can still be canceled, while `deliveryStatus` is optional
+and reports only status known to the server.
+
+## Mail API implications
+
+- JMAP confirms that visible address fields and the SMTP envelope are separate
+  interoperable concepts. Mail API cannot faithfully adapt a supplied JMAP
+  envelope when it differs from `From`/`To`/`Cc`/`Bcc`.
+- JMAP also preserves multiple authors and a separate responsible sender. A
+  future message model should decide whether to add `sender` and make `from` a
+  list rather than silently selecting one address.
+- JMAP's body structure highlights Mail API gaps for inline content IDs,
+  disposition, nested multipart content, and lossless raw-message handling.
+- `EmailSubmission` is a useful model for a future optional submission-status
+  resource, but adding mailbox, undo, or delivery-status operations should be a
+  separate capability rather than changing the meaning of `POST /v1/messages`.

@@ -4,73 +4,94 @@ sidebar:
   label: SMTP
 ---
 
-Mail API defines an HTTP submission endpoint; it does not define an SMTP
-endpoint. An SMTP-based application needs an adapter or relay that accepts an
-SMTP message, converts it to an `OutboundMessageRequest`, and submits it to
-`POST /v1/messages`. Conversely, a Mail API provider may use SMTP internally
-for delivery, but that implementation detail is outside this specification.
+## Protocol role
 
-## MIME message mapping
+SMTP transfers a message using a transport envelope and RFC 5322/MIME content.
+Mail API defines an HTTP submission endpoint rather than an SMTP endpoint. An
+SMTP-facing adapter can accept a transaction and call `POST /v1/messages`, but
+Mail API `v1` cannot represent every SMTP transaction losslessly.
 
-The adapter parses the SMTP message's RFC 5322/MIME content and maps it to the
-HTTP request.
+## References
 
-| SMTP data | Mail API field | Mapping |
+- [RFC 5321: Simple Mail Transfer Protocol](https://www.rfc-editor.org/rfc/rfc5321.html):
+  SMTP envelope, transaction, reply codes, and transfer responsibility.
+- [RFC 6409: Message Submission for Mail](https://www.rfc-editor.org/rfc/rfc6409.html):
+  the message-submission profile of SMTP.
+- [RFC 4954: SMTP Service Extension for Authentication](https://www.rfc-editor.org/rfc/rfc4954.html):
+  SMTP authentication and the `530` reply.
+- [RFC 5322: Internet Message Format](https://www.rfc-editor.org/rfc/rfc5322.html):
+  visible message fields, including `Bcc` handling.
+- [RFC 2045: MIME Part One](https://www.rfc-editor.org/rfc/rfc2045.html):
+  MIME bodies and transfer encoding.
+
+## Potential adapter boundary
+
+The adapter sees two independent inputs: `MAIL FROM` and accepted `RCPT TO`
+commands form the SMTP envelope, while `DATA` contains the RFC 5322/MIME
+message. The envelope controls actual delivery; visible destination headers do
+not.
+
+| SMTP concept | Mail API concept | Mapping and limit |
 | --- | --- | --- |
-| `From` header | `from` | Parse the visible author address and display name. Reject the submission if it is absent. |
-| `To`, `Cc`, and `Bcc` headers | `to`, `cc`, `bcc` | Parse structured recipient headers into address lists. |
+| `MAIL FROM` reverse-path | — | No lossless mapping. It may be empty and may differ from the visible author; Mail API has no envelope-sender field. |
+| accepted `RCPT TO` forward-paths | — | These are the actual recipients. Mail API has no envelope-recipient field independent of visible `to`, `cc`, and `bcc`. |
+| `From` and `Sender` headers | `from` | Mail API can preserve one visible author only. RFC 5322 permits multiple authors and then requires a separate responsible `Sender`; neither that distinction nor the SMTP reverse-path fits this field. |
+| `To` and `Cc` headers | `to`, `cc` | Preserve visible destination fields only. They may contain addresses that are not envelope recipients. |
+| `Bcc` header | `bcc` | Available only if still present. RFC 5322 commonly removes this field before transfer, so it cannot recover blind envelope recipients. |
 | `Reply-To` header | `replyTo` | Parse into an address list. |
-| `Subject` header | `subject` | Decode and copy the header value. |
-| `text/plain` MIME part | `text` | Decode the selected plain-text part. |
-| `text/html` MIME part | `html` | Decode the selected HTML part. |
-| Other headers | `headers` | Preserve supplemental and repeated fields in their original order. |
-| Regular MIME attachments | `attachments` | Decode each body part, Base64-encode its bytes, and retain filename and media type. |
+| `Subject` header | `subject` | Decode and copy the field value. |
+| `text/plain` and `text/html` MIME parts | `text`, `html` | Select and decode body alternatives. Nested or multiple alternatives may require a lossy policy. |
+| Supplemental headers | `headers` | Preserve unfolded fields in order, excluding structured and MIME-framing fields forbidden by `OutboundMessageRequest`. |
+| Regular MIME attachments | `attachments` | Decode bytes and preserve filename and media type. Inline disposition and content IDs have no portable mapping. |
 
-For `multipart/alternative`, preserve both selected `text/plain` and `text/html`
-parts when available. Structured Mail API fields are authoritative, so an
-adapter must not duplicate `From`, `To`, `Cc`, `Bcc`, `Reply-To`, or `Subject`
-in `headers`.
+For `multipart/alternative`, an adapter can preserve selected plain-text and
+HTML alternatives. Other MIME trees require a documented transformation or
+rejection policy.
 
-## SMTP envelope boundary and delivery semantics
+## Submission and delivery boundary
 
-SMTP's `MAIL FROM` and `RCPT TO` commands describe the delivery envelope; they
-are not necessarily the same as the visible message headers. Mail API `v1` is
-an HTTP submission API rather than an SMTP relay interface, so it deliberately
-does not expose a separate envelope-sender field. The provider determines its
-own transport envelope.
+An unrestricted SMTP relay adapter cannot safely infer Mail API recipients from
+visible headers. Copying every visible `To`/`Cc` address may add recipients that
+were not accepted with `RCPT TO`; ignoring envelope-only recipients may drop
+blind copies. Until Mail API has explicit envelope fields, an adapter must
+either reject transactions whose envelope differs from the derivation Mail API
+would make or operate under a deployment policy that guarantees they match.
 
-- Use the MIME `From` header for `from`, not `MAIL FROM`.
-- An adapter must define a policy for envelope recipients that are absent from
-  visible `To` or `Cc` headers. They are often Bcc recipients, but cannot be
-  identified reliably after a message has been composed.
-- A Mail API `200` can be translated to SMTP `250` acceptance because it means
-  the provider durably accepted responsibility for asynchronous processing.
-  Neither result confirms final recipient delivery. SMTP has no separate
-  acceptance code at all: `250` is its ordinary success reply, and taking
-  responsibility for onward delivery is what submission success has always
-  meant. That precedent is part of the
-  [rationale for `200`](/concepts/rationale/).
-- `400`, `413`, `415`, and `422` are non-retryable unless the message is
-  changed, and map to SMTP `5xx` permanent failures. `401` and `403` are
-  non-retryable until credentials or authorization change; `403` for a
-  disallowed `from` identity corresponds to SMTP `550`. A `409` for a matching
-  idempotent request in progress may be retried later; a key used with a
-  different payload requires a new key or payload. `429` and `503` are
-  retryable and may provide `Retry-After`, mapping to SMTP `4xx`; other `5xx`
-  responses require an adapter retry policy. A request timeout without an
-  `Idempotency-Key` remains an unknown-outcome condition, as it does in SMTP
-  when an acceptance response is lost.
+After accepting the complete SMTP transaction, a Mail API `200` can map to the
+final SMTP `250` response: both mean the next system accepted responsibility
+for further processing, not that recipients received the message.
 
-## Unsupported or policy-dependent content
+| Mail API result | SMTP-facing result | Adapter policy |
+| --- | --- | --- |
+| `200` | `250` after message content | Accept the transaction; do not present this as final delivery. |
+| `400` or `415` | transient local failure, commonly `451` | A conforming adapter creates valid JSON with the correct media type, so these normally indicate an adapter defect rather than bad client content. |
+| `413` | permanent size failure, commonly `552` | Reject the unchanged message because it exceeds a provider or adapter limit. |
+| `422` | permanent content failure, commonly `554` | Reject semantically invalid message content. |
+| `401` | deployment-defined local failure | The adapter normally owns the Mail API credential. Do not report its credential failure as an SMTP client's authentication failure unless the deployment explicitly shares that identity boundary. |
+| `403` | permanent sender/submission failure, commonly `550` or `553` | Reject an identity or submission that the authenticated Mail API principal may not use. |
+| in-progress `409`, `429`, `503` | transient `4xx` | Retry later; honor `Retry-After` internally when present. |
+| reused-key `409` | local adapter failure | An SMTP client does not supply a Mail API idempotency key. A collision with a different body normally means the adapter reused its internal key incorrectly. |
+| `500` or lost HTTP response | policy-dependent `4xx`/`5xx` | The outcome may be unknown. Preserve Mail API idempotency state and avoid a second execution unless duplicate risk is accepted. |
 
-- Inline MIME attachments using content IDs have no Mail API `v1` equivalent.
-  The adapter should reject them or define a documented transformation rather
-  than send HTML with broken `cid:` references. A provider may expose them
-  through an `extensions` member, but a portable adapter must not depend on
-  one, because no extension name is specified.
-- SMTP authentication, TLS, client identity, retry scheduling, size limits,
-  and rate limits are deployment concerns. An adapter authenticates to Mail API
-  with its own credentials; it does not forward SMTP `AUTH` credentials, so an
-  SMTP client's identity is not the Mail API principal.
-- Inbound Mail API examples are received-message data representations only;
-  they do not define an SMTP receiving service or webhook endpoint.
+## Mail API implications
+
+- The highest-priority gap is an optional transport envelope containing a
+  nullable/empty reverse-path and one or more envelope recipients. When absent,
+  the provider can continue deriving the envelope from structured message
+  fields for backward compatibility.
+- A complete envelope design must consider SMTPUTF8 addresses and optional DSN
+  parameters; merely adding another display-address field would be
+  insufficient.
+- The message model should separately evaluate multiple `From` authors and the
+  RFC 5322 `Sender` field; these are message-header concepts, not substitutes
+  for the SMTP reverse-path.
+- Lossless SMTP/MIME adaptation also needs raw RFC 5322 content or a richer MIME
+  tree, including disposition and content ID. These additions should not make
+  the compact structured request harder for ordinary HTTP clients.
+- SMTP authentication, TLS, rate limits, and retry scheduling remain deployment
+  concerns. The SMTP client's identity and the adapter's Mail API principal are
+  not automatically the same security principal.
+- SMTP has no application idempotency key. A robust bridge should accept and
+  durably queue the SMTP transaction before calling Mail API, so SMTP retry and
+  Mail API execution can be reconciled without deriving a key from message
+  content or accidentally suppressing a legitimate identical message.
