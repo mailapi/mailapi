@@ -31,13 +31,20 @@ const transporter = nodemailer.createTransport({
   name: 'mailapi',
   version: '1.0.0',
   send: (mail, callback) => {
-    // Adapter converts mail.data to OutboundMessageRequest
-    // and sends POST /v1/messages
+    mail.normalize((error, data) => {
+      if (error) return callback(error);
+      // Adapter converts normalized data to OutboundMessageRequest
+      // and sends POST /v1/messages
+    });
   }
 });
 ```
 
-| Nodemailer `mail.data` property | Mail API field | Mapping |
+For an API-based transport, `mail.normalize()` applies transport defaults and
+resolves content sources before mapping. The resulting `data` object maps as
+follows:
+
+| Normalized Nodemailer property | Mail API field | Mapping |
 | --- | --- | --- |
 | `from` | `from` | Parse formatted address string (`"Name <user@domain>"`) or `{ name, address }` object into an `EmailAddress`. |
 | `to`, `cc`, `bcc` | `to`, `cc`, `bcc` | Normalize address strings, comma-separated lists, or arrays into `EmailAddress` objects. |
@@ -59,10 +66,12 @@ appropriate `Error` instance and invokes `callback(err)`.
   upon successful HTTP submission, which does not guarantee final recipient
   delivery.
 - Nodemailer supports Node.js `Readable` streams and file paths for attachments.
-  Because Mail API requires in-payload Base64 content, the transport must read
-  and buffer streams into memory before dispatching the HTTP request.
+  `mail.normalize()` resolves these content sources; because Mail API requires
+  in-payload Base64 content, the transport must then encode the resolved bytes
+  before dispatching the HTTP request.
 - Inline attachments with `cid` properties have no structured equivalent in Mail
-  API `v1`. The transport requires a documented policy, such as stripping the
-  `cid` or rejecting the submission, rather than emitting broken image links.
+  API `v1`. The transport must reject the submission or transform both the HTML
+  references and attachments together; removing only the `cid` would emit broken
+  image links.
 - Idempotency keys can be supplied via custom transport options or Nodemailer
   message headers, allowing safe retries over HTTP without duplicate execution.

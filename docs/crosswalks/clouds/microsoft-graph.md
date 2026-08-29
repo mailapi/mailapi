@@ -32,7 +32,7 @@ and returns `202 Accepted` with an empty body on success.
 | `replyTo` | `replyTo` | Array of `recipient` objects. |
 | `subject` | `subject` | Direct correspondence. |
 | `text`, `html` | `body` | Graph accepts a single body object (`{"contentType": "Text" \| "Html", "content": "..."}`). An adapter selects the HTML body when present, falling back to plain text. |
-| `headers` | `internetMessageHeaders` | Array of key-value header objects (`[{"name": "...", "value": "..."}]`). Structured fields take precedence. |
+| `headers` | `internetMessageHeaders` | Graph's JSON form accepts only custom header names beginning with `x-`. Other supplemental RFC 5322 headers require the MIME request form or an explicit rejection or lossy-mapping policy. Structured fields take precedence. |
 | `attachments` | `attachments` | Array of file attachment objects with `"@odata.type": "#microsoft.graph.fileAttachment"`, `name`, `contentType`, and Base64-encoded `contentBytes`. |
 | submission `id` | Provider-generated Mail API ID | Microsoft Graph `sendMail` returns `202 Accepted` without a message ID; the adapter must mint the Mail API ID beforehand. |
 
@@ -71,6 +71,10 @@ adapter returns `500`.
 - Graph's `body` property is single-valued: it does not hold simultaneous
   `text/plain` and `text/html` alternatives. Adapters mapping both bodies must
   select one representation (typically HTML) for submission.
+- Graph's JSON request form accepts only `x-` custom Internet message headers.
+  A Mail API request can contain other supplemental RFC 5322 headers, so an
+  adapter must use Graph's MIME request form or document which headers it
+  rejects or drops.
 - Inline Base64 attachments in `sendMail` are limited to 3 MB by Microsoft
   Graph. Messages with larger attachments require an attachment upload session
   or draft-based composition workflow.

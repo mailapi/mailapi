@@ -23,9 +23,10 @@ normalizes the queued response to Mail API's default `202` or bounded-wait
 ## Potential adapter boundary
 
 Mailgun's Messages API uses `multipart/form-data` or
-`application/x-www-form-urlencoded` rather than JSON. The adapter resolves the
-target sending domain from the `from` address, constructs the form payload, and
-maps Mailgun's response ID to the Mail API submission identifier.
+`application/x-www-form-urlencoded` rather than JSON. The adapter selects a
+configured Mailgun sending domain, verifies that the requested `from` identity
+is permitted under that configuration, constructs the form payload, and maps
+Mailgun's response ID to the Mail API submission identifier.
 
 | Mail API field | Mailgun form field | Notes |
 | --- | --- | --- |
@@ -66,8 +67,10 @@ request was still structurally valid, so the adapter returns `500`.
 ## Differences and limits
 
 - Mailgun requires the sending domain to be specified in the endpoint URL path
-  (`/v3/{domain}/messages`). The adapter must extract the domain from the
-  `from` address and verify that it matches an active sending domain.
+  (`/v3/{domain}/messages`). This is an account-configured sending domain and
+  need not equal the visible `from` address's domain. The adapter must select it
+  from trusted configuration and separately authorize the requested `from`
+  identity.
 - Mailgun uses form-based payload serialization (`multipart/form-data`) rather
   than JSON. Binary attachments are decoded from Mail API's Base64 representation
   into multipart byte streams.
