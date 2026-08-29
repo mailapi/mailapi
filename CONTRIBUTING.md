@@ -44,7 +44,7 @@ it. Edit files under `docs/`, never under `src/content/docs/`.
    remove a status code. It is the single source of truth; `README.md` links to
    it rather than repeating it.
 4. Reflect the change in the affected crosswalks. A new status
-   code usually needs a row in each `docs/crosswalks/clouds/*.md` mapping
+   code usually needs a row in each `docs/crosswalks/providers/*.md` mapping
    table.
 5. Describe a breaking change in the release notes, using the
    [breaking-change list](docs/concepts/versioning.md) to decide whether it is
@@ -64,7 +64,7 @@ directory by answering its question, not by which language is involved.
 
 | Directory | Question it answers |
 | --- | --- |
-| `clouds/` | Is it a provider Mail API would sit in front of? |
+| `providers/` | Is it an email provider API that Mail API would sit in front of? |
 | `standards/` | Is it an open internet standard or specification, not an implementation? |
 | `languages/` | Does the mail facility ship with the language, with no added dependency? |
 | `libraries/` | Is it a dependency that composes or sends mail, usable without an application framework? |
