@@ -1,10 +1,10 @@
 ---
-title: "MediaWiki compatibility"
+title: "MediaWiki crosswalk"
 sidebar:
   label: MediaWiki
 ---
 
-This assessment compares Mail API with MediaWiki's
+This crosswalk compares Mail API with MediaWiki's
 `MediaWiki\Mail\IEmailer` interface. `IEmailer::send()` is the relevant
 outgoing-mail abstraction; it accepts recipients, a sender, subject, text and
 optional HTML bodies, and an options array. It is marked internal by MediaWiki,

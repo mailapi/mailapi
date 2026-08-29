@@ -1,10 +1,10 @@
 ---
-title: "Drupal compatibility"
+title: "Drupal crosswalk"
 sidebar:
   label: Drupal
 ---
 
-This assessment compares Mail API with Drupal's pluggable
+This crosswalk compares Mail API with Drupal's pluggable
 `Drupal\Core\Mail\MailInterface` mail back-end. A potential Mail API module
 would receive the composed Drupal message in `mail(array $message)` and submit
 an `OutboundMessageRequest` to `POST /v1/messages`.

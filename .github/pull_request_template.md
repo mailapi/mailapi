@@ -13,6 +13,6 @@
 
 - [ ] The response table in `docs/concepts/responses.md` matches the spec
 - [ ] Any new problem `type` is registered in `docs/problems.md`
-- [ ] Affected compatibility assessments are updated
+- [ ] Affected crosswalks are updated
 - [ ] A breaking change is called out here, using the
       [breaking-change list](../docs/concepts/versioning.md)

@@ -1,14 +1,14 @@
 ---
-title: "Jakarta Mail compatibility"
+title: "Jakarta Mail crosswalk"
 sidebar:
   label: Jakarta Mail (Java)
 ---
 
-This assessment considers Mail API compatibility with Jakarta Mail
+This crosswalk compares Mail API with Jakarta Mail
 ([Jakarta EE](https://jakarta.ee/specifications/mail/)), formerly JavaMail.
 Jakarta Mail provides an extensible MIME message object model and a pluggable
 transport SPI (`jakarta.mail.Transport`). It is the foundation for Java email
-handling and the underlying model used by [Spring](/compatibility/frameworks/spring/).
+handling and the underlying model used by [Spring](/crosswalks/frameworks/spring/).
 
 | Jakarta Mail concept | Mail API field | Mapping |
 | --- | --- | --- |

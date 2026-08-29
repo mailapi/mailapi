@@ -1,10 +1,10 @@
 ---
-title: "WordPress compatibility"
+title: "WordPress crosswalk"
 sidebar:
   label: WordPress
 ---
 
-This assessment compares Mail API with WordPress's public `wp_mail()` sending
+This crosswalk compares Mail API with WordPress's public `wp_mail()` sending
 contract. WordPress exposes a pluggable `wp_mail()` function and the
 `pre_wp_mail` filter can preempt sending; either could be an adapter boundary.
 An implementation would need one clear boundary and must prevent WordPress's

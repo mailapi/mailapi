@@ -1,16 +1,16 @@
 ---
-title: "Rust `lettre` compatibility"
+title: "Rust `lettre` crosswalk"
 sidebar:
   label: lettre (Rust)
 ---
 
-This assessment considers Mail API compatibility with the Rust
+This crosswalk compares Mail API with the Rust
 [`lettre`](https://docs.rs/lettre/latest/lettre/) crate. Lettre provides a
 typed message builder with address, multipart body, attachment, and SMTP
 transport support. It is a strong source model for a Mail API adapter, but its
 built-in transports send SMTP messages rather than Mail API HTTP requests.
 
-| `lettre` concept | Mail API field | Compatibility observation |
+| `lettre` concept | Mail API field | Mapping observation |
 | --- | --- | --- |
 | `Message::builder()` addresses | `from`, `to`, `cc`, `bcc`, `replyTo` | Direct correspondence for structured mailbox headers. |
 | `subject()` | `subject` | Direct correspondence. |
@@ -28,7 +28,7 @@ byte stream that requires parsing to recover Mail API fields.
 
 Lettre's SMTP transports remain useful when SMTP is the intended delivery
 mechanism. For adapting existing SMTP submission code, see the
-[SMTP compatibility assessment](/compatibility/protocols/smtp/).
+[SMTP crosswalk](/crosswalks/protocols/smtp/).
 
 ## Limits and response handling
 

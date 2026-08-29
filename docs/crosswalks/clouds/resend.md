@@ -1,10 +1,10 @@
 ---
-title: "Resend compatibility"
+title: "Resend crosswalk"
 sidebar:
   label: Resend
 ---
 
-This assessment compares Mail API with Resend's Email API. An adapter converts
+This crosswalk compares Mail API with Resend's Email API. An adapter converts
 an `OutboundMessageRequest` to Resend `POST /emails`, then normalizes a
 successful Resend result to Mail API's default `202` or bounded-wait `200`
 response. It does not require a Mail API provider to use Resend.

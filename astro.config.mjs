@@ -83,31 +83,31 @@ export default defineConfig({
           items: [{ autogenerate: { directory: 'implementations' } }]
         },
         {
-          label: 'Compatibility',
+          label: 'Crosswalks',
           items: [
             {
               label: 'Protocols',
-              items: [{ autogenerate: { directory: 'compatibility/protocols' } }]
+              items: [{ autogenerate: { directory: 'crosswalks/protocols' } }]
             },
             {
               label: 'Clouds',
-              items: [{ autogenerate: { directory: 'compatibility/clouds' } }]
+              items: [{ autogenerate: { directory: 'crosswalks/clouds' } }]
             },
             {
               label: 'Languages',
-              items: [{ autogenerate: { directory: 'compatibility/languages' } }]
+              items: [{ autogenerate: { directory: 'crosswalks/languages' } }]
             },
             {
               label: 'Libraries',
-              items: [{ autogenerate: { directory: 'compatibility/libraries' } }]
+              items: [{ autogenerate: { directory: 'crosswalks/libraries' } }]
             },
             {
               label: 'Frameworks',
-              items: [{ autogenerate: { directory: 'compatibility/frameworks' } }]
+              items: [{ autogenerate: { directory: 'crosswalks/frameworks' } }]
             },
             {
               label: 'Applications',
-              items: [{ autogenerate: { directory: 'compatibility/applications' } }]
+              items: [{ autogenerate: { directory: 'crosswalks/applications' } }]
             }
           ]
         }

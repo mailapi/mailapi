@@ -43,53 +43,53 @@ POST /v1/messages
 - [MediaWiki Extension](/implementations/mediawiki-extension/)
 - [Resend Mailer](/implementations/resend-mailer/)
 
-## Compatibility assessments
+## Crosswalks
 
 ### Cloud mail APIs
 
-- [Amazon SES](/compatibility/clouds/amazon-ses/)
-- [Azure Communication Services Email](/compatibility/clouds/azure-email/)
-- [Gmail API](/compatibility/clouds/gmail-api/)
-- [Resend](/compatibility/clouds/resend/)
-- [SendGrid](/compatibility/clouds/sendgrid/)
+- [Amazon SES](/crosswalks/clouds/amazon-ses/)
+- [Azure Communication Services Email](/crosswalks/clouds/azure-email/)
+- [Gmail API](/crosswalks/clouds/gmail-api/)
+- [Resend](/crosswalks/clouds/resend/)
+- [SendGrid](/crosswalks/clouds/sendgrid/)
 
 ### Protocols
 
-- [IMAP](/compatibility/protocols/imap/)
-- [JMAP](/compatibility/protocols/jmap/)
-- [POP3](/compatibility/protocols/pop/)
-- [SMTP](/compatibility/protocols/smtp/)
+- [IMAP](/crosswalks/protocols/imap/)
+- [JMAP](/crosswalks/protocols/jmap/)
+- [POP3](/crosswalks/protocols/pop/)
+- [SMTP](/crosswalks/protocols/smtp/)
 
-The caller-side assessments are grouped by the layer an adapter attaches to,
+The caller-side crosswalks are grouped by the layer an adapter attaches to,
 from the language upward.
 
 ### Languages
 
 Mail facilities that ship with the language, with no added dependency.
 
-- [PHP (`mail()`)](/compatibility/languages/php/)
-- [Python (`email`)](/compatibility/languages/python/)
+- [PHP (`mail()`)](/crosswalks/languages/php/)
+- [Python (`email`)](/crosswalks/languages/python/)
 
 ### Libraries
 
 Framework-agnostic libraries added as a dependency to compose or send mail.
 
-- [Jakarta Mail (Java)](/compatibility/libraries/jakarta-mail/)
-- [lettre (Rust)](/compatibility/libraries/lettre/)
-- [Symfony Mailer (PHP)](/compatibility/libraries/symfony-mailer/)
+- [Jakarta Mail (Java)](/crosswalks/libraries/jakarta-mail/)
+- [lettre (Rust)](/crosswalks/libraries/lettre/)
+- [Symfony Mailer (PHP)](/crosswalks/libraries/symfony-mailer/)
 
 ### Frameworks
 
 Application frameworks that own mail configuration and expose a swappable
 transport or sender.
 
-- [Laravel (`Mail::extend()`)](/compatibility/frameworks/laravel/)
-- [Spring (`JavaMailSender`)](/compatibility/frameworks/spring/)
+- [Laravel (`Mail::extend()`)](/crosswalks/frameworks/laravel/)
+- [Spring (`JavaMailSender`)](/crosswalks/frameworks/spring/)
 
 ### Applications
 
 Deployed products with a mail hook an extension can replace.
 
-- [Drupal (`MailInterface`)](/compatibility/applications/drupal/)
-- [MediaWiki (`IEmailer`)](/compatibility/applications/mediawiki/)
-- [WordPress (`wp_mail()`)](/compatibility/applications/wordpress/)
+- [Drupal (`MailInterface`)](/crosswalks/applications/drupal/)
+- [MediaWiki (`IEmailer`)](/crosswalks/applications/mediawiki/)
+- [WordPress (`wp_mail()`)](/crosswalks/applications/wordpress/)

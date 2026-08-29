@@ -1,5 +1,5 @@
 ---
-title: "JMAP compatibility"
+title: "JMAP crosswalk"
 sidebar:
   label: JMAP
 ---

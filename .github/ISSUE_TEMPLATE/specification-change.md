@@ -22,8 +22,8 @@ openapi.yaml or link the rendered reference. -->
 ## Portability
 
 <!-- Mail API is vendor-neutral. Which providers can implement this, and does
-any provider make it impossible? Compatibility assessments live in
-docs/compatibility/. -->
+any provider make it impossible? Crosswalks live in
+docs/crosswalks/. -->
 
 ## Compatibility
 

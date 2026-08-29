@@ -1,10 +1,10 @@
 ---
-title: "Amazon SES compatibility"
+title: "Amazon SES crosswalk"
 sidebar:
   label: Amazon SES
 ---
 
-This assessment compares Mail API with Amazon Simple Email Service (SES) API
+This crosswalk compares Mail API with Amazon Simple Email Service (SES) API
 v2. An adapter receives an `OutboundMessageRequest`, calls SES `SendEmail`, and
 normalizes the result to Mail API's default `202` or bounded-wait `200`
 response. It is an adapter boundary, not a requirement that a Mail API provider

@@ -1,10 +1,10 @@
 ---
-title: "SendGrid compatibility"
+title: "SendGrid crosswalk"
 sidebar:
   label: SendGrid
 ---
 
-This assessment compares Mail API with Twilio SendGrid's v3 Mail Send API. An
+This crosswalk compares Mail API with Twilio SendGrid's v3 Mail Send API. An
 adapter receives an `OutboundMessageRequest`, calls `POST /v3/mail/send`, and
 normalizes an accepted SendGrid result to Mail API's default `202` or
 bounded-wait `200` response. It is an adapter boundary, not a requirement that

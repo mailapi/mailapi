@@ -1,10 +1,10 @@
 ---
-title: "Azure Communication Services Email compatibility"
+title: "Azure Communication Services Email crosswalk"
 sidebar:
   label: Azure Communication Services Email
 ---
 
-This assessment compares Mail API with Azure Communication Services Email. An
+This crosswalk compares Mail API with Azure Communication Services Email. An
 adapter converts an `OutboundMessageRequest` into an Azure email send request,
 then normalizes the accepted operation to Mail API's default `202` or
 bounded-wait `200` response. It does not require a Mail API provider to use

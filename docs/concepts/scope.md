@@ -23,9 +23,9 @@ interface, or a mailbox-access protocol.
 | Inbound message | Representation only | `InboundMessage` defines a data shape, but `v1` has no retrieval, webhook, or receiving operation. Lossless inbound mail may require a future raw-message model. |
 | Submission-status resource | Not supported | The returned ID is a correlation identifier, not a promise of a status lookup. A future version may add status as a separate capability. |
 
-## Compatibility does not expand the contract
+## Crosswalks do not expand the contract
 
-The [compatibility assessments](/#compatibility-assessments) explain how
+The [crosswalks](/#crosswalks) explain how
 protocols, providers, libraries, and applications can map to this boundary.
 They do not add fields or operations to Mail API. When a source has richer
 semantics, an adapter must reject unsupported input, apply a documented lossy
@@ -34,10 +34,10 @@ appropriate.
 
 The most consequential known gaps are the transport envelope and lossless raw
 message handling. Their protocol rationale is documented in the
-[SMTP](/compatibility/protocols/smtp/),
-[JMAP](/compatibility/protocols/jmap/),
-[IMAP](/compatibility/protocols/imap/), and
-[POP3](/compatibility/protocols/pop/) assessments.
+[SMTP](/crosswalks/protocols/smtp/),
+[JMAP](/crosswalks/protocols/jmap/),
+[IMAP](/crosswalks/protocols/imap/), and
+[POP3](/crosswalks/protocols/pop/) crosswalks.
 
 ## Future capabilities
 
