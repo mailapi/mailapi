@@ -98,15 +98,15 @@ WordPress plugin or MediaWiki extension. These crosswalks examine how an
 adapter could map a host application's mail abstraction to `POST /v1/messages`,
 including the remaining mapping limits.
 
-Clouds:
+Email provider APIs:
 
-- [Amazon SES](https://mailapi.github.io/crosswalks/clouds/amazon-ses/)
-- [Azure Communication Services Email](https://mailapi.github.io/crosswalks/clouds/azure-email/)
-- [Gmail API](https://mailapi.github.io/crosswalks/clouds/gmail-api/)
-- [Mailgun](https://mailapi.github.io/crosswalks/clouds/mailgun/)
-- [Microsoft Graph](https://mailapi.github.io/crosswalks/clouds/microsoft-graph/)
-- [Resend](https://mailapi.github.io/crosswalks/clouds/resend/)
-- [SendGrid](https://mailapi.github.io/crosswalks/clouds/sendgrid/)
+- [Amazon SES](https://mailapi.github.io/crosswalks/providers/amazon-ses/)
+- [Azure Communication Services Email](https://mailapi.github.io/crosswalks/providers/azure-email/)
+- [Gmail API](https://mailapi.github.io/crosswalks/providers/gmail-api/)
+- [Mailgun](https://mailapi.github.io/crosswalks/providers/mailgun/)
+- [Microsoft Graph](https://mailapi.github.io/crosswalks/providers/microsoft-graph/)
+- [Resend](https://mailapi.github.io/crosswalks/providers/resend/)
+- [SendGrid](https://mailapi.github.io/crosswalks/providers/sendgrid/)
 
 Standards:
 
