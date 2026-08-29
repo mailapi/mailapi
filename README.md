@@ -103,6 +103,8 @@ Clouds:
 - [Amazon SES](https://mailapi.github.io/crosswalks/clouds/amazon-ses/)
 - [Azure Communication Services Email](https://mailapi.github.io/crosswalks/clouds/azure-email/)
 - [Gmail API](https://mailapi.github.io/crosswalks/clouds/gmail-api/)
+- [Mailgun](https://mailapi.github.io/crosswalks/clouds/mailgun/)
+- [Microsoft Graph](https://mailapi.github.io/crosswalks/clouds/microsoft-graph/)
 - [Resend](https://mailapi.github.io/crosswalks/clouds/resend/)
 - [SendGrid](https://mailapi.github.io/crosswalks/clouds/sendgrid/)
 
@@ -125,11 +127,13 @@ Libraries, meaning framework-agnostic dependencies that compose or send mail:
 
 - [Jakarta Mail (Java)](https://mailapi.github.io/crosswalks/libraries/jakarta-mail/)
 - [lettre (Rust)](https://mailapi.github.io/crosswalks/libraries/lettre/)
+- [Nodemailer (Node.js)](https://mailapi.github.io/crosswalks/libraries/nodemailer/)
 - [Symfony Mailer (PHP)](https://mailapi.github.io/crosswalks/libraries/symfony-mailer/)
 
 Frameworks, meaning application frameworks with a swappable transport or
 sender:
 
+- [Django](https://mailapi.github.io/crosswalks/frameworks/django/)
 - [Laravel (`Mail::extend()`)](https://mailapi.github.io/crosswalks/frameworks/laravel/)
 - [Spring (`JavaMailSender`)](https://mailapi.github.io/crosswalks/frameworks/spring/)
 
