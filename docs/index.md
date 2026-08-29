@@ -50,15 +50,18 @@ POST /v1/messages
 - [Amazon SES](/crosswalks/clouds/amazon-ses/)
 - [Azure Communication Services Email](/crosswalks/clouds/azure-email/)
 - [Gmail API](/crosswalks/clouds/gmail-api/)
+- [Mailgun](/crosswalks/clouds/mailgun/)
+- [Microsoft Graph](/crosswalks/clouds/microsoft-graph/)
 - [Resend](/crosswalks/clouds/resend/)
 - [SendGrid](/crosswalks/clouds/sendgrid/)
 
-### Protocols
+### Standards
 
-- [IMAP](/crosswalks/protocols/imap/)
-- [JMAP](/crosswalks/protocols/jmap/)
-- [POP3](/crosswalks/protocols/pop/)
-- [SMTP](/crosswalks/protocols/smtp/)
+- [IMAP](/crosswalks/standards/imap/)
+- [JMAP](/crosswalks/standards/jmap/)
+- [MIME](/crosswalks/standards/mime/)
+- [POP3](/crosswalks/standards/pop3/)
+- [SMTP](/crosswalks/standards/smtp/)
 
 The caller-side crosswalks are grouped by the layer an adapter attaches to,
 from the language upward.
@@ -76,6 +79,7 @@ Framework-agnostic libraries added as a dependency to compose or send mail.
 
 - [Jakarta Mail (Java)](/crosswalks/libraries/jakarta-mail/)
 - [lettre (Rust)](/crosswalks/libraries/lettre/)
+- [Nodemailer (Node.js)](/crosswalks/libraries/nodemailer/)
 - [Symfony Mailer (PHP)](/crosswalks/libraries/symfony-mailer/)
 
 ### Frameworks
@@ -83,6 +87,7 @@ Framework-agnostic libraries added as a dependency to compose or send mail.
 Application frameworks that own mail configuration and expose a swappable
 transport or sender.
 
+- [Django](/crosswalks/frameworks/django/)
 - [Laravel (`Mail::extend()`)](/crosswalks/frameworks/laravel/)
 - [Spring (`JavaMailSender`)](/crosswalks/frameworks/spring/)
 

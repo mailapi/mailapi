@@ -28,7 +28,7 @@ byte stream that requires parsing to recover Mail API fields.
 
 Lettre's SMTP transports remain useful when SMTP is the intended delivery
 mechanism. For adapting existing SMTP submission code, see the
-[SMTP crosswalk](/crosswalks/protocols/smtp/).
+[SMTP crosswalk](/crosswalks/standards/smtp/).
 
 ## Limits and response handling
 

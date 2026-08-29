@@ -65,7 +65,7 @@ directory by answering its question, not by which language is involved.
 | Directory | Question it answers |
 | --- | --- |
 | `clouds/` | Is it a provider Mail API would sit in front of? |
-| `protocols/` | Is it a wire protocol, not an implementation? |
+| `standards/` | Is it an open internet standard or specification, not an implementation? |
 | `languages/` | Does the mail facility ship with the language, with no added dependency? |
 | `libraries/` | Is it a dependency that composes or sends mail, usable without an application framework? |
 | `frameworks/` | Does an application framework own the mail configuration and expose a swappable transport or sender? |
@@ -86,7 +86,7 @@ the product name.
 
 - Wrap prose at 80 columns. Reference links go on their own line with the
   description on a continuation line, so a long URL does not break the wrap.
-- Use root-relative links inside `docs/` (`/crosswalks/protocols/smtp/`),
+- Use root-relative links inside `docs/` (`/crosswalks/standards/smtp/`),
   not relative `.md` paths. `README.md` uses absolute
   `https://mailapi.github.io/` URLs because it is read outside the site.
 - Keep the distinction the crosswalks rely on: provider *acceptance* is not
