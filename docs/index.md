@@ -45,15 +45,15 @@ POST /v1/messages
 
 ## Crosswalks
 
-### Cloud mail APIs
+### Email provider APIs
 
-- [Amazon SES](/crosswalks/clouds/amazon-ses/)
-- [Azure Communication Services Email](/crosswalks/clouds/azure-email/)
-- [Gmail API](/crosswalks/clouds/gmail-api/)
-- [Mailgun](/crosswalks/clouds/mailgun/)
-- [Microsoft Graph](/crosswalks/clouds/microsoft-graph/)
-- [Resend](/crosswalks/clouds/resend/)
-- [SendGrid](/crosswalks/clouds/sendgrid/)
+- [Amazon SES](/crosswalks/providers/amazon-ses/)
+- [Azure Communication Services Email](/crosswalks/providers/azure-email/)
+- [Gmail API](/crosswalks/providers/gmail-api/)
+- [Mailgun](/crosswalks/providers/mailgun/)
+- [Microsoft Graph](/crosswalks/providers/microsoft-graph/)
+- [Resend](/crosswalks/providers/resend/)
+- [SendGrid](/crosswalks/providers/sendgrid/)
 
 ### Standards
 

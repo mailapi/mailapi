@@ -90,8 +90,8 @@ export default defineConfig({
               items: [{ autogenerate: { directory: 'crosswalks/standards' } }]
             },
             {
-              label: 'Clouds',
-              items: [{ autogenerate: { directory: 'crosswalks/clouds' } }]
+              label: 'Providers',
+              items: [{ autogenerate: { directory: 'crosswalks/providers' } }]
             },
             {
               label: 'Languages',
