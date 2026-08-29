@@ -108,16 +108,13 @@ Clouds:
 - [Resend](https://mailapi.github.io/crosswalks/clouds/resend/)
 - [SendGrid](https://mailapi.github.io/crosswalks/clouds/sendgrid/)
 
-Protocols:
+Standards:
 
-- [IMAP](https://mailapi.github.io/crosswalks/protocols/imap/)
-- [JMAP](https://mailapi.github.io/crosswalks/protocols/jmap/)
-- [POP3](https://mailapi.github.io/crosswalks/protocols/pop/)
-- [SMTP](https://mailapi.github.io/crosswalks/protocols/smtp/)
-
-Formats:
-
-- [Internet Message Format](https://mailapi.github.io/crosswalks/formats/internet-message-format/)
+- [IMAP](https://mailapi.github.io/crosswalks/standards/imap/)
+- [JMAP](https://mailapi.github.io/crosswalks/standards/jmap/)
+- [MIME](https://mailapi.github.io/crosswalks/standards/mime/)
+- [POP3](https://mailapi.github.io/crosswalks/standards/pop3/)
+- [SMTP](https://mailapi.github.io/crosswalks/standards/smtp/)
 
 The caller-side crosswalks are grouped by the layer an adapter attaches to,
 from the language upward.
@@ -148,10 +145,10 @@ Applications, meaning deployed products with a replaceable mail hook:
 - [WordPress (`wp_mail()`)](https://mailapi.github.io/crosswalks/applications/wordpress/)
 
 Mail API defines HTTP submission only.
-[SMTP crosswalk](https://mailapi.github.io/crosswalks/protocols/smtp/)
+[SMTP crosswalk](https://mailapi.github.io/crosswalks/standards/smtp/)
 covers the adapter boundary and MIME-to-API mapping;
-[IMAP](https://mailapi.github.io/crosswalks/protocols/imap/) and
-[POP3](https://mailapi.github.io/crosswalks/protocols/pop/) cover the
+[IMAP](https://mailapi.github.io/crosswalks/standards/imap/) and
+[POP3](https://mailapi.github.io/crosswalks/standards/pop3/) cover the
 separate mailbox-access and inbound-retrieval boundary.
 
 ## Future transports

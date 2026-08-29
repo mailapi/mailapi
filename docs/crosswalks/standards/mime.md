@@ -1,7 +1,7 @@
 ---
-title: "Internet Message Format crosswalk"
+title: "MIME and Internet Message Format crosswalk"
 sidebar:
-  label: Internet Message Format
+  label: MIME
 ---
 
 ## Format role

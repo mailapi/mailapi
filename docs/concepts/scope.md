@@ -34,10 +34,10 @@ appropriate.
 
 The most consequential known gaps are the transport envelope and lossless raw
 message handling. Their protocol rationale is documented in the
-[SMTP](/crosswalks/protocols/smtp/),
-[JMAP](/crosswalks/protocols/jmap/),
-[IMAP](/crosswalks/protocols/imap/), and
-[POP3](/crosswalks/protocols/pop/) crosswalks.
+[SMTP](/crosswalks/standards/smtp/),
+[JMAP](/crosswalks/standards/jmap/),
+[IMAP](/crosswalks/standards/imap/), and
+[POP3](/crosswalks/standards/pop3/) crosswalks.
 
 ## Future capabilities
 

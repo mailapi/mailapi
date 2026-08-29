@@ -63,5 +63,5 @@ fidelity.
 - Inbound Mail API examples do not provide a Spring inbound-mail feature or
   callback endpoint. Spring Integration's inbound mail adapters read mailboxes
   over IMAP or POP3, which is the separate boundary covered by the
-  [IMAP](/crosswalks/protocols/imap/) and
-  [POP3](/crosswalks/protocols/pop/) crosswalks.
+  [IMAP](/crosswalks/standards/imap/) and
+  [POP3](/crosswalks/standards/pop3/) crosswalks.

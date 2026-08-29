@@ -55,16 +55,13 @@ POST /v1/messages
 - [Resend](/crosswalks/clouds/resend/)
 - [SendGrid](/crosswalks/clouds/sendgrid/)
 
-### Protocols
+### Standards
 
-- [IMAP](/crosswalks/protocols/imap/)
-- [JMAP](/crosswalks/protocols/jmap/)
-- [POP3](/crosswalks/protocols/pop/)
-- [SMTP](/crosswalks/protocols/smtp/)
-
-### Formats
-
-- [Internet Message Format](/crosswalks/formats/internet-message-format/)
+- [IMAP](/crosswalks/standards/imap/)
+- [JMAP](/crosswalks/standards/jmap/)
+- [MIME](/crosswalks/standards/mime/)
+- [POP3](/crosswalks/standards/pop3/)
+- [SMTP](/crosswalks/standards/smtp/)
 
 The caller-side crosswalks are grouped by the layer an adapter attaches to,
 from the language upward.
