@@ -1,5 +1,5 @@
 ---
-title: "IMAP compatibility"
+title: "IMAP crosswalk"
 sidebar:
   label: IMAP
 ---

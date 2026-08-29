@@ -1,10 +1,10 @@
 ---
-title: "PHP compatibility"
+title: "PHP crosswalk"
 sidebar:
   label: PHP mail()
 ---
 
-This assessment considers Mail API compatibility with PHP applications in
+This crosswalk compares Mail API with PHP applications in
 general. PHP can readily submit the API's JSON over HTTP, but the quality of
 mapping from an existing mail call depends on the mail abstraction in use.
 
@@ -13,7 +13,7 @@ accepts recipient, subject, message, supplemental headers, and a boolean-style
 send result. Those concepts provide a basic correspondence with Mail API, but
 they do not expose a complete structured message model.
 
-| PHP `mail()` input | Mail API field | Compatibility observation |
+| PHP `mail()` input | Mail API field | Mapping observation |
 | --- | --- | --- |
 | `$to` | `to` | Address parsing is required. |
 | `$subject` | `subject` | Direct correspondence. |
@@ -31,6 +31,6 @@ they do not expose a complete structured message model.
 - PHP applications using Symfony Mailer have a substantially stronger match:
   its composed message and custom transport boundary retain structured
   recipients, both body types, and attachments. See the
-  [Symfony Mailer compatibility assessment](/compatibility/libraries/symfony-mailer/).
+  [Symfony Mailer crosswalk](/crosswalks/libraries/symfony-mailer/).
 - Inline attachments with content IDs remain a Mail API `v1` gap regardless of
   the PHP mail library.

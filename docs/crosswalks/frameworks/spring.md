@@ -1,10 +1,10 @@
 ---
-title: "Spring compatibility"
+title: "Spring crosswalk"
 sidebar:
   label: Spring
 ---
 
-This assessment compares Mail API with Spring's pluggable
+This crosswalk compares Mail API with Spring's pluggable
 `org.springframework.mail.javamail.JavaMailSender` abstraction. A potential
 Mail API adapter would supply its own sender bean, receive the composed
 `MimeMessage`, and submit an `OutboundMessageRequest` to `POST /v1/messages`.
@@ -29,7 +29,7 @@ fidelity.
 | `SimpleMailMessage.subject` | `subject` | Copy as-is. |
 | `SimpleMailMessage.text` | `text` | Plain text only; `SimpleMailMessage` has no HTML representation, so `html` stays absent. |
 | `SimpleMailMessage.sentDate` | — | No `v1` field. The provider stamps the message; an adapter should not synthesize a `Date` header from it silently. |
-| `MimeMessage` built through `MimeMessageHelper` | Full message model | Follow the [Jakarta Mail mapping](/compatibility/libraries/jakarta-mail/), which is the model Spring composes into. |
+| `MimeMessage` built through `MimeMessageHelper` | Full message model | Follow the [Jakarta Mail crosswalk](/crosswalks/libraries/jakarta-mail/), which is the model Spring composes into. |
 
 ## Configuration and error mapping
 
@@ -63,5 +63,5 @@ fidelity.
 - Inbound Mail API examples do not provide a Spring inbound-mail feature or
   callback endpoint. Spring Integration's inbound mail adapters read mailboxes
   over IMAP or POP3, which is the separate boundary covered by the
-  [IMAP](/compatibility/protocols/imap/) and
-  [POP3](/compatibility/protocols/pop/) assessments.
+  [IMAP](/crosswalks/protocols/imap/) and
+  [POP3](/crosswalks/protocols/pop/) crosswalks.

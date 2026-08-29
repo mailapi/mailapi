@@ -1,7 +1,7 @@
 # Contributing
 
 Mail API is a specification repository. It contains `openapi.yaml`, the
-documentation site that renders it, and the compatibility assessments — no mail
+documentation site that renders it, and the crosswalks — no mail
 server, provider adapter, or SDK.
 
 ## Local setup
@@ -43,21 +43,21 @@ it. Edit files under `docs/`, never under `src/content/docs/`.
 3. Update the response table in `docs/concepts/responses.md` if you add or
    remove a status code. It is the single source of truth; `README.md` links to
    it rather than repeating it.
-4. Reflect the change in the affected compatibility assessments. A new status
-   code usually needs a row in each `docs/compatibility/clouds/*.md` mapping
+4. Reflect the change in the affected crosswalks. A new status
+   code usually needs a row in each `docs/crosswalks/clouds/*.md` mapping
    table.
 5. Describe a breaking change in the release notes, using the
    [breaking-change list](docs/concepts/versioning.md) to decide whether it is
    one. The repository keeps no changelog file before release 0.5.
 
 Adding a documentation page is enough to get it into the sidebar for
-`examples/`, `implementations/`, and `compatibility/*`, which autogenerate. A
+`examples/`, `implementations/`, and `crosswalks/*`, which autogenerate. A
 new top-level page needs an entry in `astro.config.mjs`. API reference sidebar
 entries are generated from `openapi.yaml`; do not hardcode operation links.
 
-## Adding a compatibility assessment
+## Adding a crosswalk
 
-`docs/compatibility/` has one directory per kind of thing being assessed. The
+`docs/crosswalks/` has one directory per kind of thing being assessed. The
 first two are about which side of the Mail API boundary a system sits on; the
 last four are about the layer a caller-side adapter attaches to. Pick the
 directory by answering its question, not by which language is involved.
@@ -86,10 +86,10 @@ the product name.
 
 - Wrap prose at 80 columns. Reference links go on their own line with the
   description on a continuation line, so a long URL does not break the wrap.
-- Use root-relative links inside `docs/` (`/compatibility/protocols/smtp/`),
+- Use root-relative links inside `docs/` (`/crosswalks/protocols/smtp/`),
   not relative `.md` paths. `README.md` uses absolute
   `https://mailapi.github.io/` URLs because it is read outside the site.
-- Keep the distinction the assessments rely on: provider *acceptance* is not
+- Keep the distinction the crosswalks rely on: provider *acceptance* is not
   recipient *delivery*, and an adapter's own credential failure is a `500`, not
   a caller error.
 

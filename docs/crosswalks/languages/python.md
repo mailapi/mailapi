@@ -1,16 +1,16 @@
 ---
-title: "Python `email` compatibility"
+title: "Python `email` crosswalk"
 sidebar:
   label: Python email
 ---
 
-This assessment considers Mail API compatibility with Python's standard
+This crosswalk compares Mail API with Python's standard
 library [`email`](https://docs.python.org/3/library/email.html) package.
 `email` provides an RFC-oriented message and MIME object model; it deliberately
 does not send messages. That makes it a strong fit for constructing or parsing
 the Mail API message model, while HTTP submission remains a separate concern.
 
-| Python `EmailMessage` concept | Mail API field | Compatibility observation |
+| Python `EmailMessage` concept | Mail API field | Mapping observation |
 | --- | --- | --- |
 | Address headers (`From`, `To`, `Cc`, `Bcc`, `Reply-To`) | `from`, `to`, `cc`, `bcc`, `replyTo` | A strong mapping after parsing display names and addresses. |
 | `Subject` header | `subject` | Direct correspondence. |
@@ -23,12 +23,12 @@ the Mail API message model, while HTTP submission remains a separate concern.
 
 - The `email` package is intentionally not a delivery mechanism. A Python
   application needs an HTTP client to submit the resulting JSON to
-  `POST /v1/messages`; this does not diminish the message-model compatibility.
+  `POST /v1/messages`; this does not diminish the message-model mapping.
 - Existing code that passes an `EmailMessage` to
   [`smtplib`](https://docs.python.org/3/library/smtplib.html) still has SMTP
   envelope semantics to account for. In particular, the envelope sender and
   recipients may differ from visible headers. See the
-  [SMTP compatibility assessment](/compatibility/protocols/smtp/).
+  [SMTP crosswalk](/crosswalks/protocols/smtp/).
 - Inline MIME parts referenced by content IDs have no Mail API `v1` equivalent.
   They require a documented transformation or rejection policy.
 - Mail API `202` indicates asynchronous acceptance, while `200` indicates

@@ -2,41 +2,13 @@ name: Pull request checks
 
 on:
   pull_request:
-  pull_request_target:
-    types:
-      - opened
-      - reopened
 
-# Least privilege by default; the assign job widens this for itself only.
 permissions:
   contents: read
 
 jobs:
-  assign-author:
-    name: Auto assign
-    if: github.event_name == 'pull_request_target'
-    runs-on: ubuntu-latest
-    # This job runs on `pull_request_target`, so it deliberately does not check
-    # out the pull request, and only calls the issues API.
-    permissions:
-      contents: read
-      issues: write
-    steps:
-      - name: Assign jmnote
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.PR_ASSIGN_TOKEN }}
-          script: |
-            await github.rest.issues.addAssignees({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.payload.pull_request.number,
-              assignees: ['jmnote']
-            });
-
   documentation:
     name: Build documentation
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Check out source

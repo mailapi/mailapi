@@ -1,10 +1,10 @@
 ---
-title: "Gmail API compatibility"
+title: "Gmail API crosswalk"
 sidebar:
   label: Gmail API
 ---
 
-This assessment compares Mail API with the Gmail API `users.messages.send`
+This crosswalk compares Mail API with the Gmail API `users.messages.send`
 operation. The Gmail API supports consumer Gmail and Google Workspace
 mailboxes. A Mail API adapter must act on behalf of an authorized mailbox; it
 is not a provider-neutral, account-wide transactional-email API.

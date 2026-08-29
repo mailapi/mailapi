@@ -1,11 +1,11 @@
 ---
-title: "Symfony Mailer compatibility"
+title: "Symfony Mailer crosswalk"
 sidebar:
   label: Symfony Mailer (PHP)
 ---
 
-This assessment uses Symfony Mailer's custom transport as the Mail API
-compatibility boundary. Symfony Mailer is a standalone component: it is usable
+This crosswalk uses Symfony Mailer's custom transport as the Mail API
+boundary. Symfony Mailer is a standalone component: it is usable
 without the Symfony framework, and other PHP frameworks delegate to it. A
 potential transport would convert the fully composed Symfony message into an
 `OutboundMessageRequest` and submit it to `POST /v1/messages`.
@@ -13,7 +13,7 @@ potential transport would convert the fully composed Symfony message into an
 See Symfony's [custom transport documentation](https://symfony.com/doc/current/mailer.html#custom-transport-factories).
 
 For the framework-level registration hook, see the
-[Laravel compatibility assessment](/compatibility/frameworks/laravel/).
+[Laravel crosswalk](/crosswalks/frameworks/laravel/).
 
 ## Potential Symfony Mailer transport
 

@@ -91,59 +91,59 @@ validated.
 - [Resend Mailer](https://github.com/mailapi/resend-mailer) implements the Mail
   API message-sending endpoint using Resend.
 
-## Compatibility assessments
+## Crosswalks
 
 Mail API is designed as a provider-neutral HTTP boundary, not as a drop-in
-WordPress plugin or MediaWiki extension. These assessments examine how an
+WordPress plugin or MediaWiki extension. These crosswalks examine how an
 adapter could map a host application's mail abstraction to `POST /v1/messages`,
-including the remaining compatibility limits.
+including the remaining mapping limits.
 
 Clouds:
 
-- [Amazon SES](https://mailapi.github.io/compatibility/clouds/amazon-ses/)
-- [Azure Communication Services Email](https://mailapi.github.io/compatibility/clouds/azure-email/)
-- [Gmail API](https://mailapi.github.io/compatibility/clouds/gmail-api/)
-- [Resend](https://mailapi.github.io/compatibility/clouds/resend/)
-- [SendGrid](https://mailapi.github.io/compatibility/clouds/sendgrid/)
+- [Amazon SES](https://mailapi.github.io/crosswalks/clouds/amazon-ses/)
+- [Azure Communication Services Email](https://mailapi.github.io/crosswalks/clouds/azure-email/)
+- [Gmail API](https://mailapi.github.io/crosswalks/clouds/gmail-api/)
+- [Resend](https://mailapi.github.io/crosswalks/clouds/resend/)
+- [SendGrid](https://mailapi.github.io/crosswalks/clouds/sendgrid/)
 
 Protocols:
 
-- [IMAP](https://mailapi.github.io/compatibility/protocols/imap/)
-- [JMAP](https://mailapi.github.io/compatibility/protocols/jmap/)
-- [POP3](https://mailapi.github.io/compatibility/protocols/pop/)
-- [SMTP](https://mailapi.github.io/compatibility/protocols/smtp/)
+- [IMAP](https://mailapi.github.io/crosswalks/protocols/imap/)
+- [JMAP](https://mailapi.github.io/crosswalks/protocols/jmap/)
+- [POP3](https://mailapi.github.io/crosswalks/protocols/pop/)
+- [SMTP](https://mailapi.github.io/crosswalks/protocols/smtp/)
 
-The caller-side assessments are grouped by the layer an adapter attaches to,
+The caller-side crosswalks are grouped by the layer an adapter attaches to,
 from the language upward.
 
 Languages, meaning mail facilities that ship with the language:
 
-- [PHP (`mail()`)](https://mailapi.github.io/compatibility/languages/php/)
-- [Python (`email`)](https://mailapi.github.io/compatibility/languages/python/)
+- [PHP (`mail()`)](https://mailapi.github.io/crosswalks/languages/php/)
+- [Python (`email`)](https://mailapi.github.io/crosswalks/languages/python/)
 
 Libraries, meaning framework-agnostic dependencies that compose or send mail:
 
-- [Jakarta Mail (Java)](https://mailapi.github.io/compatibility/libraries/jakarta-mail/)
-- [lettre (Rust)](https://mailapi.github.io/compatibility/libraries/lettre/)
-- [Symfony Mailer (PHP)](https://mailapi.github.io/compatibility/libraries/symfony-mailer/)
+- [Jakarta Mail (Java)](https://mailapi.github.io/crosswalks/libraries/jakarta-mail/)
+- [lettre (Rust)](https://mailapi.github.io/crosswalks/libraries/lettre/)
+- [Symfony Mailer (PHP)](https://mailapi.github.io/crosswalks/libraries/symfony-mailer/)
 
 Frameworks, meaning application frameworks with a swappable transport or
 sender:
 
-- [Laravel (`Mail::extend()`)](https://mailapi.github.io/compatibility/frameworks/laravel/)
-- [Spring (`JavaMailSender`)](https://mailapi.github.io/compatibility/frameworks/spring/)
+- [Laravel (`Mail::extend()`)](https://mailapi.github.io/crosswalks/frameworks/laravel/)
+- [Spring (`JavaMailSender`)](https://mailapi.github.io/crosswalks/frameworks/spring/)
 
 Applications, meaning deployed products with a replaceable mail hook:
 
-- [Drupal (`MailInterface`)](https://mailapi.github.io/compatibility/applications/drupal/)
-- [MediaWiki (`IEmailer`)](https://mailapi.github.io/compatibility/applications/mediawiki/)
-- [WordPress (`wp_mail()`)](https://mailapi.github.io/compatibility/applications/wordpress/)
+- [Drupal (`MailInterface`)](https://mailapi.github.io/crosswalks/applications/drupal/)
+- [MediaWiki (`IEmailer`)](https://mailapi.github.io/crosswalks/applications/mediawiki/)
+- [WordPress (`wp_mail()`)](https://mailapi.github.io/crosswalks/applications/wordpress/)
 
 Mail API defines HTTP submission only.
-[SMTP compatibility](https://mailapi.github.io/compatibility/protocols/smtp/)
+[SMTP crosswalk](https://mailapi.github.io/crosswalks/protocols/smtp/)
 covers the adapter boundary and MIME-to-API mapping;
-[IMAP](https://mailapi.github.io/compatibility/protocols/imap/) and
-[POP3](https://mailapi.github.io/compatibility/protocols/pop/) cover the
+[IMAP](https://mailapi.github.io/crosswalks/protocols/imap/) and
+[POP3](https://mailapi.github.io/crosswalks/protocols/pop/) cover the
 separate mailbox-access and inbound-retrieval boundary.
 
 ## Future transports

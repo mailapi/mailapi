@@ -26,7 +26,7 @@
     "MD041": false,
     "MD025": false,
 
-    // Sibling compatibility assessments deliberately share section names such
+    // Sibling crosswalks deliberately share section names such
     // as "References" and "Differences and limits".
     "MD024": { "siblings_only": true },
 

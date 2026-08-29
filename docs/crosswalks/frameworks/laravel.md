@@ -1,13 +1,13 @@
 ---
-title: "Laravel compatibility"
+title: "Laravel crosswalk"
 sidebar:
   label: Laravel
 ---
 
-This assessment considers Mail API compatibility with Laravel's mail
+This crosswalk compares Mail API with Laravel's mail
 abstraction. Laravel sends through Symfony Mailer, so the message mapping is
 the same one the
-[Symfony Mailer assessment](/compatibility/libraries/symfony-mailer/)
+[Symfony Mailer crosswalk](/crosswalks/libraries/symfony-mailer/)
 describes. What Laravel adds is the framework's own registration and
 configuration hook, which is where an adapter attaches.
 

@@ -1,5 +1,5 @@
 ---
-title: "POP3 compatibility"
+title: "POP3 crosswalk"
 sidebar:
   label: POP3
 ---

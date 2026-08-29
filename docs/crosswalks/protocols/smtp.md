@@ -1,5 +1,5 @@
 ---
-title: "SMTP compatibility"
+title: "SMTP crosswalk"
 sidebar:
   label: SMTP
 ---
