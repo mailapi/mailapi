@@ -62,6 +62,10 @@ POST /v1/messages
 - [POP3](/crosswalks/protocols/pop/)
 - [SMTP](/crosswalks/protocols/smtp/)
 
+### Formats
+
+- [Internet Message Format](/crosswalks/formats/internet-message-format/)
+
 The caller-side crosswalks are grouped by the layer an adapter attaches to,
 from the language upward.
 

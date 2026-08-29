@@ -90,6 +90,10 @@ export default defineConfig({
               items: [{ autogenerate: { directory: 'crosswalks/protocols' } }]
             },
             {
+              label: 'Formats',
+              items: [{ autogenerate: { directory: 'crosswalks/formats' } }]
+            },
+            {
               label: 'Clouds',
               items: [{ autogenerate: { directory: 'crosswalks/clouds' } }]
             },

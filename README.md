@@ -115,6 +115,10 @@ Protocols:
 - [POP3](https://mailapi.github.io/crosswalks/protocols/pop/)
 - [SMTP](https://mailapi.github.io/crosswalks/protocols/smtp/)
 
+Formats:
+
+- [Internet Message Format](https://mailapi.github.io/crosswalks/formats/internet-message-format/)
+
 The caller-side crosswalks are grouped by the layer an adapter attaches to,
 from the language upward.
 

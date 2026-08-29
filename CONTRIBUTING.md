@@ -66,6 +66,7 @@ directory by answering its question, not by which language is involved.
 | --- | --- |
 | `clouds/` | Is it a provider Mail API would sit in front of? |
 | `protocols/` | Is it a wire protocol, not an implementation? |
+| `formats/` | Is it a message or serialization format, not a transfer protocol? |
 | `languages/` | Does the mail facility ship with the language, with no added dependency? |
 | `libraries/` | Is it a dependency that composes or sends mail, usable without an application framework? |
 | `frameworks/` | Does an application framework own the mail configuration and expose a swappable transport or sender? |
